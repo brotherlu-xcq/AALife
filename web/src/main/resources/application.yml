@@ -1,0 +1,10 @@
+swagger:
+  enable: true
+  title: AA Life
+  description: AA Life API Document
+  version: 1.0
+  url:
+  author:
+    name: Brother Lu
+    email: 1285823170@qq.com
+    url:
