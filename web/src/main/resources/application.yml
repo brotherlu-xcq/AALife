@@ -8,3 +8,9 @@ swagger:
     name: Brother Lu
     email: 1285823170@qq.com
     url:
+
+server:
+  port: 80
+  ssl:
+    key-store: 1529882054683.pfx
+    key-store-password:
