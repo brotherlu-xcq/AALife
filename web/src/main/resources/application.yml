@@ -10,7 +10,20 @@ swagger:
     url:
 
 server:
-  port: 80
+  port: 8443
   ssl:
     key-store: 1529882054683.pfx
-    key-store-password:
+    key-store-password: 1529882054683
+    keyAlisa: 1
+    keyStoreType: PKCS12
+
+spring:
+  application: aalife
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://120.79.39.237:3306/life_v2?zeroDateTimeBehavior=convertToNull&verifyServerCertificate=false&useSSL=true&useUnicode=true&characterEncoding=utf-8
+    username: brotherlu
+    password: mysql
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5Dialect
