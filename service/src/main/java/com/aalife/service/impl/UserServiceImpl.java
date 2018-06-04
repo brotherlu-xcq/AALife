@@ -2,8 +2,6 @@ package com.aalife.service.impl;
 
 import com.aalife.bo.LoginBo;
 import com.aalife.service.UserService;
-import com.sun.istack.internal.Nullable;
-import jdk.nashorn.internal.runtime.logging.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
