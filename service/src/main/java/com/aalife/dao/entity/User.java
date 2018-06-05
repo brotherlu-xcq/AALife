@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -17,9 +18,10 @@ public class User {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private Integer id;
+    private Integer userId;
 
     @Column(name = "wx_openid")
+    @NotNull
     private String wxOpenId;
 
     @Column(name = "nick_name")
@@ -29,17 +31,19 @@ public class User {
     private String avatarUrl;
 
     @Column(name = "entry_id")
+    @NotNull
     private Integer entryId;
 
     @Column(name = "entry_date")
+    @NotNull
     private Date entryDate;
 
-    public Integer getId() {
-        return id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getWxOpenId() {
@@ -80,5 +84,17 @@ public class User {
 
     public void setEntryDate(Date entryDate) {
         this.entryDate = entryDate;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", wxOpenId='" + wxOpenId + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", entryId=" + entryId +
+                ", entryDate=" + entryDate +
+                '}';
     }
 }

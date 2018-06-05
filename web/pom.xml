@@ -29,7 +29,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>aalife</finalName>
+        <finalName>aalife-web</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

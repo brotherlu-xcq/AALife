@@ -60,6 +60,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!-- Slf4j 注解 -->
+
     </dependencies>
 
     <build>
