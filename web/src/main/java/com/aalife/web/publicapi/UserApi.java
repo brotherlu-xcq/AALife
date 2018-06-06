@@ -1,6 +1,8 @@
-package com.aalife.web.api;
+package com.aalife.web.publicapi;
 
-import com.aalife.web.session.WebContext;
+import com.aalife.bo.UserBo;
+import com.aalife.dao.entity.User;
+import com.aalife.service.WebContext;
 import com.aalife.web.util.JsonEntity;
 import com.aalife.web.util.ResponseHelper;
 import io.swagger.annotations.Api;
@@ -23,7 +25,11 @@ public class UserApi {
     private WebContext webContext;
 
     @RequestMapping(value = "/current", method = RequestMethod.GET)
-    public JsonEntity getCurrentUser(){
-        return ResponseHelper.createInstance(webContext.getCurrentUser());
+    public JsonEntity<UserBo> getCurrentUser(){
+        UserBo userBo = new UserBo();
+        User user = webContext.getCurrentUser();
+        userBo.setNickName(user.getNickName());
+        userBo.setAvatarUrl(user.getAvatarUrl());
+        return ResponseHelper.createInstance(userBo);
     }
 }

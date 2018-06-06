@@ -3,7 +3,7 @@ package com.aalife.service.impl;
 import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.entity.UserLogin;
-import com.aalife.dao.repository.UserLoginReposity;
+import com.aalife.dao.repository.UserLoginRepository;
 import com.aalife.service.UserLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.Date;
 @Transactional
 public class UserLoginServiceImpl implements UserLoginService {
     @Autowired
-    private UserLoginReposity userLoginReposity;
+    private UserLoginRepository userLoginReposity;
 
     @Override
     public void createLoginLog(User user) {

@@ -1,13 +1,14 @@
 package com.aalife.service.impl;
 
 import com.aalife.bo.LoginBo;
-import com.aalife.dao.repository.UserLoginReposity;
+import com.aalife.exception.BizException;
 import com.aalife.service.UserService;
+import com.aalife.utils.WxUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -19,8 +20,14 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public void login(LoginBo loginBo) {
-        UsernamePasswordToken token = new UsernamePasswordToken(loginBo.getLoginKey(), (String)null);
+    public void login(String wxCode) {
+        if (StringUtils.isEmpty(wxCode)){
+            throw new AuthenticationException("登陆失败");
+        }
+
+        String openId = WxUtil.getWXOpenId(wxCode);
+
+        UsernamePasswordToken token = new UsernamePasswordToken(wxCode, (String)null);
         try{
             SecurityUtils.getSubject().login(token);
         } catch (AuthenticationException e){

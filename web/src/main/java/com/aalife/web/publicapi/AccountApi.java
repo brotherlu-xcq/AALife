@@ -1,4 +1,4 @@
-package com.aalife.web.api;
+package com.aalife.web.publicapi;
 
 import com.aalife.bo.LoginBo;
 import com.aalife.service.UserService;
@@ -24,8 +24,8 @@ public class AccountApi {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public JsonEntity<String> login(@RequestBody LoginBo loginBo){
-        userService.login(loginBo);
+    public JsonEntity<String> login(@RequestBody String wxCode){
+        userService.login(wxCode);
         return ResponseHelper.createInstance("success");
     }
 }

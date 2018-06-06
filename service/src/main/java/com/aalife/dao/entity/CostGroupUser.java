@@ -12,25 +12,30 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
- *
- * @author brother lu
- * @date 2018-06-05
+ * @author mosesc
+ * @date 2018-06-06
  */
 @Entity
-@Table(name = "cost_group")
-public class CostGroup {
-    @GeneratedValue
+@Table(name = "cost_group_user")
+public class CostGroupUser {
     @Id
-    @Column(name = "id")
-    private Integer groupId;
+    @GeneratedValue
+    @Column
+    private Integer id;
 
-    @Column(name = "group_name")
+    @JoinColumn(name = "group_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
-    private String groupName;
+    private CostGroup costGroup;
 
-    @Column(name = "group_code")
+    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
-    private String groupCode;
+    private User user;
+
+    @Column(name = "admin")
+    @NotNull
+    private Character admin;
 
     @Column(name = "entry_id")
     @NotNull
@@ -40,26 +45,42 @@ public class CostGroup {
     @NotNull
     private Date entryDate;
 
-    @Column(name = "delete_id")
+    @Column(name = "deleteId")
     private Integer deleteId;
 
     @Column(name = "delete_date")
     private Date deleteDate;
 
-    public Integer getGroupId() {
-        return groupId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public CostGroup getCostGroup() {
+        return costGroup;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setCostGroup(CostGroup costGroup) {
+        this.costGroup = costGroup;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Character getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Character admin) {
+        this.admin = admin;
     }
 
     public Integer getEntryId() {
@@ -76,14 +97,6 @@ public class CostGroup {
 
     public void setEntryDate(Date entryDate) {
         this.entryDate = entryDate;
-    }
-
-    public String getGroupCode() {
-        return groupCode;
-    }
-
-    public void setGroupCode(String groupCode) {
-        this.groupCode = groupCode;
     }
 
     public Integer getDeleteId() {
@@ -104,10 +117,10 @@ public class CostGroup {
 
     @Override
     public String toString() {
-        return "CostGroup{" +
-                "groupId=" + groupId +
-                ", groupName='" + groupName + '\'' +
-                ", groupCode='" + groupCode + '\'' +
+        return "CostGroupUser{" +
+                "costGroup=" + costGroup +
+                ", user=" + user +
+                ", admin=" + admin +
                 ", entryId=" + entryId +
                 ", entryDate=" + entryDate +
                 ", deleteId=" + deleteId +

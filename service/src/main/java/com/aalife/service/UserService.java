@@ -1,6 +1,7 @@
 package com.aalife.service;
 
 import com.aalife.bo.LoginBo;
+import com.aalife.dao.entity.User;
 
 /**
  * 用户登录类
@@ -10,7 +11,8 @@ import com.aalife.bo.LoginBo;
 public interface UserService {
     /**
      * 用户登录
-     * @param loginBo
+     * @param wxCode
      */
-    void login(LoginBo loginBo);
+    void login(String wxCode);
+//    User createNewUser();
 }
