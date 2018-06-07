@@ -3,13 +3,18 @@ package com.aalife.service.impl;
 import com.aalife.bo.ApprovalBo;
 import com.aalife.bo.ApprovalInfoBo;
 import com.aalife.bo.CostGroupBo;
+import com.aalife.bo.ExtendUserBo;
+import com.aalife.constant.ApprovalStatus;
 import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.CostGroupApproval;
 import com.aalife.dao.entity.CostGroupUser;
+import com.aalife.dao.entity.CostUserRemark;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.CostGroupApprovalRepository;
 import com.aalife.dao.repository.CostGroupRepository;
 import com.aalife.dao.repository.CostGroupUserRepository;
+import com.aalife.dao.repository.CostUserRemarkRepository;
+import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.CostGroupApprovalService;
 import com.aalife.service.CostGroupService;
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +43,10 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
     private WebContext webContext;
     @Autowired
     private CostGroupUserRepository costGroupUserRepository;
+    @Autowired
+    private CostUserRemarkRepository costUserRemarkRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public void createNewApproval(ApprovalBo approvalBo) {
@@ -72,6 +82,62 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
 
     @Override
     public List<ApprovalInfoBo> listApprovalsByGroup(Integer groupId) {
-        return null;
+        List<CostGroupApproval> costGroupApprovals = costGroupApprovalRepository.findApprovalsByGroup(groupId);
+        List<ApprovalInfoBo> approvalInfoBos = new ArrayList<>();
+        if (costGroupApprovals == null || costGroupApprovals.size() == 0){
+            return approvalInfoBos;
+        }
+        CostGroup costGroup = null;
+        CostGroupBo costGroupBo = null;
+        for (CostGroupApproval costGroupApproval : costGroupApprovals){
+            ApprovalInfoBo approvalInfoBo = new ApprovalInfoBo();
+            approvalInfoBo.setComment(costGroupApproval.getComment());
+            approvalInfoBo.setApprovalId(costGroupApproval.getId());
+            approvalInfoBo.setStatus(costGroupApproval.getStatus() == 0 ? ApprovalStatus.PEDDING.getStatusName() : ApprovalStatus.APPROVAL.getStatusName());
+            // 设置分组信息
+            if (costGroup == null){
+                costGroup = costGroupApproval.getCostGroup();
+                costGroupBo = new CostGroupBo();
+                costGroupBo.setGroupNo(costGroup.getGroupId());
+                costGroupBo.setGroupCode(costGroup.getGroupCode());
+                costGroupBo.setGroupName(costGroup.getGroupName());
+            }
+            //设置用户信息
+            ExtendUserBo extendUserBo = new ExtendUserBo();
+            User user = costGroupApproval.getUser();
+            extendUserBo.setUserId(user.getUserId());
+            extendUserBo.setNickName(user.getNickName());
+            extendUserBo.setAvatarUrl(user.getAvatarUrl());
+            approvalInfoBo.setUser(extendUserBo);
+            // 设置备注名
+            CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(webContext.getCurrentUser().getUserId(), user.getUserId());
+            extendUserBo.setRemarkName(costUserRemark == null ? user.getNickName() : costUserRemark.getRemarkName());
+            approvalInfoBo.setCostGroup(costGroupBo);
+            approvalInfoBos.add(approvalInfoBo);
+        }
+        return approvalInfoBos;
+    }
+
+    @Override
+    public void approveUserRequest(Integer groupId, Integer userId) {
+        User user = userRepository.findOne(userId);
+        if (user == null){
+            throw new BizException("未查询到用户");
+        }
+        costGroupApprovalRepository.approveUserRequest(groupId, userId);
+        CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(userId, groupId);
+        if (costGroupUser != null){
+            return;
+        }
+        // 创建新的记录
+        User currentUser = webContext.getCurrentUser();
+        CostGroup costGroup = costGroupRepository.findOne(groupId);
+        costGroupUser = new CostGroupUser();
+        costGroupUser.setAdmin('N');
+        costGroupUser.setUser(user);
+        costGroupUser.setCostGroup(costGroup);
+        costGroupUser.setEntryId(currentUser.getUserId());
+        costGroupUser.setEntryDate(new Date());
+        costGroupUserRepository.save(costGroupUser);
     }
 }
