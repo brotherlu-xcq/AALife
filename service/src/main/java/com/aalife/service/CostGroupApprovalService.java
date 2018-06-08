@@ -22,4 +22,11 @@ public interface CostGroupApprovalService {
      * @return
      */
     List<ApprovalInfoBo> listApprovalsByGroup(Integer groupId);
+
+    /**
+     * 同意申请
+     * @param groupId
+     * @param userId
+     */
+    void approveUserRequest(Integer groupId, Integer userId);
 }

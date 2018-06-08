@@ -29,8 +29,9 @@ public class GloabalExceptionHandler {
     public JsonEntity handle401(ShiroException e){
         return new JsonEntity(null, 401, e.getMessage());
     }
+
     @ExceptionHandler(UnauthorizedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     public JsonEntity handle403(){
         return new JsonEntity(null, 403, "无权限");
     }

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author mosesc
  * @date 2018-06-06
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/public/api")
 @RestController
 @RequiresAuthentication
-public class CostGroupApproval {
+public class CostGroupApprovalApi {
     @Autowired
     private CostGroupApprovalService costGroupApprovalService;
 
@@ -36,7 +38,14 @@ public class CostGroupApproval {
 
     @RequestMapping(value = "/approval/list/{groupId}", method = RequestMethod.GET)
     @RolePermission(needPermission = PermissionType.USER)
-    public JsonEntity<ApprovalInfoBo> listApprovalsByGroup(@PathVariable(value = "groupId") Integer groupId){
-        costGroupApprovalService.
+    public JsonEntity<List<ApprovalInfoBo>> listApprovalsByGroup(@PathVariable(value = "groupId") Integer groupId){
+        return ResponseHelper.createInstance(costGroupApprovalService.listApprovalsByGroup(groupId));
+    }
+
+    @RequestMapping(value = "/approval/{groupId}/user/{userId}", method = RequestMethod.POST)
+    @RolePermission(needPermission = PermissionType.ADMIN)
+    public JsonEntity<String> approveUserRequest(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "userId") Integer userId){
+        costGroupApprovalService.approveUserRequest(groupId, userId);
+        return ResponseHelper.createInstance("success");
     }
 }

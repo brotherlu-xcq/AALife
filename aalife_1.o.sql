@@ -73,3 +73,66 @@ CREATE TABLE `cost_group_approval` (
   CONSTRAINT `cost_group_approval_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `cost_group_approval_ibfk_3` FOREIGN KEY (`approval_id`) REFERENCES `user` (`id`)
 ) ENGINE=INNODB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cost_user_remark`;
+CREATE TABLE `cost_user_remark` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `source_no` INT(11) NOT NULL,
+  `target_no` INT(11) NOT NULL,
+  `remark_name` VARCHAR(10) NOT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`,`source_no`,`target_no`),
+  KEY `source_no` (`source_no`),
+  KEY `target_no` (`target_no`),
+  CONSTRAINT `cost_user_remark_ibfk_1` FOREIGN KEY (`source_no`) REFERENCES `user` (`id`),
+  CONSTRAINT `cost_user_remark_ibfk_2` FOREIGN KEY (`target_no`) REFERENCES `user` (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cost_detail`;
+CREATE TABLE `cost_detail` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `cate_id` INT(11) NOT NULL,
+  `group_id` INT(11) NOT NULL,
+  `cost_money` DECIMAL(10,2) NOT NULL,
+  `cost_date` DATETIME NOT NULL,
+  `cost_desc` VARCHAR(100) DEFAULT NULL,
+  `clean_id` INT(11) DEFAULT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  `delete_id` INT(11) DEFAULT NULL,
+  `delete_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`,`user_id`),
+  KEY `user_id` (`user_id`),
+  KEY `cate_id` (`cate_id`),
+  KEY `group_id` (`group_id`),
+  KEY `clean_id` (`clean_id`),
+  CONSTRAINT `cost_detail_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `cost_detail_ibfk_2` FOREIGN KEY (`cate_id`) REFERENCES `cost_category` (`id`),
+  CONSTRAINT `cost_detail_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `cost_group` (`id`),
+  CONSTRAINT `cost_detail_ibfk_4` FOREIGN KEY (`clean_id`) REFERENCES `cost_clean` (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cost_clean`;
+CREATE TABLE `cost_clean` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `clean_date` DATETIME NOT NULL,
+  `user_id` INT(11) NOT NULL,
+  `comment` VARCHAR(50) NOT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `cost_clean_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cost_category`;
+CREATE TABLE `cost_category` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `cate_name` VARCHAR(10) NOT NULL,
+  `cate_icon` VARCHAR(50) NOT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;

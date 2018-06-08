@@ -2,6 +2,7 @@ package com.aalife.dao.repository;
 
 import com.aalife.dao.entity.CostGroupApproval;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,7 @@ public interface CostGroupApprovalRepository extends JpaRepository<CostGroupAppr
      * @param groupId
      * @return
      */
-    @Query("SELECT cga FROM CostGroupApproval cga WHERE cga.user.userId = :userId AND cga.costGroup.groupId = :groupId and cga.status = 0")
+    @Query("SELECT cga FROM CostGroupApproval cga WHERE cga.user.userId = :userId AND cga.costGroup.groupId = :groupId and cga.status = 0 AND cga.costGroup.deleteId IS NULL")
     CostGroupApproval findApprovalByUserAndGroup(@Param(value = "userId") Integer userId, @Param(value = "groupId") Integer groupId);
 
     /**
@@ -28,6 +29,15 @@ public interface CostGroupApprovalRepository extends JpaRepository<CostGroupAppr
      * @param groupId
      * @return
      */
-    @Query("SELECT cga FROM CostGroupApproval cga WHERE cga.costGroup.groupId = :groupId")
+    @Query("SELECT cga FROM CostGroupApproval cga WHERE cga.costGroup.groupId = :groupId AND cga.costGroup.deleteId IS NULL")
     List<CostGroupApproval> findApprovalsByGroup(@Param(value = "groupId") Integer groupId);
+
+    /**
+     * 同意通过用户
+     * @param groupId
+     * @param userId
+     */
+    @Modifying
+    @Query("UPDATE CostGroupApproval cga SET cga.status = 1 WHERE cga.costGroup.groupId = :groupId AND cga.user.userId = :userId")
+    void approveUserRequest(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer userId);
 }

@@ -8,7 +8,7 @@ public class ApprovalInfoBo {
     private Integer approvalId;
     private String comment;
     private ExtendUserBo user;
-    private CostGroupBo costGroupBo;
+    private CostGroupBo costGroup;
     private String status;
 
     public Integer getApprovalId() {
@@ -35,12 +35,12 @@ public class ApprovalInfoBo {
         this.user = user;
     }
 
-    public CostGroupBo getCostGroupBo() {
-        return costGroupBo;
+    public CostGroupBo getCostGroup() {
+        return costGroup;
     }
 
-    public void setCostGroupBo(CostGroupBo costGroupBo) {
-        this.costGroupBo = costGroupBo;
+    public void setCostGroup(CostGroupBo costGroup) {
+        this.costGroup = costGroup;
     }
 
     public String getStatus() {

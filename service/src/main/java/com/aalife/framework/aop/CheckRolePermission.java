@@ -8,7 +8,9 @@ import com.aalife.framework.annotation.RolePermission;
 import com.aalife.framework.constant.PermissionType;
 import com.aalife.service.WebContext;
 import org.apache.shiro.authz.UnauthorizedException;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +28,13 @@ public class CheckRolePermission {
     @Autowired
     private CostGroupUserRepository costGroupUserRepository;
 
+    /**
+     * aop拦截查看，是否当前用户有对应得角色
+     * @param joinPoint
+     * @param rolePermission
+     */
     @Before(value = "@annotation(rolePermission)")
-    public void checkRole(ProceedingJoinPoint joinPoint, RolePermission rolePermission){
+    public void checkRole(JoinPoint joinPoint, RolePermission rolePermission){
         User user = webContext.getCurrentUser();
         PermissionType permissionType = rolePermission.needPermission();
         Object[] objects = joinPoint.getArgs();
