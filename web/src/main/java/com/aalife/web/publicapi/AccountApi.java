@@ -25,8 +25,8 @@ public class AccountApi {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public JsonEntity<String> login(@RequestBody WxUserBo wxUser, HttpServletRequest session){
+    public JsonEntity<String> login(@RequestBody WxUserBo wxUser, HttpServletRequest request){
         userService.login(wxUser);
-        return ResponseHelper.createInstance(session.getSession().getId());
+        return ResponseHelper.createInstance(request.getSession().getId());
     }
 }
