@@ -1,15 +1,16 @@
 package com.aalife.web.publicapi;
 
 import com.aalife.bo.LoginBo;
+import com.aalife.bo.WxUserBo;
 import com.aalife.service.UserService;
 import com.aalife.web.util.JsonEntity;
 import com.aalife.web.util.ResponseHelper;
 import io.swagger.annotations.Api;
+import org.apache.shiro.web.session.HttpServletSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -24,8 +25,8 @@ public class AccountApi {
     private UserService userService;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public JsonEntity<String> login(@RequestBody String wxCode){
-        userService.login(wxCode);
-        return ResponseHelper.createInstance("success");
+    public JsonEntity<String> login(@RequestBody WxUserBo wxUser, HttpServletRequest session){
+        userService.login(wxUser);
+        return ResponseHelper.createInstance(session.getSession().getId());
     }
 }

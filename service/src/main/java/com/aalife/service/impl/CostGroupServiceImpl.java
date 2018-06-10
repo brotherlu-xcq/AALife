@@ -150,6 +150,7 @@ public class CostGroupServiceImpl implements CostGroupService {
         //设置用户信息
         List<CostGroupUserBo> costGroupUserBos = new ArrayList<>();
         List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
+        BigDecimal groupTotalCost = new BigDecimal(0);
         for (CostGroupUser costGroupUserTemp : costGroupUsers){
             CostGroupUserBo costGroupUserBo = new CostGroupUserBo();
             Integer targetUserId = costGroupUserTemp.getUser().getUserId();
@@ -168,8 +169,19 @@ public class CostGroupServiceImpl implements CostGroupService {
             costGroupUserBo.setAdmin(targetUser.getAdmin());
             // 设置消费状况
             BigDecimal totalCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, targetUserId);
-            costGroupUserBo.setTotalCost(totalCost == null ? new BigDecimal(0) : totalCost);
+            totalCost = totalCost == null ? new BigDecimal(0) : totalCost;
+            groupTotalCost = groupTotalCost.add(totalCost);
+            costGroupUserBo.setTotalCost(totalCost);
             costGroupUserBos.add(costGroupUserBo);
+        }
+        costGroupOverviewBo.setGroupTotalCost(groupTotalCost);
+        // 设置消费平均消费和差价
+        BigDecimal userCount = new BigDecimal(costGroupUserBos.size());
+        BigDecimal averageCost = groupTotalCost.divide(userCount);
+        for (CostGroupUserBo costGroupBoTemp : costGroupUserBos){
+            BigDecimal costMoney = costGroupBoTemp.getTotalCost();
+            costGroupBoTemp.setAverageCost(averageCost);
+            costGroupBoTemp.setLeftCost(averageCost.subtract(costMoney));
         }
         costGroupOverviewBo.setCostUsers(costGroupUserBos);
         return costGroupOverviewBo;

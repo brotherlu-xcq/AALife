@@ -18,5 +18,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      * @return
      */
     @Query("SELECT u from User u where u.wxOpenId = :loginKey")
-    User findUserWithOpenId(@Param(value = "loginKey")String openId);
+    User findUserWithOpenId(@Param(value = "loginKey")String loginKey);
 }

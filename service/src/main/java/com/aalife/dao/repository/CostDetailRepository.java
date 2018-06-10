@@ -30,6 +30,6 @@ public interface CostDetailRepository extends JpaRepository<CostDetail, Integer>
      * @param targetUserId
      * @return
      */
-    @Query(value = "SELECT count(cost_money) FROM cost_detail WHERE group_id = :groupId AND user_id= :userId AND clean_id IS NULL AND delete_id is NULL", nativeQuery = true)
+    @Query(value = "SELECT SUM(cost_money) FROM cost_detail WHERE group_id = :groupId AND user_id= :userId AND clean_id IS NULL AND delete_id is NULL", nativeQuery = true)
     BigDecimal findUnCleanTotalCostByUserAndGroup(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer targetUserId);
 }

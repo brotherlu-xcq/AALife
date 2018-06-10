@@ -124,13 +124,14 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
         if (user == null){
             throw new BizException("未查询到用户");
         }
-        costGroupApprovalRepository.approveUserRequest(groupId, userId);
+        User currentUser = webContext.getCurrentUser();
+        // 通过审批并且填写审批人信息
+        costGroupApprovalRepository.approveUserRequest(groupId, userId, currentUser);
         CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(userId, groupId);
         if (costGroupUser != null){
             return;
         }
         // 创建新的记录
-        User currentUser = webContext.getCurrentUser();
         CostGroup costGroup = costGroupRepository.findOne(groupId);
         costGroupUser = new CostGroupUser();
         costGroupUser.setAdmin('N');

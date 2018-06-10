@@ -1,6 +1,7 @@
 package com.aalife.dao.repository;
 
 import com.aalife.dao.entity.CostGroupApproval;
+import com.aalife.dao.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -38,6 +39,6 @@ public interface CostGroupApprovalRepository extends JpaRepository<CostGroupAppr
      * @param userId
      */
     @Modifying
-    @Query("UPDATE CostGroupApproval cga SET cga.status = 1 WHERE cga.costGroup.groupId = :groupId AND cga.user.userId = :userId")
-    void approveUserRequest(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer userId);
+    @Query("UPDATE CostGroupApproval cga SET cga.status = 1, cga.approvalUser = :approvalUser, cga.approvalDate = now() WHERE cga.costGroup.groupId = :groupId AND cga.user.userId = :userId")
+    void approveUserRequest(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer userId, @Param(value = "approvalUser") User approvalUser);
 }

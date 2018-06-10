@@ -1,5 +1,6 @@
 package com.aalife.bo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -9,6 +10,7 @@ import java.util.List;
 public class CostGroupOverviewBo {
     private CostGroupBo costGroup;
     private List<CostGroupUserBo> costUsers;
+    private BigDecimal groupTotalCost;
     /**
      * 当前用户的角色，用户展示菜单
      */
@@ -36,5 +38,13 @@ public class CostGroupOverviewBo {
 
     public void setMyRole(String myRole) {
         this.myRole = myRole;
+    }
+
+    public BigDecimal getGroupTotalCost() {
+        return groupTotalCost;
+    }
+
+    public void setGroupTotalCost(BigDecimal groupTotalCost) {
+        this.groupTotalCost = groupTotalCost;
     }
 }
