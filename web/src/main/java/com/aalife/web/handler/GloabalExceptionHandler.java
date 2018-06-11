@@ -1,6 +1,7 @@
 package com.aalife.web.handler;
 
 import com.aalife.web.util.JsonEntity;
+import org.apache.log4j.Logger;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.UnauthenticatedException;
@@ -23,10 +24,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 @RestControllerAdvice
 public class GloabalExceptionHandler {
+    private static Logger logger = Logger.getLogger(GloabalExceptionHandler.class);
 
     @ExceptionHandler(ShiroException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public JsonEntity handle401(ShiroException e){
+        logger.error(e);
         return new JsonEntity(null, 401, e.getMessage());
     }
 
@@ -39,6 +42,7 @@ public class GloabalExceptionHandler {
     @ExceptionHandler(UnauthenticatedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public JsonEntity handle401(UnauthenticatedException e){
+        logger.error(e);
         return new JsonEntity(null, 401, "未登录");
     }
 
@@ -57,6 +61,7 @@ public class GloabalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public JsonEntity globalException(Exception e, HttpServletRequest request){
+        logger.error(e);
         return new JsonEntity(null, getStatus(request).value(), e.getMessage());
     }
 

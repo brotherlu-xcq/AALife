@@ -41,4 +41,12 @@ public interface CostGroupApprovalRepository extends JpaRepository<CostGroupAppr
     @Modifying
     @Query("UPDATE CostGroupApproval cga SET cga.status = 1, cga.approvalUser = :approvalUser, cga.approvalDate = now() WHERE cga.costGroup.groupId = :groupId AND cga.user.userId = :userId")
     void approveUserRequest(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer userId, @Param(value = "approvalUser") User approvalUser);
+
+    /**
+     * 获取为处理的申请的数目
+     * @param groupId
+     * @return
+     */
+    @Query(value = "select count(id) from cost_group_approval where group_id = :groupId and status = 0", nativeQuery = true)
+    Integer getNotApproveUserCount(@Param(value = "groupId")Integer groupId);
 }

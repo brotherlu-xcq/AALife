@@ -15,7 +15,7 @@ public class WxUtil {
     private WxUtil(){}
     private static Logger logger = Logger.getLogger(WxUtil.class);
 
-    public static User getWXUserInfo(WxUserBo wxUser){
+    public static User getWXUserInfo(WxUserBo wxUser) throws Exception {
         final String APPID ="wx9c7abce098df46e1";
         final String SECRET = "9fcee84ff426e4a939833a87e56c32e9";
         final String JSCODE = wxUser.getWxCode();

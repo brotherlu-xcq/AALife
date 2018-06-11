@@ -20,7 +20,7 @@ public interface CostGroupUserRepository extends JpaRepository<CostGroupUser, In
      * @param userId
      * @return
      */
-    @Query("SELECT cgu FROM CostGroupUser cgu where cgu.user.userId = :userId AND cgu.deleteId IS NULL")
+    @Query("SELECT cgu FROM CostGroupUser cgu where cgu.user.userId = :userId AND cgu.deleteId IS NULL AND cgu.costGroup.deleteId IS NULL")
     List<CostGroupUser> findCostGroupUserByUser(@Param(value = "userId")Integer userId);
 
     /**
@@ -29,7 +29,7 @@ public interface CostGroupUserRepository extends JpaRepository<CostGroupUser, In
      * @param groupId
      * @return
      */
-    @Query("SELECT cgu FROM CostGroupUser cgu WHERE cgu.user.userId = :userId AND cgu.costGroup.groupId = :groupId AND cgu.deleteId IS NULL")
+    @Query("SELECT cgu FROM CostGroupUser cgu WHERE cgu.user.userId = :userId AND cgu.costGroup.groupId = :groupId AND cgu.deleteId IS NULL AND cgu.costGroup.deleteId IS NULL")
     CostGroupUser findCostGroupByUserAndGroup(@Param(value = "userId") Integer userId, @Param(value = "groupId") Integer groupId);
 
     /**
@@ -37,7 +37,7 @@ public interface CostGroupUserRepository extends JpaRepository<CostGroupUser, In
      * @param groupId
      * @return
      */
-    @Query("SELECT cgu FROM CostGroupUser cgu WHERE cgu.costGroup.groupId = :groupId AND cgu.deleteId IS NULL")
+    @Query("SELECT cgu FROM CostGroupUser cgu WHERE cgu.costGroup.groupId = :groupId AND cgu.deleteId IS NULL AND cgu.costGroup.deleteId IS NULL")
     List<CostGroupUser> findCostGroupByGroup(@Param(value = "groupId") Integer groupId);
 
     /**
@@ -55,8 +55,9 @@ public interface CostGroupUserRepository extends JpaRepository<CostGroupUser, In
      * @param groupId
      * @param userId
      */
+    @Modifying
     @Query("UPDATE CostGroupUser cgu SET cgu.admin = 'Y' WHERE cgu.costGroup.groupId = :groupId AND cgu.user.userId = :userId")
-    void assignCostGroupAdmin(Integer groupId, Integer userId);
+    void assignCostGroupAdmin(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer userId);
 
     /**
      * 删除所有账单的用户

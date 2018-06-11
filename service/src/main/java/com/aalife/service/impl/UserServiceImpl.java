@@ -34,7 +34,13 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isEmpty(wxUser.getWxCode())){
             throw new AuthenticationException("登陆失败");
         }
-        User wxUserInfo = WxUtil.getWXUserInfo(wxUser);
+        User wxUserInfo;
+        try {
+            wxUserInfo = WxUtil.getWXUserInfo(wxUser);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BizException("登录失败，错误原因 "+e.getMessage());
+        }
         String wxOpenId = wxUserInfo.getWxOpenId();
         // 查询没有该用户则添加一条记录
         User user = userRepository.findUserWithOpenId(wxOpenId);
@@ -54,5 +60,11 @@ public class UserServiceImpl implements UserService {
         } catch (AuthenticationException e){
             throw new AuthenticationException(e.getMessage());
         }
+    }
+
+    @Override
+    public void DEVLogin(WxUserBo wxUser) {
+        UsernamePasswordToken token = new UsernamePasswordToken(wxUser.getWxCode(), (String)null);
+        SecurityUtils.getSubject().login(token);
     }
 }

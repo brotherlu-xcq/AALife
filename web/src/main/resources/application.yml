@@ -1,3 +1,6 @@
+aalife:
+  env: DEV
+
 swagger:
   enable: true
   title: AA Life

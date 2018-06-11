@@ -33,10 +33,16 @@ public class HttpUtil {
     private HttpUtil(){}
     private static Logger logger = Logger.getLogger(HttpUtil.class);
 
-    public static String doGet(String url) {
+    /**
+     * 通用get请求
+     * @param url
+     * @return
+     * @throws IOException
+     */
+    public static String doGet(String url){
         try {
             HttpClient client = new DefaultHttpClient();
-            //发送get请求  
+            //发送get请求
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
 
@@ -47,11 +53,9 @@ public class HttpUtil {
 
                 return strResult;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e){
             e.printStackTrace();
         }
-
         return null;
     }
 

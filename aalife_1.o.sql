@@ -9,7 +9,7 @@ CREATE TABLE `user` (
   `nick_name` varchar(50) DEFAULT NULL,
   `entry_id` int(11) NOT NULL,
   `entry_date` datetime NOT NULL,
-  `avatar_url` varchar(100) DEFAULT NULL,
+  `avatar_url` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userI1` (`wx_openid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
@@ -117,7 +117,6 @@ CREATE TABLE `cost_detail` (
 DROP TABLE IF EXISTS `cost_clean`;
 CREATE TABLE `cost_clean` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `clean_date` DATETIME NOT NULL,
   `user_id` INT(11) NOT NULL,
   `comment` VARCHAR(50) NOT NULL,
   `entry_id` INT(11) NOT NULL,

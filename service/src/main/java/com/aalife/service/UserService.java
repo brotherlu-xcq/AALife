@@ -15,5 +15,11 @@ public interface UserService {
      * @param wxUser
      */
     void login(WxUserBo wxUser);
+
+    /**
+     * DEV Login
+     * @param wxUser
+     */
+    void DEVLogin(WxUserBo wxUser);
 //    User createNewUser();
 }

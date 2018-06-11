@@ -1,6 +1,12 @@
 package com.aalife.service;
 
+import com.aalife.bo.BaseQueryBo;
+import com.aalife.bo.BaseQueryResultBo;
+import com.aalife.bo.CostDetailBo;
 import com.aalife.bo.NewCostDetailBo;
+import com.aalife.bo.WxQueryBo;
+
+import java.util.List;
 
 /**
  * @author mosesc
@@ -19,4 +25,17 @@ public interface CostDetailService {
      * @param comment
      */
     void cleanCostDetail(Integer groupId, String comment);
+
+    /**
+     * 查询账单中为结算的记录
+     * @param wxQueryBo
+     * @return
+     */
+    BaseQueryResultBo<CostDetailBo> listUncleanCostDetailByGroup(WxQueryBo wxQueryBo);
+
+    /**
+     * 删除消费记录
+     * @param costId
+     */
+    void deleteCostDetail(Integer costId);
 }

@@ -21,6 +21,8 @@ public class CostDetailBo {
 
     private CostCleanBo costClean;
 
+    private Integer costId;
+
     public UserBo getUser() {
         return user;
     }
@@ -59,5 +61,29 @@ public class CostDetailBo {
 
     public void setCostCategory(CostCategoryBo costCategory) {
         this.costCategory = costCategory;
+    }
+
+    public String getCostDate() {
+        return costDate;
+    }
+
+    public void setCostDate(String costDate) {
+        this.costDate = costDate;
+    }
+
+    public CostCleanBo getCostClean() {
+        return costClean;
+    }
+
+    public void setCostClean(CostCleanBo costClean) {
+        this.costClean = costClean;
+    }
+
+    public Integer getCostId() {
+        return costId;
+    }
+
+    public void setCostId(Integer costId) {
+        this.costId = costId;
     }
 }
