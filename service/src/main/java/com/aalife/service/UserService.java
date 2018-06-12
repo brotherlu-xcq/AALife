@@ -1,8 +1,9 @@
 package com.aalife.service;
 
-import com.aalife.bo.LoginBo;
+import com.aalife.bo.UserOverviewBo;
 import com.aalife.bo.WxUserBo;
-import com.aalife.dao.entity.User;
+
+import java.util.Map;
 
 /**
  * 用户登录类
@@ -22,4 +23,9 @@ public interface UserService {
      */
     void DEVLogin(WxUserBo wxUser);
 //    User createNewUser();
+    /**
+     * 获取用户的信息概括
+     * @return
+     */
+    UserOverviewBo getUserOverview();
 }

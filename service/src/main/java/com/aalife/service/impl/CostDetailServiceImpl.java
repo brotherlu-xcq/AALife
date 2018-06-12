@@ -7,19 +7,20 @@ import com.aalife.bo.CostDetailBo;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.ExtendUserBo;
 import com.aalife.bo.NewCostDetailBo;
-import com.aalife.bo.UserBo;
 import com.aalife.bo.WxQueryBo;
 import com.aalife.bo.WxQueryCriteriaBo;
 import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.entity.CostClean;
 import com.aalife.dao.entity.CostDetail;
 import com.aalife.dao.entity.CostGroup;
+import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.CostUserRemark;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.CostCategoryRepository;
 import com.aalife.dao.repository.CostCleanRepository;
 import com.aalife.dao.repository.CostDetailRepository;
 import com.aalife.dao.repository.CostGroupRepository;
+import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.CostUserRemarkRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.CostDetailService;
@@ -32,7 +33,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,6 +40,7 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,6 +65,8 @@ public class CostDetailServiceImpl implements CostDetailService {
     private CostCleanRepository costCleanRepository;
     @Autowired
     private CostUserRemarkRepository costUserRemarkRepository;
+    @Autowired
+    private CostGroupUserRepository costGroupUserRepository;
     @Autowired
     private WebContext webContext;
 

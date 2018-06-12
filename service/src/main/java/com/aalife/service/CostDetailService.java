@@ -1,12 +1,11 @@
 package com.aalife.service;
 
-import com.aalife.bo.BaseQueryBo;
 import com.aalife.bo.BaseQueryResultBo;
 import com.aalife.bo.CostDetailBo;
 import com.aalife.bo.NewCostDetailBo;
 import com.aalife.bo.WxQueryBo;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author mosesc

@@ -1,7 +1,10 @@
 package com.aalife.web.publicapi;
 
 import com.aalife.bo.UserBo;
+import com.aalife.bo.UserOverviewBo;
 import com.aalife.dao.entity.User;
+import com.aalife.service.CostDetailService;
+import com.aalife.service.UserService;
 import com.aalife.service.WebContext;
 import com.aalife.web.util.JsonEntity;
 import com.aalife.web.util.ResponseHelper;
@@ -11,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * @auther brother lu
@@ -22,14 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiresAuthentication
 public class UserApi {
     @Autowired
-    private WebContext webContext;
+    private UserService userService;
 
     @RequestMapping(value = "/current", method = RequestMethod.GET)
-    public JsonEntity<UserBo> getCurrentUser(){
-        UserBo userBo = new UserBo();
-        User user = webContext.getCurrentUser();
-        userBo.setNickName(user.getNickName());
-        userBo.setAvatarUrl(user.getAvatarUrl());
-        return ResponseHelper.createInstance(userBo);
+    public JsonEntity<UserOverviewBo> getCurrentUser(){
+        return ResponseHelper.createInstance(userService.getUserOverview());
     }
 }

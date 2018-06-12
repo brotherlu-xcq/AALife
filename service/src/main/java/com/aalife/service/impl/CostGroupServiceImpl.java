@@ -113,7 +113,12 @@ public class CostGroupServiceImpl implements CostGroupService {
     public void deleteCostGroup(Integer groupId) {
         User user = webContext.getCurrentUser();
         Integer userId = user.getUserId();
-        // todo 需要加入删除前的判断
+        // 检查账单消费记录是否都结算
+        BigDecimal groupTotalCost = costDetailRepository.findUnCleanTotalCostByGroup(groupId);
+        if (groupTotalCost != null){
+            throw new BizException("删除账单前请先结算所有消费");
+        }
+        // 删除账单
         costGroupRepository.deleteCostGroup(groupId, userId);
         // 删除所有的成员
         costGroupUserRepository.deleteCostGroupUserByGroupId(groupId, userId);
@@ -123,7 +128,6 @@ public class CostGroupServiceImpl implements CostGroupService {
     public void leaveCostGroup(Integer groupId) {
         User user = webContext.getCurrentUser();
         Integer userId = user.getUserId();
-        // todo 推出前需要判断，所有消费记录必须结算，必须要有管理员
         // 校验是否有管理员，除了当前用户
         List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
         boolean hasAnotherAdmin = false;
@@ -134,11 +138,11 @@ public class CostGroupServiceImpl implements CostGroupService {
             }
         }
         if (!hasAnotherAdmin){
-            throw new BizException("退出该账单前需指定新的管理员");
+            throw new BizException("退出该账单前需指定新的管理员或直接删除该账单");
         }
         // 校验该用户的账单是否已经结算
         BigDecimal groupCost = costDetailRepository.findUnCleanTotalCostByGroup(groupId);
-        if (groupCost != null || groupCost.intValue() != 0){
+        if (groupCost != null){
             throw new BizException("所在分组未结算，请先结算后再退出或联系账单管理员删除");
         }
         costGroupUserRepository.deleteCostGroupUser(userId, groupId, userId);
@@ -156,7 +160,7 @@ public class CostGroupServiceImpl implements CostGroupService {
         if (userId.equals(deleteId)){
             throw new BizException("不能删除自己，可以选择退出操作或联系另一管理员");
         }
-        // todo 推出前需要判断，所有消费记录必须结算，必须要有管理员
+        // 删除用户前需结算该用户的消费记录
         BigDecimal userCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, userId);
         if (userCost != null && userCost.intValue() != 0){
             throw new BizException("该用户有未结算的记录");

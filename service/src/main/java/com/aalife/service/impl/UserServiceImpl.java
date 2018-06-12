@@ -1,13 +1,16 @@
 package com.aalife.service.impl;
 
-import ch.qos.logback.core.net.SyslogConstants;
-import com.aalife.bo.LoginBo;
+import com.aalife.bo.UserOverviewBo;
 import com.aalife.bo.WxUserBo;
 import com.aalife.constant.SystemConstant;
+import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.User;
+import com.aalife.dao.repository.CostDetailRepository;
+import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.UserService;
+import com.aalife.service.WebContext;
 import com.aalife.utils.WxUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -16,7 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -28,6 +35,12 @@ import java.util.Date;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private WebContext webContext;
+    @Autowired
+    private CostGroupUserRepository costGroupUserRepository;
+    @Autowired
+    private CostDetailRepository costDetailRepository;
 
     @Override
     public void login(WxUserBo wxUser) {
@@ -55,16 +68,46 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         UsernamePasswordToken token = new UsernamePasswordToken(wxOpenId, (String)null);
-        try{
-            SecurityUtils.getSubject().login(token);
-        } catch (AuthenticationException e){
-            throw new AuthenticationException(e.getMessage());
-        }
+        SecurityUtils.getSubject().login(token);
     }
 
     @Override
     public void DEVLogin(WxUserBo wxUser) {
         UsernamePasswordToken token = new UsernamePasswordToken(wxUser.getWxCode(), (String)null);
         SecurityUtils.getSubject().login(token);
+    }
+
+    @Override
+    public UserOverviewBo getUserOverview() {
+        UserOverviewBo userOverviewBo = new UserOverviewBo();
+        User user = webContext.getCurrentUser();
+        Integer userId = user.getUserId();
+        // 设置用户基本信息
+        userOverviewBo.setAvatarUrl(user.getAvatarUrl());
+        userOverviewBo.setNickName(user.getNickName());
+        // 获取用户总消费
+        List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupUserByUser(userId);
+        if (costGroupUsers == null || costGroupUsers.size() == 0){
+            userOverviewBo.setLeftCost(new BigDecimal(0));
+            userOverviewBo.setTotalCost(new BigDecimal(0));
+            return userOverviewBo;
+        }
+        BigDecimal totalCost = new BigDecimal(0);
+        BigDecimal leftCost = new BigDecimal(0);
+        for (CostGroupUser costGroupUser : costGroupUsers){
+            // 计算总消费
+            Integer groupId = costGroupUser.getCostGroup().getGroupId();
+            BigDecimal groupCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, userId);
+            groupCost = groupCost == null ? new BigDecimal(0) : groupCost;
+            totalCost = totalCost.add(groupCost);
+            // 计算平均消费
+            List<CostGroupUser> costGroupUsersCount = costGroupUserRepository.findCostGroupByGroup(groupId);
+            BigDecimal count = new BigDecimal(costGroupUsersCount.size());
+            BigDecimal groupAverageCost = groupCost.divide(count, 2);
+            leftCost = leftCost.add(groupAverageCost.subtract(groupCost));
+        }
+        userOverviewBo.setLeftCost(leftCost);
+        userOverviewBo.setTotalCost(totalCost);
+        return userOverviewBo;
     }
 }

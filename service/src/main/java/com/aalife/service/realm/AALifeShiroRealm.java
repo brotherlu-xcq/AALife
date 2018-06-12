@@ -1,10 +1,8 @@
 package com.aalife.service.realm;
 
-import com.aalife.bo.LoginBo;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.UserRepository;
 import com.aalife.service.UserLoginService;
-import com.aalife.service.UserService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
