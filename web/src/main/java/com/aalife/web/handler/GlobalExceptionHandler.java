@@ -3,19 +3,14 @@ package com.aalife.web.handler;
 import com.aalife.web.util.JsonEntity;
 import org.apache.log4j.Logger;
 import org.apache.shiro.ShiroException;
-import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.NoHandlerFoundException;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 捕获全局异常
@@ -23,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
  * @date 2018-06-04
  */
 @RestControllerAdvice
-public class GloabalExceptionHandler {
-    private static Logger logger = Logger.getLogger(GloabalExceptionHandler.class);
+public class GlobalExceptionHandler {
+    private static Logger logger = Logger.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ShiroException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

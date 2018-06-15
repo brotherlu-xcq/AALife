@@ -53,7 +53,7 @@ import java.util.Map;
  * @date 2018-06-08
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class CostDetailServiceImpl implements CostDetailService {
     @Autowired
     private CostDetailRepository costDetailRepository;
