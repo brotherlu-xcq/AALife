@@ -96,6 +96,11 @@ public class CostGroupApi {
         return ResponseHelper.createInstance(costGroupService.listCostGroupOverview(groupId));
     }
 
+    @RequestMapping(value = "/costGroup/mine/overview", method = RequestMethod.GET)
+    public JsonEntity<List<CostGroupOverviewBo>> listMyGroupOverview(){
+        return ResponseHelper.createInstance(costGroupService.listCostGroupOverview());
+    }
+
     @RequestMapping(value = "/costGroup/listMine", method = RequestMethod.GET)
     public JsonEntity<List<CostGroupBo>> listMyCostGroups(){
         return ResponseHelper.createInstance(costGroupService.listMyGroups());

@@ -232,6 +232,23 @@ public class CostGroupServiceImpl implements CostGroupService {
     }
 
     @Override
+    public List<CostGroupOverviewBo> listCostGroupOverview() {
+        User user = webContext.getCurrentUser();
+        Integer userId = user.getUserId();
+        List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupUserByUser(userId);
+        List<CostGroupOverviewBo> costGroupOverviewBos = new ArrayList<>();
+        if (costGroupUsers == null || costGroupUsers.size() == 0){
+            return costGroupOverviewBos;
+        }
+        for (CostGroupUser costGroupUser : costGroupUsers){
+            Integer groupId = costGroupUser.getCostGroup().getGroupId();
+            CostGroupOverviewBo costGroupOverviewBo = listCostGroupOverview(groupId);
+            costGroupOverviewBos.add(costGroupOverviewBo);
+        }
+        return costGroupOverviewBos;
+    }
+
+    @Override
     public List<CostGroupBo> listMyGroups() {
         User currentUser = webContext.getCurrentUser();
         List<CostGroupUser> costGroups = costGroupUserRepository.findCostGroupUserByUser(currentUser.getUserId());

@@ -67,6 +67,12 @@ public interface CostGroupService {
     CostGroupOverviewBo listCostGroupOverview(Integer groupId);
 
     /**
+     * List my cost group overview
+     * @return
+     */
+    List<CostGroupOverviewBo> listCostGroupOverview();
+
+    /**
      * 查询当前用户所在的组
      * @return
      */
