@@ -35,7 +35,7 @@ public class WxUtil {
             user.setAvatarUrl(userInfo.getString("avatarUrl"));
             return user;
         } catch (Exception e){
-            e.printStackTrace();
+            logger.error(e);
             throw new BizException("解析用户信息出错");
         }
     }

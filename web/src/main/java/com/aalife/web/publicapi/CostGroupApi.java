@@ -2,6 +2,7 @@ package com.aalife.web.publicapi;
 
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
+import com.aalife.bo.CostGroupUserBo;
 import com.aalife.framework.annotation.RolePermission;
 import com.aalife.framework.constant.PermissionType;
 import com.aalife.service.CostGroupService;
@@ -104,5 +105,11 @@ public class CostGroupApi {
     @RequestMapping(value = "/costGroup/listMine", method = RequestMethod.GET)
     public JsonEntity<List<CostGroupBo>> listMyCostGroups(){
         return ResponseHelper.createInstance(costGroupService.listMyGroups());
+    }
+
+    @RequestMapping(value = "/costGroup/{groupId}/user/{userId}", method = RequestMethod.GET)
+    @RolePermission(needPermission = PermissionType.USER)
+    public JsonEntity<CostGroupUserBo> findGroupUserById(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "userId") Integer userId){
+        return ResponseHelper.createInstance(costGroupService.findCostGroupUserById(groupId, userId));
     }
 }

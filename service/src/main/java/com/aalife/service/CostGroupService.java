@@ -2,6 +2,7 @@ package com.aalife.service;
 
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
+import com.aalife.bo.CostGroupUserBo;
 import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.User;
 
@@ -77,4 +78,12 @@ public interface CostGroupService {
      * @return
      */
     List<CostGroupBo> listMyGroups();
+
+    /**
+     * 根据用户Id查找对应组中的信息
+     * @param groupId
+     * @param userId
+     * @return
+     */
+    CostGroupUserBo findCostGroupUserById(Integer groupId, Integer userId);
 }

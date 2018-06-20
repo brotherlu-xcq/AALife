@@ -5,5 +5,5 @@ package com.aalife.framework.constant;
  * @date 2018-06-06
  */
 public enum PermissionType {
-    ADMIN, MANAGER, USER
+    ADMIN, USER
 }

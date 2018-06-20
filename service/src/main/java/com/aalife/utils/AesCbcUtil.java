@@ -33,8 +33,6 @@ public class AesCbcUtil {
      * @throws Exception
      */
     public static String decrypt(String data, String key, String iv, String encodingFormat) throws Exception {
-//    initialize();
-
         //被加密的数据
         byte[] dataByte = Base64.decodeBase64(data);
         //加密秘钥
@@ -48,8 +46,8 @@ public class AesCbcUtil {
 
         AlgorithmParameters parameters = AlgorithmParameters.getInstance("AES");
         parameters.init(new IvParameterSpec(ivByte));
-
-        cipher.init(Cipher.DECRYPT_MODE, spec, parameters);// 初始化
+        // 初始化
+        cipher.init(Cipher.DECRYPT_MODE, spec, parameters);
 
         byte[] resultByte = cipher.doFinal(dataByte);
         if (null != resultByte && resultByte.length > 0) {

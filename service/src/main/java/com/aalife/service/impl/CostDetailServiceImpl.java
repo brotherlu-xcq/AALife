@@ -175,7 +175,7 @@ public class CostDetailServiceImpl implements CostDetailService {
     }
 
     /**
-     * 用于分页使用的内部类
+     * 用于分页查询使用的内部类，主要为查询的条件
      */
     class CostDetailSpecification<CostDetail> implements Specification<CostDetail> {
         private BaseQueryBo baseQueryBo;

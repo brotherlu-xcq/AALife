@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `life_v2` /*!40100 DEFAULT CHARACTER SET utf8
-  COLLATE utf8_bin */;
+CREATE DATABASE IF NOT EXISTS `life_v2` /*!40100 DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_bin */;
 USE `life_v2`;
 
 DROP TABLE IF EXISTS `user`;
@@ -12,7 +12,7 @@ CREATE TABLE `user` (
   `avatar_url` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userI1` (`wx_openid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `user_login`;
@@ -24,7 +24,7 @@ CREATE TABLE `user_login` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_login_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group`;
 CREATE TABLE `cost_group` (
@@ -37,7 +37,7 @@ CREATE TABLE `cost_group` (
   `delete_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cost_groupI1` (`group_code`)
-) ENGINE=INNODB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group_user`;
 CREATE TABLE `cost_group_user` (
@@ -52,7 +52,7 @@ CREATE TABLE `cost_group_user` (
   KEY `group_id` (`group_id`),
   CONSTRAINT `cost_group_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `cost_group_user_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `cost_group` (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group_approval`;
 CREATE TABLE `cost_group_approval` (
@@ -72,7 +72,7 @@ CREATE TABLE `cost_group_approval` (
   CONSTRAINT `cost_group_approval_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `cost_group` (`id`),
   CONSTRAINT `cost_group_approval_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `cost_group_approval_ibfk_3` FOREIGN KEY (`approval_id`) REFERENCES `user` (`id`)
-) ENGINE=INNODB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_user_remark`;
 CREATE TABLE `cost_user_remark` (
@@ -87,7 +87,29 @@ CREATE TABLE `cost_user_remark` (
   KEY `target_no` (`target_no`),
   CONSTRAINT `cost_user_remark_ibfk_1` FOREIGN KEY (`source_no`) REFERENCES `user` (`id`),
   CONSTRAINT `cost_user_remark_ibfk_2` FOREIGN KEY (`target_no`) REFERENCES `user` (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `cost_clean`;
+CREATE TABLE `cost_clean` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `comment` VARCHAR(50) NOT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `cost_clean_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `cost_category`;
+CREATE TABLE `cost_category` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `cate_name` VARCHAR(10) NOT NULL,
+  `cate_icon` VARCHAR(50) NOT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_detail`;
 CREATE TABLE `cost_detail` (
@@ -112,26 +134,15 @@ CREATE TABLE `cost_detail` (
   CONSTRAINT `cost_detail_ibfk_2` FOREIGN KEY (`cate_id`) REFERENCES `cost_category` (`id`),
   CONSTRAINT `cost_detail_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `cost_group` (`id`),
   CONSTRAINT `cost_detail_ibfk_4` FOREIGN KEY (`clean_id`) REFERENCES `cost_clean` (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `cost_clean`;
-CREATE TABLE `cost_clean` (
+DROP TABLE IF EXISTS `app_config`;
+CREATE TABLE `app_config` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `user_id` INT(11) NOT NULL,
-  `comment` VARCHAR(50) NOT NULL,
+  `app_name` VARCHAR(20) NOT NULL,
+  `config_name` VARCHAR(50) NOT NULL,
+  `config_value` VARCHAR(100) DEFAULT NULL,
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `cost_clean_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `cost_category`;
-CREATE TABLE `cost_category` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `cate_name` VARCHAR(10) NOT NULL,
-  `cate_icon` VARCHAR(50) NOT NULL,
-  `entry_id` INT(11) NOT NULL,
-  `entry_date` DATETIME NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`,`app_name`,`config_name`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;

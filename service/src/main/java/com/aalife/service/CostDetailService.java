@@ -26,7 +26,7 @@ public interface CostDetailService {
     void cleanCostDetail(Integer groupId, String comment);
 
     /**
-     * 查询账单中为结算的记录
+     * 查询账单中为结算的记录，分页查询
      * @param wxQueryBo
      * @return
      */

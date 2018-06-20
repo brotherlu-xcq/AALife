@@ -19,6 +19,8 @@ server:
     key-store-password: 1529882054683
     keyAlisa: tomcat
     keyStoreType: PKCS12
+  session:
+    timeout: 3600
 
 spring:
   application: aalife
@@ -30,3 +32,6 @@ spring:
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL5Dialect
+    properties:
+      hibernate:
+        format_sql: true

@@ -12,6 +12,7 @@ import com.aalife.dao.repository.CostGroupApprovalRepository;
 import com.aalife.dao.repository.CostGroupRepository;
 import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.CostUserRemarkRepository;
+import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.framework.constant.PermissionType;
 import com.aalife.service.CostGroupService;
@@ -265,5 +266,27 @@ public class CostGroupServiceImpl implements CostGroupService {
             costGroupBos.add(costGroupBo);
         }
         return costGroupBos;
+    }
+
+    @Override
+    public CostGroupUserBo findCostGroupUserById(Integer groupId, Integer userId) {
+        User currentUser = webContext.getCurrentUser();
+        CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(userId, groupId);
+        if (costGroupUser == null){
+            throw new BizException("用户或账单不存在");
+        }
+        User targetUser = costGroupUser.getUser();
+        CostGroupUserBo costGroupUserBo = new CostGroupUserBo();
+        String nickName = targetUser.getNickName();
+        costGroupUserBo.setNickName(nickName);
+        costGroupUserBo.setAvatarUrl(targetUser.getAvatarUrl());
+        CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(currentUser.getUserId(), userId);
+        costGroupUserBo.setRemarkName(nickName);
+        if (costUserRemark != null){
+            costGroupUserBo.setRemarkName(costUserRemark.getRemarkName());
+        }
+
+        costGroupUserBo.setAdmin(costGroupUser.getAdmin());
+        return costGroupUserBo;
     }
 }

@@ -43,7 +43,6 @@ public class CheckRolePermission {
         if (costGroupUser == null){
             throw new UnauthorizedException();
         }
-
         if (permissionType == PermissionType.ADMIN && costGroupUser.getAdmin().equals('N')){
             throw new UnauthorizedException();
         }
