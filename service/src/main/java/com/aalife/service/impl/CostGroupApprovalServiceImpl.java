@@ -119,9 +119,9 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
 
     @Override
     public void approveUserRequest(Integer groupId, Integer userId) {
-        User user = userRepository.findOne(userId);
-        if (user == null){
-            throw new BizException("未查询到用户");
+        CostGroupApproval costGroupApproval = costGroupApprovalRepository.findApprovalByUserAndGroup(userId, groupId);
+        if (costGroupApproval == null){
+            throw new BizException("未查询到对应的申请记录");
         }
         User currentUser = webContext.getCurrentUser();
         // 通过审批并且填写审批人信息
@@ -134,7 +134,7 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
         CostGroup costGroup = costGroupRepository.findOne(groupId);
         costGroupUser = new CostGroupUser();
         costGroupUser.setAdmin('N');
-        costGroupUser.setUser(user);
+        costGroupUser.setUser(costGroupApproval.getUser());
         costGroupUser.setCostGroup(costGroup);
         costGroupUser.setEntryId(currentUser.getUserId());
         costGroupUser.setEntryDate(new Date());
