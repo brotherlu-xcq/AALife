@@ -98,7 +98,7 @@ public class CostGroupServiceImpl implements CostGroupService {
         if (costGroup == null){
             throw new BizException("未查询到对应得账单");
         }
-
+        // 如果该用户已经在该账单中则不返回查询结果，用于跳转
         CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(webContext.getCurrentUser().getUserId(), costGroup.getGroupId());
         if (costGroupUser != null){
             return null;
