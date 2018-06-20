@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ShiroException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public JsonEntity handle401(ShiroException e){
-        logger.error(e);
+        logger.error("Shiro 异常", e);
         return new JsonEntity(null, 401, e.getMessage());
     }
 
@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public JsonEntity globalException(Exception e, HttpServletRequest request){
-        logger.error(e);
+        logger.error("内部错误", e);
         return new JsonEntity(null, getStatus(request).value(), e.getMessage());
     }
 
