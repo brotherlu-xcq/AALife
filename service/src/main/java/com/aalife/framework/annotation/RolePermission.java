@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 用户校验用户在该账单中是否有对应权限，使用该注解的的方法的第一参数必须为账单编号
  * @author mosesc
  * @date 2018-06-06
  */
