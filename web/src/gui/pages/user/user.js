@@ -77,7 +77,7 @@ Page({
       return;
     }
     const body = {targetNo: this.data.userId, remarkName: ''};
-    util.request(api.REMARK_NAME, body, 'PUT').then(function()=>{
+    util.request(api.REMARK_NAME, body, 'PUT').then(function(){
       var user = that.data.user;
       user.remarkName = remarkName;
       that.setData({

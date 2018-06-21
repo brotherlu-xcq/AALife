@@ -41,6 +41,7 @@ CREATE TABLE `cost_group` (
 
 DROP TABLE IF EXISTS `cost_group_user`;
 CREATE TABLE `cost_group_user` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `group_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `admin` CHAR(1) NOT NULL DEFAULT 'N',
@@ -48,6 +49,7 @@ CREATE TABLE `cost_group_user` (
   `entry_date` DATETIME NOT NULL,
   `delete_id` INT(11) DEFAULT NULL,
   `delete_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `cost_group_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),

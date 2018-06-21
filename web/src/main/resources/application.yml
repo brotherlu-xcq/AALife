@@ -1,5 +1,5 @@
 aalife:
-  env: DEV
+  env: PROD
 
 swagger:
   enable: true
@@ -26,7 +26,7 @@ spring:
   application: aalife
   datasource:
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/life_v2?zeroDateTimeBehavior=convertToNull&verifyServerCertificate=false&useSSL=true&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://120.79.39.237:3306/life_v2?zeroDateTimeBehavior=convertToNull&verifyServerCertificate=false&useSSL=true&useUnicode=true&characterEncoding=utf-8
     username: root
     password: mysql
   jpa:
