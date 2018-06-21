@@ -1,0 +1,42 @@
+@import '../group/group.wxss';
+@import '../../font/cost/iconfont.wxss';
+
+/* .wx-select{
+  position:relative;
+  padding-left:15px;
+  padding-right:30px;
+  height:2.58823529em;
+  min-height:2.58823529em;
+  line-height:2.58823529em;
+  border-right:1rpx solid #d9d9d9;
+} */
+.cost-grids{
+  margin: 4px 8px;
+}
+.cost-grid{
+  position: relative;
+  width: 20%;
+  text-align: center;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+.cost-grid-select{
+  position: relative;
+  width: 20%;
+  text-align: center;
+  display: inline-block;
+  margin-bottom: 4px;
+  color: #09bb07
+}
+.cost-grid-title{
+  font-size: 14px;
+}
+
+.load-more-new{
+  width:65%;
+  margin:0 auto;
+  line-height:1.6em;
+  font-size:14px;
+  text-align:center;
+  height: 12px;
+}

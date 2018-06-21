@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="top-tip" wx:if="{{showTopTip}}">{{errorMsg}}</view>
+  <form bindsubmit="createNewGroup">
+    <view class="group">
+      <view class="group-input">
+        <view class="group-input-label">账单名称</view>
+        <input name="groupName" placeholder="输入名称长多不超过20" maxlength='20'></input>
+      </view>
+      <view class="group-button">
+        <button form-type="submit" type="primary" loading="{{loading}}">提交</button>
+      </view>
+    </view>
+  </form>
+</view>

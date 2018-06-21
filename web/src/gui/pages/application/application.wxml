@@ -1,0 +1,27 @@
+<view style="margin-top: 8px;">
+ <view wx:if="{{approvelUsers.length == 0}}" class="no-data">
+  <view>暂无数据</view>
+ </view>
+ <view wx:else>
+  <block wx:for="{{approvelUsers}}" wx:key="approvalId">
+    <view class="application-cell">
+    <view class="application-cell-header">
+      <image src="{{item.user.avatarUrl}}"></image>
+    </view>
+    <view class="application-cell-body">
+      <view>{{item.user.nickName}}</view>
+      <view class="application-cell-header-comment">{{item.comment}}</view>
+    </view>
+    <view wx:if="{{item.status == '未处理'}}">
+      <button size="mini" type="primary" id="{{item.user.userId}}" bindtap="approveJoin" loading="{{item.loading}}" wx:if="{{myRole == 'admin'}}">接受</button>
+      <view wx:else class="application-cell-header-comment">
+        待接受
+      </view>
+    </view>
+    <view wx:else class="application-cell-header-comment">
+      已接受
+    </view>
+    </view>
+  </block>
+ </view>
+</view>

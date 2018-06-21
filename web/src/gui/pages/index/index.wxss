@@ -1,0 +1,156 @@
+/**index.wxss**/
+@import '../application/application.wxss';
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  margin-top: 4px;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  font-size: 14px;
+  text-align: center;
+}
+.usermotto {
+  margin-top: 200px;
+}
+
+/** 用户头部信息样式 **/
+.user-header{
+  background-color: #fff;
+  margin: 10rpx 20rpx;
+}
+.user-header-content{
+  font-size: 12px;
+  height: 100rpx;
+}
+.header-content-cell{
+  width: 33%;
+  display: inline-block;
+  text-align: center;
+  line-height: 1.4;
+}
+.header-content-cell-center{
+  width: 33%;
+  display: inline-block;
+  text-align: center;
+  border-left: 1px solid #F8F8F8;
+  border-right: 1px solid #F8F8F8;
+  line-height: 1.4;
+}
+.header-content-cell-money{
+  font-size: 20px;
+  color: #576b95;
+  margin-right: 4px;
+}
+
+/** 用户消费者信息 **/
+.user-cost{
+  margin-top: 10rpx;
+  background-color: #fff;
+}
+.user-cost-title{
+  padding-left: 8px;
+  border-bottom: 1px solid #F8F8F8;
+  margin: 0px 16px;
+  padding: 8px 0;
+}
+.user-cost-title button::after{
+  border: none;
+}
+.user-cost-content{
+  position:relative;
+  line-height:1.41176471;
+  font-size:12px;
+  text-align: center;
+}
+.user-cost-content-cell{
+  margin: 8px 8px;
+  padding: 2px 8px;
+  position:relative;
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-box-align:center;
+  -webkit-align-items:center;
+  align-items:center;
+  border-bottom: 1px solid #F8F8F8;
+}
+.user-cost-content-cell-img{
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  float: left;
+
+}
+.user-cost-content-cell-info{
+  width: 80rpx; 
+  display: grid; 
+  margin-left: 4px;
+  font-size: 12px;
+  float: left;
+}
+.user-cost-content-cell-info-tag{
+  border: 1px solid #09bb07;
+  border-radius: 4px;
+  background-color: #09bb07;
+  color: #F8F8F8;
+}
+.user-cost-money{
+  width: 200rpx;
+  float: left;
+  font-size: 10px;
+}
+
+/** 底部更多信息 **/
+.user-cost-footer{
+  text-align: center;
+  background-color: #fff;
+  height: 100rpx;
+}
+.user-cost-footer-cell{
+  width: 32%;
+  float: left;
+  font-size: 12px;
+}
+.user-cost-footer-cell-center{
+  width: 33%;
+  float: left;
+  font-size: 12px;
+  border-left: 1px solid #F8F8F8;
+  border-right: 1px solid #F8F8F8;
+}
+.wx-badge{
+  display:inline-block;
+  padding:.15em .4em;
+  min-width:8px;
+  border-radius:18px;
+  background-color:#e64340;
+  color:#fff;
+  line-height:1.2;
+  text-align:center;
+  font-size:10px;
+  vertical-align:middle;
+}
+
+/** 底部添加按钮 **/
+.user-footer{
+  margin-top: 16px; 
+  margin: 0 8px; 
+  bottom: 0; 
+  position: fixed; 
+  align-items:center; 
+}
+.user-footer-add{
+  border-radius: 120px 120px 0 0;  
+  height: 50px; 
+  width: 80px; 
+  margin-left: 280rpx;
+  font-size: 22px;
+}

@@ -1,0 +1,105 @@
+<!--index.wxml-->
+<view class="page">
+  <!-- 头部个人信息内容 -->
+  <view class="user-header">
+      <view class="userinfo">
+          <view>
+            <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl ? userInfo.avatarUrl : ''}}" background-size="cover"></image>
+            <view class="userinfo-nickname">
+              <button wx:if="{{!hasUserInfo}}"  open-type="getUserInfo" bindgetuserinfo="getUserInfo" size="mini" style="line-height: 1.5; padding: 0 2px;">点击登录</button>
+              <view wx:else>{{userInfo.nickName}}</view>
+            </view>
+          </view>
+      </view>
+      <view class="user-header-content">
+        <view class="header-content-cell">
+          <view><text class="header-content-cell-money">{{userInfo.totalCost}}</text>元</view>
+          <view>未结算</view>
+        </view>
+        <view class="header-content-cell-center">
+          <view wx:if="{{userInfo.leftCost <= 0}}">收<text class="header-content-cell-money" style="margin-left:4px; color:#1AAD19;">{{-userInfo.leftCost}}</text>元</view>
+          <view wx:else>付<text class="header-content-cell-money" style="margin-left:4px; color:#576b95;">{{userInfo.leftCost}}</text>元</view>
+          <view>结算应</view>
+        </view>
+        <view class="header-content-cell">
+          <navigator>
+              <view class="header-content-cell-money">15</view>
+              <view>通知</view>
+          </navigator>
+        </view>
+      </view>
+  </view>
+  <!-- 用户消费组信息概括 -->
+  <view wx:if="{{costGroups.length == 0}}" class="no-data">
+    <view>暂无数据</view>
+  </view>
+  <view wx:else>
+    <block wx:for="{{costGroups}}" wx:for-item="costGroup" wx:key="index">
+      <view class="user-cost">
+        <!-- 头部 -->
+        <view class="user-cost-title">
+          <text>{{costGroup.costGroup.groupName}}({{costGroup.costUsers.length}})</text>
+          <button size="mini" style="float:right; background-color: #fff; height: 20px; width:40px; line-height: 1;" id="{{costGroup.costGroup.groupCode}}" open-type="share">
+            <view class="iconfont icon-share-square-o:before" style="font-size: 20px;"></view>
+          </button>
+        </view>
+
+        <block wx:for="{{costGroup.costUsers}}" wx:key="userId">
+        <view class="user-cost-content">
+          <view class="user-cost-content-cell">
+            <view style="width: 85rpx;">
+              <image class="user-cost-content-cell-img" src="{{item.avatarUrl}}"></image>
+            </view>
+            <view class="user-cost-content-cell-info">
+              <view>{{item.remarkName}}</view>
+              <view style="margin-top: 4px; font-size: 10px;" wx:if="{{item.admin == 'Y'}}">
+                <text class="user-cost-content-cell-info-tag">管理员</text>
+              </view>
+            </view>
+            <view class="user-cost-money" style="margin-left: 20rpx;">
+              <view><text style="font-size: 18px;margin-right: 4px;color: #576b95;">{{item.totalCost}}</text>元</view>
+              <view>累计消费</view>
+            </view>
+            <view class="user-cost-money">
+              <view>付<text style="font-size: 18px;margin-right: 4px;margin-left: 4px;color: #e64340;">{{item.leftCost}}</text>元</view>
+              <view>结算应</view>
+            </view>
+            <view style="width: 90rpx;">
+              <navigator url="/pages/user/user?groupId={{costGroup.costGroup.groupNo}}&userId={{item.userId}}&myRole={{costGroup.myRole}}" style="padding-top: 10px; padding-bottom: 10px;">
+                <text class="iconfont icon-setting:before"></text>
+              </navigator>
+            </view>
+          </view>
+          </view>
+        </block>
+      <!-- 尾部 -->
+      <view class="user-cost-footer">
+        <view class="user-cost-footer-cell">
+          <navigator>
+            <view class="iconfont icon-xiangqing:before weui-grid__icon" style="font-size: 18px;marign-bottom: 4px;"></view>
+            <view>消息详情</view>
+          </navigator>
+        </view>
+        <view class="user-cost-footer-cell-center">
+          <navigator url="/pages/application/application?groupId={{costGroup.costGroup.groupNo}}&myRole={{costGroup.myRole}}">
+              <text class="iconfont icon-moban:before weui-grid__icon" style="font-size: 20px;"></text>
+              <view>加入申请</view>
+          </navigator>
+        </view>
+        <view class="user-cost-footer-cell">
+          <navigator bindtap="openMore" id="{{costGroup.costGroup.groupNo}}">
+            <view class="iconfont icon-msnui-more:before weui-grid__icon" style="font-size: 20px;"></view>
+            <view>更多</view>
+          </navigator>
+        </view>
+      </view>
+    </view>
+  </block>
+</view>
+
+<!-- 底部添加按钮 -->
+  <view class="user-footer" wx:if="{{hasUserInfo}}">
+    <button type="primary" class="iconfont icon-tianjia:before user-footer-add" bindtap="openAdd">
+    </button>
+  </view>
+</view>

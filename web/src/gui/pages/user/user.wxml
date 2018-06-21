@@ -1,0 +1,26 @@
+<view style="margin-top: 8px;">
+  <view class="application-cell">
+    <view class="application-cell-header">
+      <image src="{{user.avatarUrl}}"></image>
+    </view>
+    <view class="application-cell-body">
+      <view>{{user.remarkName}}</view>
+      <view class="application-cell-header-comment">昵称：{{user.nickName}}</view>
+    </view>
+    <view class="application-cell-header-comment" wx:if="{{user.admin == 'N'}}">
+      普通成员
+    </view>
+    <view class="application-cell-header-comment" wx:else>
+      管理员
+    <view>
+  </view>
+  <view style="margin: 8px;">
+    <button type="primary" style="margin-bottom: 8px;" bindtap="updateRemarkName">修改备注</button>
+    <button bindtap="deleteUser" type="warn" id="{{user.userId}}" wx:if="{{myRole=='admin'}}">删除用户</button>
+  </view>
+  
+  <modal hidden="{{hiddenUpdateModal}}" title="输入新的备注" comfirm-text="确定" cancel-text="取消" bindconfirm="comfirmRename" bindcancel="cancelRename">
+    <view class="top-tip" wx:if="{{showTopTip}}">{{errorMsg}}</view>
+    <input name="remarkName" placeholder="输入新的备注" value="{{user.remarkName}}" maxlength="10"></input>
+  </modal>
+</view>

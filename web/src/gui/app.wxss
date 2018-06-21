@@ -1,0 +1,26 @@
+/**app.wxss**/
+@import "font/iconfont.wxss";
+@import "lib/weui.wxss";
+
+page{
+    background-color: #F8F8F8;
+    font-size: 15px;
+    align-items:center;
+    font-family: -apple-system-font,Helvetica Neue,Helvetica,sans-serif;
+}
+.top-tip{
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
+  top:0;
+  left:0;
+  right:0;
+  padding:5px;
+  font-size:14px;
+  text-align:center;
+  color:#fff;
+  z-index:5000;
+  word-wrap:break-word;
+  word-break:break-all;
+  background-color:#e64340;
+
+}

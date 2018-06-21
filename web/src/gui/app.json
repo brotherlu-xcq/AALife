@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/application/application",
+    "pages/user/user",
+    "pages/group/group",
+    "pages/cost/cost",
+    "pages/feedback/feedback",
+    "pages/approval/approval"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "AAB制",
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh": true
+  }
+}

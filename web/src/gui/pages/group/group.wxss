@@ -1,0 +1,35 @@
+.group{
+  position:relative;
+  margin-top:4px;
+  line-height:1.41176471;
+  font-size:17px;
+}
+.group-input{
+  background-color:#fff;
+  padding:10px 15px;
+  position:relative;
+  display:-webkit-box;
+  display:-webkit-flex;
+  display:flex;
+  -webkit-box-align:center;
+  -webkit-align-items:center;
+  align-items:center;
+  margin-bottom: 2px;
+}
+.group-input-label{
+  width:80px;
+  word-wrap:break-word;
+  word-break:break-all;
+}
+.group-input-content{
+  -webkit-box-flex:1;
+  -webkit-flex:1;
+  flex:1;
+  height:2.58823529em;
+  min-height:2.58823529em;
+  line-height:2.58823529em;
+}
+
+.group-button{
+  margin: 8px 10px;
+}
