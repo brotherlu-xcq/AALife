@@ -146,3 +146,13 @@ CREATE TABLE `app_config` (
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`,`app_name`,`config_name`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
+
+
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('1','吃喝','icon-chichihehe:before','-9999','2018-06-22 18:07:29');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('2','娱乐','icon-yule:beforee','-9999','2018-06-22 18:07:47');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('3','家电','icon-jiadian:before','-9999','2018-06-22 18:08:07');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('4','交通','icon-jiaotong:before','-9999','2018-06-22 18:08:23');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('5','日用品','icon-riyongpin:before','-9999','2018-06-22 18:08:39');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('6','旅游','icon-lvhang:before','-9999','2018-06-22 18:09:12');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('7','其他','icon-qita:before','-9999','2018-06-22 18:09:27');
