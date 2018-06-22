@@ -34,13 +34,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!-- 排除打包的路径 -->
-                <configuration>
-                    <excludes>
-                        <exclude>src/gui/*</exclude>
-                        <exclude>src/test/*</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
     </build>

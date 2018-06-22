@@ -1,7 +1,6 @@
 package com.aalife.web.publicapi;
 
 import com.aalife.bo.WxUserBo;
-import com.aalife.service.CostDetailService;
 import com.aalife.service.UserService;
 import com.aalife.web.util.JsonEntity;
 import com.aalife.web.util.ResponseHelper;
