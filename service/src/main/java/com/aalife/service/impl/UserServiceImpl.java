@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
             List<CostGroupUser> costGroupUsersCount = costGroupUserRepository.findCostGroupByGroup(groupId);
             BigDecimal count = new BigDecimal(costGroupUsersCount.size());
             BigDecimal groupAverageCost = groupCost.divide(count, 2);
-            leftCost = leftCost.add(groupAverageCost.subtract(groupCost));
+            leftCost = leftCost.add(groupAverageCost.add(groupCost));
         }
         userOverviewBo.setLeftCost(leftCost);
         userOverviewBo.setTotalCost(totalCost);
