@@ -9,6 +9,7 @@ import com.aalife.bo.ExtendUserBo;
 import com.aalife.bo.NewCostDetailBo;
 import com.aalife.bo.WxQueryBo;
 import com.aalife.bo.WxQueryCriteriaBo;
+import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.AppConfig;
 import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.entity.CostClean;
@@ -195,6 +196,16 @@ public class CostDetailServiceImpl implements CostDetailService {
         } catch (IOException e){
             throw new BizException(e);
         }
+        String secret = appConfigRepository.findAppConfigValueByName("INVOICE", "SECRET");
+        String key = appConfigRepository.findAppConfigValueByName("INVOICE", "KEY");
+        String tokenHost = appConfigRepository.findAppConfigValueByName("INVOICE", "TOKEN_HOST");
+        AppConfig tokenConfig = appConfigRepository.findAppConfigByName("INVOICE", "TOKEN");
+        if (tokenConfig == null){
+            tokenConfig = new AppConfig();
+            tokenConfig.setEntryId(SystemConstant.SYSTEM_ID);
+            tokenConfig.setAppName("INVOICE");
+            tokenConfig.setConfigName("TOKEN");
+        }
         String speech = Base64.getEncoder().encodeToString(content);
         String fileName = invoice.getOriginalFilename();
         String fileType = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
@@ -203,12 +214,13 @@ public class CostDetailServiceImpl implements CostDetailService {
         params.put("dev_pid", 1537);
         params.put("format", fileType);
         params.put("rate", 1600);
-        params.put("token", InvoiceUtil.getToken());
+        params.put("token", InvoiceUtil.getToken(tokenConfig, secret, key, tokenHost));
         params.put("cuid", UUIDUtil.get16BitUUID());
         params.put("channel", "1");
         params.put("len", content.length);
         params.put("speech", speech);
         String host =  appConfigRepository.findAppConfigValueByName("INVOICE", "HOST");
+        appConfigRepository.save(tokenConfig);
         String data = HttpUtil.doPost(host, params);
         logger.info("data:"+data);
         return null;

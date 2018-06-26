@@ -85,7 +85,7 @@ public class HttpUtil {
                 //System.out.println(name +"-"+value);  
             }
             request.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-
+            request.setHeader("Content-Type", "application/json");
             HttpResponse response = client.execute(request);
             int code = response.getStatusLine().getStatusCode();
             if(code == 200){    //请求成功  
