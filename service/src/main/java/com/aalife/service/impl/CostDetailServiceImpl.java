@@ -9,6 +9,7 @@ import com.aalife.bo.ExtendUserBo;
 import com.aalife.bo.NewCostDetailBo;
 import com.aalife.bo.WxQueryBo;
 import com.aalife.bo.WxQueryCriteriaBo;
+import com.aalife.dao.entity.AppConfig;
 import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.entity.CostClean;
 import com.aalife.dao.entity.CostDetail;
@@ -16,6 +17,7 @@ import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.CostUserRemark;
 import com.aalife.dao.entity.User;
+import com.aalife.dao.repository.AppConfigRepository;
 import com.aalife.dao.repository.CostCategoryRepository;
 import com.aalife.dao.repository.CostCleanRepository;
 import com.aalife.dao.repository.CostDetailRepository;
@@ -26,6 +28,10 @@ import com.aalife.exception.BizException;
 import com.aalife.service.CostDetailService;
 import com.aalife.service.WebContext;
 import com.aalife.utils.FormatUtil;
+import com.aalife.utils.HttpUtil;
+import com.aalife.utils.InvoiceUtil;
+import com.aalife.utils.UUIDUtil;
+import org.apache.log4j.Logger;
 import org.hibernate.jpa.criteria.OrderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,6 +39,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,9 +47,11 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +64,7 @@ import java.util.Map;
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class CostDetailServiceImpl implements CostDetailService {
+    private static Logger logger = Logger.getLogger(CostDetailServiceImpl.class);
     @Autowired
     private CostDetailRepository costDetailRepository;
     @Autowired
@@ -66,7 +76,7 @@ public class CostDetailServiceImpl implements CostDetailService {
     @Autowired
     private CostUserRemarkRepository costUserRemarkRepository;
     @Autowired
-    private CostGroupUserRepository costGroupUserRepository;
+    private AppConfigRepository appConfigRepository;
     @Autowired
     private WebContext webContext;
 
@@ -172,6 +182,36 @@ public class CostDetailServiceImpl implements CostDetailService {
     public void deleteCostDetail(Integer costId) {
         User currentUser = webContext.getCurrentUser();
         costDetailRepository.deleteCostDetailById(costId, currentUser.getUserId());
+    }
+
+    @Override
+    public CostDetailBo getCostDetailByInvoice(Integer groupId, MultipartFile invoice) {
+        if (invoice == null || invoice.getSize() == 0){
+            return null;
+        }
+        byte[] content = null;
+        try {
+            content = invoice.getBytes();
+        } catch (IOException e){
+            throw new BizException(e);
+        }
+        String speech = Base64.getEncoder().encodeToString(content);
+        String fileName = invoice.getOriginalFilename();
+        String fileType = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
+        logger.info("fileType:" + fileType);
+        Map<String, Object> params = new HashMap<>(8);
+        params.put("dev_pid", 1537);
+        params.put("format", fileType);
+        params.put("rate", 1600);
+        params.put("token", InvoiceUtil.getToken());
+        params.put("cuid", UUIDUtil.get16BitUUID());
+        params.put("channel", "1");
+        params.put("len", content.length);
+        params.put("speech", speech);
+        String host =  appConfigRepository.findAppConfigValueByName("INVOICE", "HOST");
+        String data = HttpUtil.doPost(host, params);
+        logger.info("data:"+data);
+        return null;
     }
 
     /**

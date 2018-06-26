@@ -30,7 +30,7 @@ public class CostGroupApprovalApi {
     @Autowired
     private CostGroupApprovalService costGroupApprovalService;
 
-    @RequestMapping(value = "/approval", method = RequestMethod.PUT)
+    @RequestMapping(value = "/approval", method = RequestMethod.POST)
     public JsonEntity<String> createApproval(@RequestBody ApprovalBo approvalBo){
         costGroupApprovalService.createNewApproval(approvalBo);
         return ResponseHelper.createInstance("success");

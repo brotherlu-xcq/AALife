@@ -37,7 +37,7 @@ public class CostGroupApi {
      * @param groupName
      * @return
      */
-    @RequestMapping(value = "/costGroup", method = RequestMethod.PUT)
+    @RequestMapping(value = "/costGroup", method = RequestMethod.POST)
     public JsonEntity createCostGroup(@RequestBody String groupName){
         costGroupService.createNewCostGroup(groupName);
         return ResponseHelper.createInstance("success");

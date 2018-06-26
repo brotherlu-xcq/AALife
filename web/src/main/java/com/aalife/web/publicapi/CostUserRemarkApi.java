@@ -24,7 +24,7 @@ public class CostUserRemarkApi {
     @Autowired
     private CostUserRemarkService costUserRemarkService;
 
-    @RequestMapping(value = "/remarkName", method = RequestMethod.PUT)
+    @RequestMapping(value = "/remarkName", method = RequestMethod.POST)
     public JsonEntity<String> createRemarkName(@RequestBody CostUserRemarkBo costUserRemarkBo){
         costUserRemarkService.createRemarkName(costUserRemarkBo);
         return ResponseHelper.createInstance("success");

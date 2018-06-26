@@ -16,6 +16,15 @@ public interface AppConfigRepository extends JpaRepository<AppConfig, Integer> {
      * @param configName
      * @return
      */
+    @Query("SELECT ac.configValue FROM AppConfig ac WHERE ac.appName = :appName AND ac.configName = :configName")
+    String findAppConfigValueByName(@Param(value = "appName") String appName, @Param(value = "configName") String configName);
+
+    /**
+     * 根据name查询对应得值
+     * @param appName
+     * @param configName
+     * @return
+     */
     @Query("SELECT ac FROM AppConfig ac WHERE ac.appName = :appName AND ac.configName = :configName")
     AppConfig findAppConfigByName(@Param(value = "appName") String appName, @Param(value = "configName") String configName);
 }

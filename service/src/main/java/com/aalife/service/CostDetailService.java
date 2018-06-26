@@ -4,7 +4,9 @@ import com.aalife.bo.BaseQueryResultBo;
 import com.aalife.bo.CostDetailBo;
 import com.aalife.bo.NewCostDetailBo;
 import com.aalife.bo.WxQueryBo;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -37,4 +39,12 @@ public interface CostDetailService {
      * @param costId
      */
     void deleteCostDetail(Integer costId);
+
+    /**
+     * 用户录音获取消费信息
+     * @param groupId
+     * @param invoice
+     * @return
+     */
+    CostDetailBo getCostDetailByInvoice(Integer groupId, MultipartFile invoice);
 }

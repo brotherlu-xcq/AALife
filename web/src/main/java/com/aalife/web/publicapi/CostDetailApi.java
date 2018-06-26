@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class CostDetailApi {
     @Autowired
     private CostDetailService costDetailService;
 
-    @RequestMapping(value = "/costDetail/{groupId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/costDetail/{groupId}", method = RequestMethod.POST)
     @RolePermission(needPermission = PermissionType.USER)
     public JsonEntity<String> createNewCostDetail(@PathVariable(value = "groupId") Integer groupId, @RequestBody NewCostDetailBo costDetailBo){
         costDetailBo.setGroupId(groupId);
@@ -81,5 +82,12 @@ public class CostDetailApi {
     public JsonEntity<String> deleteCostDetail(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "costId") Integer costId){
         costDetailService.deleteCostDetail(costId);
         return ResponseHelper.createInstance("success");
+    }
+
+
+    @RequestMapping(value = "costDetail/{groupId}/invoice", method = RequestMethod.POST)
+    @RolePermission(needPermission = PermissionType.USER)
+    public JsonEntity<CostDetailBo> createCostDetailByInvoice(@PathVariable(value = "groupId") Integer groupId, MultipartFile invoice){
+        return ResponseHelper.createInstance(costDetailService.getCostDetailByInvoice(groupId, invoice));
     }
 }

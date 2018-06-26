@@ -158,3 +158,9 @@ INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('5','日用品','icon-riyongpin:before','-9999','2018-06-22 18:08:39');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('6','旅游','icon-lvhang:before','-9999','2018-06-22 18:09:12');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('7','其他','icon-qita:before','-9999','2018-06-22 18:09:27');
+
+
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('1','INVOICE','HOST','http://vop.baidu.com/server_api','-9999','2018-06-26 18:28:13');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('2','INVOICE','SECRET','SvZG4PwLkxEZ2WPWsD1gQTpq','-9999','2018-06-26 19:11:44');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('3','INVOICE','KEY','13a30b5edee7c363e52076a0a6cbd7d1','-9999','2018-06-26 19:12:06');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('4','INVOICE','TOKEN_HOST','http://openapi.baidu.com/oauth/2.0/token','-9999','2018-06-26 19:12:44');
