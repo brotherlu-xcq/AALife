@@ -164,3 +164,6 @@ INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entr
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('2','INVOICE','SECRET','SvZG4PwLkxEZ2WPWsD1gQTpq','-9999','2018-06-26 19:11:44');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('3','INVOICE','KEY','13a30b5edee7c363e52076a0a6cbd7d1','-9999','2018-06-26 19:12:06');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('4','INVOICE','TOKEN_HOST','http://openapi.baidu.com/oauth/2.0/token','-9999','2018-06-26 19:12:44');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('5','WX','APPID','wx9c7abce098df46e1','-9999','2018-06-27 18:13:32');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('6','WX','SECRET','9fcee84ff426e4a939833a87e56c32e9','-9999','2018-06-27 18:13:49');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('7','WX','HOST','https://api.weixin.qq.com/sns/jscode2session','-9999','2018-06-27 18:14:17');

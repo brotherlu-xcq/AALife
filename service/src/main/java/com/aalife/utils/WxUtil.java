@@ -15,13 +15,10 @@ public class WxUtil {
     private WxUtil(){}
     private static Logger logger = Logger.getLogger(WxUtil.class);
 
-    public static User getWXUserInfo(WxUserBo wxUser) throws Exception {
-        final String APPID ="wx9c7abce098df46e1";
-        final String SECRET = "9fcee84ff426e4a939833a87e56c32e9";
-        final String JSCODE = wxUser.getWxCode();
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid="+APPID+"&secret="+SECRET+"&js_code="+JSCODE+"&grant_type=authorization_code";
+    public static User getWXUserInfo(WxUserBo wxUser, String appId, String secret, String host) throws Exception {
+        final String jsCode = wxUser.getWxCode();
+        String url = host+"?appid="+appId+"&secret="+secret+"&js_code="+jsCode+"&grant_type=authorization_code";
         String data = HttpUtil.doGet(url);
-        logger.info("user info return " + data);
         JSONObject object = JSON.parseObject(data);
         String sessionKey = object.getString("session_key");
         String openId = object.getString("openid");

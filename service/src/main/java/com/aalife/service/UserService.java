@@ -18,11 +18,10 @@ public interface UserService {
     void login(WxUserBo wxUser);
 
     /**
-     * DEV Login
+     * DEV Login，用于本地测试接口
      * @param wxUser
      */
     void DEVLogin(WxUserBo wxUser);
-//    User createNewUser();
     /**
      * 获取用户的信息概括
      * @return

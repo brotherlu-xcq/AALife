@@ -5,6 +5,7 @@ import com.aalife.bo.WxUserBo;
 import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.User;
+import com.aalife.dao.repository.AppConfigRepository;
 import com.aalife.dao.repository.CostDetailRepository;
 import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.UserRepository;
@@ -12,6 +13,7 @@ import com.aalife.exception.BizException;
 import com.aalife.service.UserService;
 import com.aalife.service.WebContext;
 import com.aalife.utils.WxUtil;
+import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -33,6 +35,7 @@ import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static Logger logger = Logger.getLogger(UserServiceImpl.class);
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -41,6 +44,8 @@ public class UserServiceImpl implements UserService {
     private CostGroupUserRepository costGroupUserRepository;
     @Autowired
     private CostDetailRepository costDetailRepository;
+    @Autowired
+    private AppConfigRepository appConfigRepository;
 
     @Override
     public void login(WxUserBo wxUser) {
@@ -49,10 +54,12 @@ public class UserServiceImpl implements UserService {
         }
         User wxUserInfo;
         try {
-            wxUserInfo = WxUtil.getWXUserInfo(wxUser);
+            String appId = appConfigRepository.findAppConfigValueByName("WX", "APPID");
+            String secret = appConfigRepository.findAppConfigValueByName("WX", "SECRET");
+            String host = appConfigRepository.findAppConfigValueByName("WX", "HOST");
+            wxUserInfo = WxUtil.getWXUserInfo(wxUser, appId, secret, host);
         } catch (Exception e){
-            e.printStackTrace();
-            throw new BizException("登录失败，错误原因 "+e.getMessage());
+            throw new BizException("登录失败，错误原因："+e.getMessage());
         }
         String wxOpenId = wxUserInfo.getWxOpenId();
         // 查询没有该用户则添加一条记录
@@ -66,7 +73,6 @@ public class UserServiceImpl implements UserService {
         user.setAvatarUrl(wxUserInfo.getAvatarUrl());
         user.setNickName(wxUserInfo.getNickName());
         userRepository.save(user);
-
         UsernamePasswordToken token = new UsernamePasswordToken(wxOpenId, (String)null);
         SecurityUtils.getSubject().login(token);
     }
@@ -95,16 +101,21 @@ public class UserServiceImpl implements UserService {
         BigDecimal totalCost = new BigDecimal(0);
         BigDecimal leftCost = new BigDecimal(0);
         for (CostGroupUser costGroupUser : costGroupUsers){
-            // 计算总消费
             Integer groupId = costGroupUser.getCostGroup().getGroupId();
+            List<CostGroupUser> costGroupUsersCount = costGroupUserRepository.findCostGroupByGroup(groupId);
+            if (costGroupUsersCount.size() == 1){
+                continue;
+            }
             BigDecimal groupCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, userId);
+            // 计算总消费
             groupCost = groupCost == null ? new BigDecimal(0) : groupCost;
             totalCost = totalCost.add(groupCost);
             // 计算平均消费
-            List<CostGroupUser> costGroupUsersCount = costGroupUserRepository.findCostGroupByGroup(groupId);
             BigDecimal count = new BigDecimal(costGroupUsersCount.size());
             BigDecimal groupAverageCost = groupCost.divide(count, 2);
-            leftCost = leftCost.add(groupAverageCost.add(groupCost));
+            BigDecimal groupLeftCost = groupAverageCost.subtract(groupCost);
+            leftCost = leftCost.add(groupLeftCost);
+            logger.info("{userId:"+userId+", groupId:"+groupId+", userCount:"+count+", totalCost"+groupCost+", averageCost:"+groupAverageCost+", leftCost:"+groupLeftCost+"}");
         }
         userOverviewBo.setLeftCost(leftCost);
         userOverviewBo.setTotalCost(totalCost);
