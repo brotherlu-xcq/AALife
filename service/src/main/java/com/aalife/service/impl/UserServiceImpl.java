@@ -107,15 +107,16 @@ public class UserServiceImpl implements UserService {
                 continue;
             }
             BigDecimal groupCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, userId);
+            BigDecimal groupTotalCost = costDetailRepository.findUnCleanTotalCostByGroup(groupId);
             // 计算总消费
             groupCost = groupCost == null ? new BigDecimal(0) : groupCost;
             totalCost = totalCost.add(groupCost);
             // 计算平均消费
             BigDecimal count = new BigDecimal(costGroupUsersCount.size());
-            BigDecimal groupAverageCost = groupCost.divide(count, 2);
+            BigDecimal groupAverageCost = groupTotalCost.divide(count, 2);
             BigDecimal groupLeftCost = groupAverageCost.subtract(groupCost);
             leftCost = leftCost.add(groupLeftCost);
-            logger.info("{userId:"+userId+", groupId:"+groupId+", userCount:"+count+", totalCost"+groupCost+", averageCost:"+groupAverageCost+", leftCost:"+groupLeftCost+"}");
+            logger.info("{userId:"+userId+", groupId:"+groupId+", userCount:"+count+", groupTotalCost:"+groupTotalCost+", totalCost:"+groupCost+", averageCost:"+groupAverageCost+", leftCost:"+groupLeftCost+"}");
         }
         userOverviewBo.setLeftCost(leftCost);
         userOverviewBo.setTotalCost(totalCost);
