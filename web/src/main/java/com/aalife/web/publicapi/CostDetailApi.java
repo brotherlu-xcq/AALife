@@ -72,14 +72,11 @@ public class CostDetailApi {
     }
 
     /**
-     * groupId必传用于校验用户权限
-     * @param groupId
      * @param costId
      * @return
      */
-    @RequestMapping(value = "/costDetail/{groupId}/detail/{costId}", method = RequestMethod.DELETE)
-    @RolePermission(needPermission = PermissionType.ADMIN)
-    public JsonEntity<String> deleteCostDetail(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "costId") Integer costId){
+    @RequestMapping(value = "/costDetail/detail/{costId}", method = RequestMethod.DELETE)
+    public JsonEntity<String> deleteCostDetail(@PathVariable(value = "costId") Integer costId){
         costDetailService.deleteCostDetail(costId);
         return ResponseHelper.createInstance("success");
     }

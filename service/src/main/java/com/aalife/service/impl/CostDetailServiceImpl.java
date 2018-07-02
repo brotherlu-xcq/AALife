@@ -35,6 +35,7 @@ import com.aalife.utils.InvoiceUtil;
 import com.aalife.utils.UUIDUtil;
 import com.alibaba.fastjson.JSON;
 import org.apache.log4j.Logger;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.hibernate.jpa.criteria.OrderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -89,7 +90,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         String costDesc = costDetailBo.getCostDesc();
         CostCategory costCategory = costCategoryRepository.findOne(costDetailBo.getCateId());
         String costDateStr = costDetailBo.getCostDate();
-        Date costDate = null;
+        Date costDate;
         try {
             costDate = FormatUtil.parseString2Date(costDateStr, "yyyy-MM-dd");
         } catch (ParseException e) {
@@ -184,6 +185,16 @@ public class CostDetailServiceImpl implements CostDetailService {
     @Override
     public void deleteCostDetail(Integer costId) {
         User currentUser = webContext.getCurrentUser();
+        CostDetail costDetail = costDetailRepository.findOne(costId);
+        if (costDetail == null || costDetail.getDeleteId() != null){
+            throw new BizException("未查询到消费记录");
+        }
+        if (costDetail.getCostClean() != null){
+            throw new BizException("此消费记录已经结算");
+        }
+        if (!currentUser.equals(costDetail.getUser().getUserId())){
+            throw new UnauthorizedException();
+        }
         costDetailRepository.deleteCostDetailById(costId, currentUser.getUserId());
     }
 
@@ -192,7 +203,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         if (invoice == null || invoice.getSize() == 0){
             return null;
         }
-        byte[] content = null;
+        byte[] content;
         try {
             content = invoice.getBytes();
         } catch (IOException e){
@@ -207,7 +218,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         Date entryDate = tokenConfig.getEntryDate();
         Date today = new Date();
         String token = tokenConfig.getConfigValue();
-        if (entryDate == null || DateUtil.getHoursGap(entryDate, today)/24 < 28){
+        if (entryDate == null || DateUtil.getHoursGap(entryDate, today)/24 > 28){
             token = InvoiceUtil.getToken(secret, key, tokenHost);
             tokenConfig.setEntryId(SystemConstant.SYSTEM_ID);
             tokenConfig.setAppName("INVOICE");
@@ -230,7 +241,6 @@ public class CostDetailServiceImpl implements CostDetailService {
         params.put("len", content.length);
         params.put("speech", speech);
         String host =  appConfigRepository.findAppConfigValueByName("INVOICE", "HOST");
-        appConfigRepository.save(tokenConfig);
         String data = HttpUtil.doPost(host, JSON.toJSONString(params));
         logger.info("data:"+data);
         return null;
