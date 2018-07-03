@@ -1,5 +1,6 @@
 package com.aalife.utils;
 
+import com.aalife.exception.BizException;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -56,8 +57,8 @@ public class HttpUtil {
             return body;
         } catch (IOException e){
             logger.error("request "+url+" failed", e);
+            throw new BizException(e);
         }
-        return null;
     }
 
     /**
@@ -89,10 +90,11 @@ public class HttpUtil {
             return body;
         } catch (IOException e){
             logger.error("request "+url+" failed", e);
+            throw new BizException(e);
         } catch (URISyntaxException e) {
             logger.error("request " + url + " failed", e);
+            throw new BizException(e);
         }
-        return null;
     }
 
     /**
@@ -120,9 +122,10 @@ public class HttpUtil {
             return body;
         } catch (ClientProtocolException e) {
             logger.error("request " + url + " failed", e);
+            throw new BizException(e);
         } catch (IOException e) {
             logger.error("request " + url + " failed", e);
+            throw new BizException(e);
         }
-        return null;
     }
 }
