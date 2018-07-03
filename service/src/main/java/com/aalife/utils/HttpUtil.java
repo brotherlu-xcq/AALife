@@ -1,6 +1,8 @@
 package com.aalife.utils;
 
 import com.aalife.exception.BizException;
+import com.aalife.service.UserActionLogService;
+import com.aalife.service.UserLoginService;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -18,6 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +41,6 @@ public class HttpUtil {
 
     private HttpUtil(){}
     private static Logger logger = Logger.getLogger(HttpUtil.class);
-
     /**
      * 通用get请求
      * @param url

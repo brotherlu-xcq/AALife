@@ -149,7 +149,23 @@ CREATE TABLE `app_config` (
   PRIMARY KEY (`id`,`app_name`,`config_name`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
-
+DROP TABLE IF EXISTS `user_action_log`;
+CREATE TABLE `user_action_log` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `method_name` VARCHAR(100) DEFAULT NULL,
+  `user_id` INT(11) DEFAULT NULL,
+  `request_url` VARCHAR(100) DEFAULT NULL,
+  `in_params` TEXT,
+  `out_params` TEXT,
+  `exception` TEXT,
+  `session_id` VARBINARY(100) DEFAULT NULL,
+  `ip_address` VARCHAR(50) DEFAULT NULL,
+  `start_date` DATETIME DEFAULT NULL,
+  `end_date` DATETIME DEFAULT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('1','吃喝','icon-chichihehe:before','-9999','2018-06-22 18:07:29');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('2','娱乐','icon-yule:beforee','-9999','2018-06-22 18:07:47');

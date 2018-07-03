@@ -34,6 +34,7 @@ import com.aalife.utils.HttpUtil;
 import com.aalife.utils.InvoiceUtil;
 import com.aalife.utils.UUIDUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.hibernate.jpa.criteria.OrderImpl;
@@ -218,7 +219,8 @@ public class CostDetailServiceImpl implements CostDetailService {
         Date entryDate = tokenConfig.getEntryDate();
         Date today = new Date();
         String token = tokenConfig.getConfigValue();
-        if (entryDate == null || DateUtil.getHoursGap(entryDate, today)/24 > 28){
+        // 若存在token，且token还有至少28天，那么不会继续请求token。百度语音token保存时间：30天
+        if (entryDate == null || DateUtil.getHoursGap(entryDate, today)/24 >= 30){
             token = InvoiceUtil.getToken(secret, key, tokenHost);
             tokenConfig.setEntryId(SystemConstant.SYSTEM_ID);
             tokenConfig.setAppName("INVOICE");
@@ -227,6 +229,7 @@ public class CostDetailServiceImpl implements CostDetailService {
             tokenConfig.setEntryDate(today);
             appConfigRepository.save(tokenConfig);
         }
+        // 进行语音请求
         String speech = Base64.getEncoder().encodeToString(content);
         String fileName = invoice.getOriginalFilename();
         String fileType = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
@@ -234,7 +237,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         Map<String, Object> params = new HashMap<>(8);
         params.put("dev_pid", 1537);
         params.put("format", fileType);
-        params.put("rate", 1600);
+        params.put("rate", 16000);
         params.put("token", token);
         params.put("cuid", UUIDUtil.get16BitUUID());
         params.put("channel", "1");
@@ -243,7 +246,11 @@ public class CostDetailServiceImpl implements CostDetailService {
         String host =  appConfigRepository.findAppConfigValueByName("INVOICE", "HOST");
         String data = HttpUtil.doPost(host, JSON.toJSONString(params));
         logger.info("data:"+data);
-        return null;
+        // 解析传回参数
+        JSONObject object = JSON.parseObject(data);
+        CostDetailBo costDetail = new CostDetailBo();
+        costDetail.setCostDesc(object.getJSONArray("result").getString(0));
+        return costDetail;
     }
 
     /**

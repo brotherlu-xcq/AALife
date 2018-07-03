@@ -15,7 +15,7 @@ public class WxUtil {
     private WxUtil(){}
     private static Logger logger = Logger.getLogger(WxUtil.class);
 
-    public static User getWXUserInfo(WxUserBo wxUser, String appId, String secret, String host) throws Exception {
+    public static User getWXUserInfo(WxUserBo wxUser, String appId, String secret, String host) {
         final String jsCode = wxUser.getWxCode();
         String url = host+"?appid="+appId+"&secret="+secret+"&js_code="+jsCode+"&grant_type=authorization_code";
         String data = HttpUtil.doGet(url);
