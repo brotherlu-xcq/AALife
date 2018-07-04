@@ -154,7 +154,7 @@ CREATE TABLE `user_action_log` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `method_name` VARCHAR(100) DEFAULT NULL,
   `user_id` INT(11) DEFAULT NULL,
-  `request_url` VARCHAR(100) DEFAULT NULL,
+  `request_url` VARCHAR(500) DEFAULT NULL,
   `in_params` TEXT,
   `out_params` TEXT,
   `exception` TEXT,

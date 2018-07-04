@@ -11,8 +11,8 @@ import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.UserService;
+import com.aalife.service.WXService;
 import com.aalife.service.WebContext;
-import com.aalife.utils.WxUtil;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -23,9 +23,7 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -46,6 +44,8 @@ public class UserServiceImpl implements UserService {
     private CostDetailRepository costDetailRepository;
     @Autowired
     private AppConfigRepository appConfigRepository;
+    @Autowired
+    private WXService wxService;
 
     @Override
     public void login(WxUserBo wxUser) {
@@ -54,10 +54,7 @@ public class UserServiceImpl implements UserService {
         }
         User wxUserInfo;
         try {
-            String appId = appConfigRepository.findAppConfigValueByName("WX", "APPID");
-            String secret = appConfigRepository.findAppConfigValueByName("WX", "SECRET");
-            String host = appConfigRepository.findAppConfigValueByName("WX", "HOST");
-            wxUserInfo = WxUtil.getWXUserInfo(wxUser, appId, secret, host);
+            wxUserInfo = wxService.getWXUserInfo(wxUser);
         } catch (Exception e){
             throw new BizException("登录失败，错误原因："+e.getMessage());
         }

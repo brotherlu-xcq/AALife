@@ -8,6 +8,7 @@ import com.aalife.service.UserActionLogService;
 import com.aalife.service.WebContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -17,7 +18,7 @@ import java.util.Date;
  * @date 2018-07-03
  */
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class UserActionLogServiceImpl implements UserActionLogService {
     @Autowired
     private WebContext webContext;

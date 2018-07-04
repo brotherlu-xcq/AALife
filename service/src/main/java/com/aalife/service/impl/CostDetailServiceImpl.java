@@ -15,7 +15,6 @@ import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.entity.CostClean;
 import com.aalife.dao.entity.CostDetail;
 import com.aalife.dao.entity.CostGroup;
-import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.CostUserRemark;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.AppConfigRepository;
@@ -23,15 +22,14 @@ import com.aalife.dao.repository.CostCategoryRepository;
 import com.aalife.dao.repository.CostCleanRepository;
 import com.aalife.dao.repository.CostDetailRepository;
 import com.aalife.dao.repository.CostGroupRepository;
-import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.CostUserRemarkRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.CostDetailService;
+import com.aalife.service.InvoiceService;
 import com.aalife.service.WebContext;
 import com.aalife.utils.DateUtil;
 import com.aalife.utils.FormatUtil;
 import com.aalife.utils.HttpUtil;
-import com.aalife.utils.InvoiceUtil;
 import com.aalife.utils.UUIDUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -53,7 +51,6 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -84,6 +81,8 @@ public class CostDetailServiceImpl implements CostDetailService {
     private AppConfigRepository appConfigRepository;
     @Autowired
     private WebContext webContext;
+    @Autowired
+    private InvoiceService invoiceService;
 
     @Override
     public void createNewCostDetail(NewCostDetailBo costDetailBo) {
@@ -211,9 +210,6 @@ public class CostDetailServiceImpl implements CostDetailService {
             throw new BizException(e);
         }
         // 初始化token，如果token存在且小于28天，则用Appconfig数据，否则从新生成
-        String secret = appConfigRepository.findAppConfigValueByName("INVOICE", "SECRET");
-        String key = appConfigRepository.findAppConfigValueByName("INVOICE", "KEY");
-        String tokenHost = appConfigRepository.findAppConfigValueByName("INVOICE", "TOKEN_HOST");
         AppConfig tokenConfig = appConfigRepository.findAppConfigByName("INVOICE", "TOKEN");
         tokenConfig = tokenConfig == null ? new AppConfig() : tokenConfig;
         Date entryDate = tokenConfig.getEntryDate();
@@ -221,7 +217,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         String token = tokenConfig.getConfigValue();
         // 若存在token，且token还有至少28天，那么不会继续请求token。百度语音token保存时间：30天
         if (entryDate == null || DateUtil.getHoursGap(entryDate, today)/24 >= 30){
-            token = InvoiceUtil.getToken(secret, key, tokenHost);
+            token = invoiceService.getToken();
             tokenConfig.setEntryId(SystemConstant.SYSTEM_ID);
             tokenConfig.setAppName("INVOICE");
             tokenConfig.setConfigName("TOKEN");
@@ -229,27 +225,11 @@ public class CostDetailServiceImpl implements CostDetailService {
             tokenConfig.setEntryDate(today);
             appConfigRepository.save(tokenConfig);
         }
-        // 进行语音请求
-        String speech = Base64.getEncoder().encodeToString(content);
         String fileName = invoice.getOriginalFilename();
-        String fileType = fileName.substring(fileName.lastIndexOf(".")+1, fileName.length());
-        logger.info("fileType:" + fileType);
-        Map<String, Object> params = new HashMap<>(8);
-        params.put("dev_pid", 1537);
-        params.put("format", fileType);
-        params.put("rate", 16000);
-        params.put("token", token);
-        params.put("cuid", UUIDUtil.get16BitUUID());
-        params.put("channel", "1");
-        params.put("len", content.length);
-        params.put("speech", speech);
-        String host =  appConfigRepository.findAppConfigValueByName("INVOICE", "HOST");
-        String data = HttpUtil.doPost(host, JSON.toJSONString(params));
-        logger.info("data:"+data);
-        // 解析传回参数
-        JSONObject object = JSON.parseObject(data);
+        String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        String result = invoiceService.getInvoiceContent(token, fileType, content);
         CostDetailBo costDetail = new CostDetailBo();
-        costDetail.setCostDesc(object.getJSONArray("result").getString(0));
+        costDetail.setCostDesc(result);
         return costDetail;
     }
 
