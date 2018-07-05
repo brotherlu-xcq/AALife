@@ -42,10 +42,19 @@ public class WXServiceImpl implements WXService {
         String url = null;
         String exception = null;
         Date startDate = new Date();
+        String sessionKey = null;
+        String openId = null;
         try {
             url = host+"?appid="+appId+"&secret="+secret+"&js_code="+jsCode+"&grant_type=authorization_code";
             data = HttpUtil.doGet(url);
+            JSONObject object = JSON.parseObject(data);
+            sessionKey = object.getString("session_key");
+            openId = object.getString("openid");
+            if (sessionKey == null || openId == null){
+                throw new BizException("请求微信用户信息失败，返回数据："+data);
+            }
         } catch (Exception e){
+            exception = e.getMessage();
             throw new BizException("请求微信API获取用户信息失败", e);
         } finally {
             try {
@@ -54,9 +63,7 @@ public class WXServiceImpl implements WXService {
                 logger.warn("保存日志失败", e);
             }
         }
-        JSONObject object = JSON.parseObject(data);
-        String sessionKey = object.getString("session_key");
-        String openId = object.getString("openid");
+
         try {
             String result = AesCbcUtil.decrypt(wxUser.getEncryptedData(), sessionKey, wxUser.getIv(), "UTF-8");
             logger.info("parse user info result: " +result);
