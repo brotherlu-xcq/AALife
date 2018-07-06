@@ -32,7 +32,7 @@ public interface CostDetailService {
      * @param wxQueryBo
      * @return
      */
-    BaseQueryResultBo<CostDetailBo> listUncleanCostDetailByGroup(WxQueryBo wxQueryBo);
+    BaseQueryResultBo<CostDetailBo> listCostDetail(WxQueryBo wxQueryBo);
 
     /**
      * 删除消费记录

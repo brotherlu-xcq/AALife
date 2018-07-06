@@ -39,13 +39,4 @@ public interface CostGroupRepository extends JpaRepository<CostGroup, Integer> {
     @Modifying
     @Query("UPDATE CostGroup cg SET cg.deleteId = :userId, cg.deleteDate = now() WHERE cg.groupId = :groupId")
     void deleteCostGroup(@Param(value = "groupId") Integer groupId, @Param(value = "userId") Integer userId);
-
-    /**
-     * 更新账单名称
-     * @param groupNo
-     * @param groupName
-     */
-    @Modifying
-    @Query("UPDATE CostGroup cg SET cg.groupName = :groupName WHERE cg.groupId = :groupNo")
-    void updateCostGroup(@Param(value = "groupNo") Integer groupNo, @Param(value = "groupName") String groupName);
 }

@@ -63,6 +63,12 @@ public class CostGroupApi {
         return ResponseHelper.createInstance(costGroupBo);
     }
 
+    @RequestMapping(value = "/costGroup/{groupId}", method = RequestMethod.GET)
+    @RolePermission(needPermission = PermissionType.USER)
+    public JsonEntity<CostGroupBo> findCostGroup(@PathVariable(value = "groupId") Integer groupId){
+        return ResponseHelper.createInstance(costGroupService.findCostGroupById(groupId));
+    }
+
     @RequestMapping(value = "/costGroup/{groupId}", method = RequestMethod.DELETE)
     @RolePermission(needPermission = PermissionType.ADMIN)
     public JsonEntity<String> deleteCostGroup(@PathVariable(value = "groupId") Integer groupId){

@@ -86,4 +86,11 @@ public interface CostGroupService {
      * @return
      */
     CostGroupUserBo findCostGroupUserById(Integer groupId, Integer userId);
+
+    /**
+     * 根据Id查询对应得账单
+     * @param groupId
+     * @return
+     */
+    CostGroupBo findCostGroupById(Integer groupId);
 }

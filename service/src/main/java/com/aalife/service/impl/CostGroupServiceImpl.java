@@ -286,4 +286,17 @@ public class CostGroupServiceImpl implements CostGroupService {
         costGroupUserBo.setAdmin(costGroupUser.getAdmin());
         return costGroupUserBo;
     }
+
+    @Override
+    public CostGroupBo findCostGroupById(Integer groupId) {
+        CostGroup costGroup = costGroupRepository.findGroupById(groupId);
+        if (costGroup == null){
+            throw new BizException("未查询到对应的账单");
+        }
+        CostGroupBo costGroupBo = new CostGroupBo();
+        costGroupBo.setGroupNo(costGroup.getGroupId());
+        costGroupBo.setGroupCode(costGroup.getGroupCode());
+        costGroupBo.setGroupName(costGroup.getGroupName());
+        return costGroupBo;
+    }
 }

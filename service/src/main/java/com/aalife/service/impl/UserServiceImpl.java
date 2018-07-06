@@ -75,8 +75,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void DEVLogin(WxUserBo wxUser) {
-        UsernamePasswordToken token = new UsernamePasswordToken(wxUser.getWxCode(), (String)null);
+    public void loginAsUser(String openId) {
+        String env = appConfigRepository.findAppConfigValueByName("AALIFE", "ENV");
+        if (StringUtils.isEmpty(env)){
+            throw new BizException("此接口暂时无法访问");
+        }
+        UsernamePasswordToken token = new UsernamePasswordToken(openId, (String)null);
         SecurityUtils.getSubject().login(token);
     }
 

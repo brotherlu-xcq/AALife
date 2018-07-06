@@ -51,24 +51,28 @@ public class CostDetailApi {
         return ResponseHelper.createInstance("success");
     }
 
-    @RequestMapping(value = "/costDetail/{groupId}/unclean/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/costDetail/{groupId}/list", method = RequestMethod.POST)
     @RolePermission(needPermission = PermissionType.USER)
-    public JsonEntity<BaseQueryResultBo<CostDetailBo>> listUncleanCostDetail(@PathVariable(value = "groupId") Integer groupId, @RequestBody BaseQueryBo baseQueryBo){
-        WxQueryBo wxQueryBo = new WxQueryBo();
-        wxQueryBo.setSize(baseQueryBo.getSize());
-        wxQueryBo.setPage(baseQueryBo.getPage());
-        List<WxQueryCriteriaBo> criteria = new ArrayList<>();
+    public JsonEntity<BaseQueryResultBo<CostDetailBo>> listCostDetailByGroup(@PathVariable(value = "groupId") Integer groupId,@RequestBody WxQueryBo wxQueryBo){
+        List<WxQueryCriteriaBo> criteria = wxQueryBo.getCriteria();
+        // 如果有groupId那么则从中剔除
+        if (wxQueryBo.getCriteria() == null || wxQueryBo.getCriteria().size() == 0){
+            criteria = new ArrayList<>();
+        } else {
+            List<WxQueryCriteriaBo> criteriaTemp = new ArrayList<>();
+            criteria.forEach(criteriaItem -> {
+                if (!criteriaItem.getFieldName().equals("groupId")){
+                    criteriaTemp.add(criteriaItem);
+                }
+            });
+            criteria = criteriaTemp;
+        }
         WxQueryCriteriaBo groupCriteria = new WxQueryCriteriaBo();
         groupCriteria.setFieldName("groupId");
         groupCriteria.setValue(groupId);
         criteria.add(groupCriteria);
-        // 查询没有结算的
-        WxQueryCriteriaBo cleanCriteria = new WxQueryCriteriaBo();
-        cleanCriteria.setFieldName("cleanId");
-        cleanCriteria.setValue(null);
-        criteria.add(cleanCriteria);
         wxQueryBo.setCriteria(criteria);
-        return ResponseHelper.createInstance(costDetailService.listUncleanCostDetailByGroup(wxQueryBo));
+        return ResponseHelper.createInstance(costDetailService.listCostDetail(wxQueryBo));
     }
 
     /**

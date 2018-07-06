@@ -44,6 +44,7 @@ public class WXServiceImpl implements WXService {
         Date startDate = new Date();
         String sessionKey = null;
         String openId = null;
+        // 请求微信API获取session和用户openid
         try {
             url = host+"?appid="+appId+"&secret="+secret+"&js_code="+jsCode+"&grant_type=authorization_code";
             data = HttpUtil.doGet(url);
@@ -58,12 +59,12 @@ public class WXServiceImpl implements WXService {
             throw new BizException("请求微信API获取用户信息失败", e);
         } finally {
             try {
-                userActionLogService.saveUserActionLog(InvoiceService.class.getName()+".getWXUserInfo", "GET "+url, null, data, exception, null, null, startDate, new Date());
+                userActionLogService.saveUserActionLog(WXService.class.getName()+".getWXUserInfo", "GET "+url, null, data, exception, null, null, startDate, new Date());
             } catch (Exception e){
                 logger.warn("保存日志失败", e);
             }
         }
-
+        // 用session解析用户信息
         try {
             String result = AesCbcUtil.decrypt(wxUser.getEncryptedData(), sessionKey, wxUser.getIv(), "UTF-8");
             logger.info("parse user info result: " +result);
