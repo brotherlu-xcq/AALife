@@ -3,10 +3,12 @@ package com.aalife.service.impl;
 import com.aalife.bo.BaseQueryBo;
 import com.aalife.bo.BaseQueryResultBo;
 import com.aalife.bo.CostCategoryBo;
+import com.aalife.bo.CostCleanBo;
 import com.aalife.bo.CostDetailBo;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.ExtendUserBo;
 import com.aalife.bo.NewCostDetailBo;
+import com.aalife.bo.UserBo;
 import com.aalife.bo.WxQueryBo;
 import com.aalife.bo.WxQueryCriteriaBo;
 import com.aalife.constant.SystemConstant;
@@ -130,7 +132,7 @@ public class CostDetailServiceImpl implements CostDetailService {
     }
 
     @Override
-    public BaseQueryResultBo<CostDetailBo> listUncleanCostDetailByGroup(WxQueryBo wxQueryBo) {
+    public BaseQueryResultBo<CostDetailBo> listCostDetail(WxQueryBo wxQueryBo) {
         PageRequest pageRequest = new PageRequest(wxQueryBo.getPage() -1, wxQueryBo.getSize());
         Specification<CostDetail> specification = new CostDetailSpecification(wxQueryBo);
         Page<CostDetail> costDetailPage = costDetailRepository.findAll(specification, pageRequest);
@@ -139,6 +141,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         // 用户存放不至于每次重复查
         Map<String, String> remarkNames = new HashMap<>(8);
         User currentUser = webContext.getCurrentUser();
+        Integer currentUserId = currentUser.getUserId();
         if (costDetails != null){
             for (CostDetail costDetail : costDetails){
                 CostDetailBo costDetailBo = new CostDetailBo();
@@ -148,10 +151,10 @@ public class CostDetailServiceImpl implements CostDetailService {
                 userBo.setAvatarUrl(user.getAvatarUrl());
                 userBo.setNickName(user.getNickName());
                 userBo.setUserId(user.getUserId());
-                String key = currentUser.getUserId() + "-"+user.getUserId();
+                String key = currentUserId + "-"+user.getUserId();
                 String remarkName = remarkNames.get(key);
                 if (remarkName == null){
-                    CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(currentUser.getUserId(), user.getUserId());
+                    CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(currentUserId, user.getUserId());
                     remarkName = costUserRemark == null ? user.getNickName() : costUserRemark.getRemarkName();
                     remarkNames.put(key, remarkName);
                 }
@@ -160,7 +163,7 @@ public class CostDetailServiceImpl implements CostDetailService {
                 costDetailBo.setUser(userBo);
                 costDetailBo.setCostMoney(costDetail.getCostMoney());
                 costDetailBo.setCostDesc(costDetail.getCostDesc());
-                costDetailBo.setCostDate(FormatUtil.formatDate2String(costDetail.getCostDate(), "yyyy-MM-dd"));
+                costDetailBo.setCostDate(FormatUtil.formatDate2String(costDetail.getCostDate(), SystemConstant.DATEPARTTEN));
                 // 设置分类信息
                 CostCategoryBo costCategoryBo = new CostCategoryBo();
                 CostCategory costCategory = costDetail.getCostCategory();
@@ -177,6 +180,30 @@ public class CostDetailServiceImpl implements CostDetailService {
                 costDetailBo.setCostGroup(costGroupBo);
                 costDetailBo.setCostId(costDetail.getCostId());
                 costDetailBos.add(costDetailBo);
+                // 设置结算信息
+                CostClean costClean = costDetail.getCostClean();
+                if (costClean != null){
+                    CostCleanBo costCleanBo = new CostCleanBo();
+                    costCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATEPARTTEN));
+                    costCleanBo.setComment(costClean.getComment());
+                    User cleanUser = costClean.getUser();
+                    ExtendUserBo cleanUserBo = new ExtendUserBo();
+                    Integer cleanUserId = cleanUser.getUserId();
+                    cleanUserBo.setUserId(cleanUserId);
+                    cleanUserBo.setNickName(cleanUser.getNickName());
+                    cleanUserBo.setAvatarUrl(cleanUser.getAvatarUrl());
+                    String cleanKey = currentUserId + "-"+cleanUserId;
+                    String cleanRemarkName = remarkNames.get(cleanKey);
+                    // 设置昵称
+                    if (cleanRemarkName == null){
+                        CostUserRemark cleanCostUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(cleanUserId, cleanUserId);
+                        cleanRemarkName = cleanRemarkName == null ? cleanUser.getNickName() : cleanCostUserRemark.getRemarkName();
+                        remarkNames.put(cleanKey, cleanRemarkName);
+                    }
+                    cleanUserBo.setRemarkName(cleanRemarkName);
+                    costCleanBo.setUser(cleanUserBo);
+                    costDetailBo.setCostClean(costCleanBo);
+                }
             }
         }
         return new BaseQueryResultBo<>(costDetailBos, costDetailPage.getNumber()+1, costDetailPage.getSize(), costDetailPage.getTotalElements(), costDetailPage.getTotalPages());
