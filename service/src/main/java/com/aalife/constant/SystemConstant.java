@@ -6,5 +6,5 @@ package com.aalife.constant;
  */
 public class SystemConstant {
     public static final Integer SYSTEM_ID = -9999;
-    public static final String DATEPARTTEN = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATEPATTERN = "yyyy-MM-dd";
 }

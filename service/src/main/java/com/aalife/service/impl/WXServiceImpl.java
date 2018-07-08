@@ -4,7 +4,6 @@ import com.aalife.bo.WxUserBo;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.AppConfigRepository;
 import com.aalife.exception.BizException;
-import com.aalife.service.InvoiceService;
 import com.aalife.service.UserActionLogService;
 import com.aalife.service.WXService;
 import com.aalife.utils.AesCbcUtil;
@@ -18,10 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
-/**
- * @author mosesc
- * @date 2018-07-04
- */
 @Service
 @Transactional
 public class WXServiceImpl implements WXService {
