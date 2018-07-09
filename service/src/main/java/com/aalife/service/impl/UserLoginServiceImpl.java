@@ -4,6 +4,7 @@ import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.entity.UserLogin;
 import com.aalife.dao.repository.UserLoginRepository;
+import com.aalife.exception.BizException;
 import com.aalife.service.UserLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import java.util.Date;
  * @date 2018-06-05
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = BizException.class)
 public class UserLoginServiceImpl implements UserLoginService {
     @Autowired
     private UserLoginRepository userLoginReposity;

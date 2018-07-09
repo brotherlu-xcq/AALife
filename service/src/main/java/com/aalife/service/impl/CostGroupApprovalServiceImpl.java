@@ -32,7 +32,7 @@ import java.util.List;
  * @date 2018-06-06
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = BizException.class)
 public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
     @Autowired
     private CostGroupRepository costGroupRepository;

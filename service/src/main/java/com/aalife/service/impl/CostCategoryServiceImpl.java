@@ -3,6 +3,7 @@ package com.aalife.service.impl;
 import com.aalife.bo.CostCategoryBo;
 import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.repository.CostCategoryRepository;
+import com.aalife.exception.BizException;
 import com.aalife.service.CostCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.List;
  * @date 2018-06-11
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = BizException.class)
 public class CostCategoryServiceImpl implements CostCategoryService {
     @Autowired
     private CostCategoryRepository costCategoryRepository;

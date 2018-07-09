@@ -19,7 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by mosesc on 07/04/18.
+ * @author mosesc
+ * @date 2018-07-09
  */
 @Service
 @Transactional
@@ -67,13 +68,25 @@ public class InvoiceServiceImpl implements InvoiceService {
         String data = null;
         String exception = null;
         Date startDate = new Date();
+        String devPid = appConfigRepository.findAppConfigValueByName("INVOICE", "DEV_ID");
+        String rate = appConfigRepository.findAppConfigValueByName("INVOICE", "RATE");
         try {
             String speech = Base64.getEncoder().encodeToString(content);
             logger.info("fileType:" + fileType);
             Map<String, Object> params = new HashMap<>(8);
-            params.put("dev_pid", 1537);
+            /**
+             * 自定义词库仅对dev_pid = 1536生效，并且原始音频的采用率为16K。最好在1万行以内。
+             * dev_pid	  语言	                     模型	 是否有标点	  备注
+             * 1536	    普通话(支持简单的英文识别)  搜索模型	 无标点	   支持自定义词库
+             * 1537	    普通话(纯中文识别)	      输入法模型	 有标点	   不支持自定义词库
+             * 1737	     英语		                         有标点	   不支持自定义词库
+             * 1637	     粤语		                         有标点	   不支持自定义词库
+             * 1837	   四川话		                         有标点	   不支持自定义词库
+             * 1936	   普通话远场	               远场模型	 有标点	   不支持
+             */
+            params.put("dev_pid", Integer.valueOf(devPid));
             params.put("format", fileType);
-            params.put("rate", 16000);
+            params.put("rate", Integer.valueOf(rate));
             params.put("token", token);
             params.put("cuid", UUIDUtil.get16BitUUID());
             params.put("channel", "1");

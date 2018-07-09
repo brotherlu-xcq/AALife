@@ -4,6 +4,7 @@ import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.entity.UserActionLog;
 import com.aalife.dao.repository.UserActionLogRepository;
+import com.aalife.exception.BizException;
 import com.aalife.service.UserActionLogService;
 import com.aalife.service.WebContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.Date;
  * @date 2018-07-03
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = BizException.class)
 public class UserActionLogServiceImpl implements UserActionLogService {
     @Autowired
     private WebContext webContext;

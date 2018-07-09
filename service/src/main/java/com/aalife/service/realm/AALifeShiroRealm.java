@@ -2,6 +2,7 @@ package com.aalife.service.realm;
 
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.UserRepository;
+import com.aalife.exception.BizException;
 import com.aalife.service.UserLoginService;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authc.AuthenticationException;
@@ -20,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Author brother lu
  * @date 2018-05-31
  */
-@Transactional
+@Transactional(rollbackFor = BizException.class)
 public class AALifeShiroRealm extends AuthorizingRealm {
     private static Logger logger = Logger.getLogger(AALifeShiroRealm.class);
     @Autowired

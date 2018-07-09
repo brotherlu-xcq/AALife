@@ -38,12 +38,13 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi(){
         return new Docket(DocumentationType.SWAGGER_2)
+                .enable(enable)
                 .apiInfo(getApiInfo())
                 .select()
                 // 对有API注解的api进行解析
                 .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
                 // 对哪些路径进行监控
-                .paths(enable ? PathSelectors.any() : PathSelectors.none())
+                .paths(PathSelectors.any())
                 .build();
     }
 

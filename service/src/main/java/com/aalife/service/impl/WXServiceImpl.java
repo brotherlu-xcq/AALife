@@ -17,6 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
+/**
+ * @author mosesc
+ * @date 2018-07-09
+ */
 @Service
 @Transactional
 public class WXServiceImpl implements WXService {

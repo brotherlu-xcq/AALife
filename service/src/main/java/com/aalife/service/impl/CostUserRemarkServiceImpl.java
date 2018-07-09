@@ -20,7 +20,7 @@ import java.util.Date;
  * @dare 2018-06-07
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = BizException.class)
 public class CostUserRemarkServiceImpl implements CostUserRemarkService {
     @Autowired
     private CostUserRemarkRepository costUserRemarkRepository;

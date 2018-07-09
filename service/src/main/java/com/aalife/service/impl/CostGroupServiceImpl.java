@@ -32,8 +32,7 @@ import java.util.List;
  * @date 2018-06-05
  */
 @Service
-@Transactional
-@RequiresAuthentication
+@Transactional(rollbackFor = BizException.class)
 public class CostGroupServiceImpl implements CostGroupService {
     @Autowired
     private CostGroupRepository costGroupRepository;

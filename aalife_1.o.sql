@@ -22,8 +22,7 @@ CREATE TABLE `user_login` (
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `user_login_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  KEY `user_id` (`user_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group`;
@@ -51,9 +50,7 @@ CREATE TABLE `cost_group_user` (
   `delete_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `group_id` (`group_id`),
-  CONSTRAINT `cost_group_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `cost_group_user_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `cost_group` (`id`)
+  KEY `group_id` (`group_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group_approval`;
@@ -70,10 +67,7 @@ CREATE TABLE `cost_group_approval` (
   PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   KEY `approval_id` (`approval_id`),
-  KEY `cost_group_approval_ibfk_2` (`user_id`),
-  CONSTRAINT `cost_group_approval_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `cost_group` (`id`),
-  CONSTRAINT `cost_group_approval_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `cost_group_approval_ibfk_3` FOREIGN KEY (`approval_id`) REFERENCES `user` (`id`)
+  KEY `cost_group_approval_ibfk_2` (`user_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_user_remark`;
@@ -86,9 +80,7 @@ CREATE TABLE `cost_user_remark` (
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`,`source_no`,`target_no`),
   KEY `source_no` (`source_no`),
-  KEY `target_no` (`target_no`),
-  CONSTRAINT `cost_user_remark_ibfk_1` FOREIGN KEY (`source_no`) REFERENCES `user` (`id`),
-  CONSTRAINT `cost_user_remark_ibfk_2` FOREIGN KEY (`target_no`) REFERENCES `user` (`id`)
+  KEY `target_no` (`target_no`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_clean`;
@@ -99,8 +91,7 @@ CREATE TABLE `cost_clean` (
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `cost_clean_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  KEY `user_id` (`user_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_category`;
@@ -131,11 +122,7 @@ CREATE TABLE `cost_detail` (
   KEY `user_id` (`user_id`),
   KEY `cate_id` (`cate_id`),
   KEY `group_id` (`group_id`),
-  KEY `clean_id` (`clean_id`),
-  CONSTRAINT `cost_detail_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `cost_detail_ibfk_2` FOREIGN KEY (`cate_id`) REFERENCES `cost_category` (`id`),
-  CONSTRAINT `cost_detail_ibfk_3` FOREIGN KEY (`group_id`) REFERENCES `cost_group` (`id`),
-  CONSTRAINT `cost_detail_ibfk_4` FOREIGN KEY (`clean_id`) REFERENCES `cost_clean` (`id`)
+  KEY `clean_id` (`clean_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `app_config`;
@@ -183,3 +170,5 @@ INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entr
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('5','WX','APPID','wx9c7abce098df46e1','-9999','2018-06-27 18:13:32');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('6','WX','SECRET','9fcee84ff426e4a939833a87e56c32e9','-9999','2018-06-27 18:13:49');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('7','WX','HOST','https://api.weixin.qq.com/sns/jscode2session','-9999','2018-06-27 18:14:17');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('11','INVOICE','DEV_PID','1536','-9999','2018-07-09 17:57:43');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('12','INVOICE','RATE','16000','-9999','2018-07-09 17:58:13');
