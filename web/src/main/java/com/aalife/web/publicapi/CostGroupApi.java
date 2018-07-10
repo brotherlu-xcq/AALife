@@ -1,8 +1,11 @@
 package com.aalife.web.publicapi;
 
+import com.aalife.bo.CostCleanBo;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
 import com.aalife.bo.CostGroupUserBo;
+import com.aalife.bo.ExtendCostCleanBo;
+import com.aalife.bo.ExtendUserBo;
 import com.aalife.framework.annotation.RolePermission;
 import com.aalife.framework.constant.PermissionType;
 import com.aalife.service.CostGroupService;

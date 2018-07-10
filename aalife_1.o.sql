@@ -87,11 +87,13 @@ DROP TABLE IF EXISTS `cost_clean`;
 CREATE TABLE `cost_clean` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
+  `group_id` INT(11) NOT NULL,
   `comment` VARCHAR(50) NOT NULL,
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  KEY `user_id` (`group_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_category`;

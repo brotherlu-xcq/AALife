@@ -28,6 +28,11 @@ public class CostClean {
     @NotNull
     private User user;
 
+    @JoinColumn(name = "group_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    private CostGroup costGroup;
+
     @Column(name = "comment")
     private String comment;
 
@@ -77,5 +82,13 @@ public class CostClean {
 
     public void setEntryDate(Date entryDate) {
         this.entryDate = entryDate;
+    }
+
+    public CostGroup getCostGroup() {
+        return costGroup;
+    }
+
+    public void setCostGroup(CostGroup costGroup) {
+        this.costGroup = costGroup;
     }
 }

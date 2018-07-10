@@ -8,7 +8,6 @@ import com.aalife.bo.CostDetailBo;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.ExtendUserBo;
 import com.aalife.bo.NewCostDetailBo;
-import com.aalife.bo.UserBo;
 import com.aalife.bo.WxQueryBo;
 import com.aalife.bo.WxQueryCriteriaBo;
 import com.aalife.constant.SystemConstant;
@@ -31,10 +30,6 @@ import com.aalife.service.InvoiceService;
 import com.aalife.service.WebContext;
 import com.aalife.utils.DateUtil;
 import com.aalife.utils.FormatUtil;
-import com.aalife.utils.HttpUtil;
-import com.aalife.utils.UUIDUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.hibernate.jpa.criteria.OrderImpl;
@@ -55,7 +50,6 @@ import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -230,12 +224,6 @@ public class CostDetailServiceImpl implements CostDetailService {
         if (invoice == null || invoice.getSize() == 0){
             return null;
         }
-        byte[] content;
-        try {
-            content = invoice.getBytes();
-        } catch (IOException e){
-            throw new BizException(e);
-        }
         // 初始化token，如果token存在且小于28天，则用Appconfig数据，否则从新生成
         AppConfig tokenConfig = appConfigRepository.findAppConfigByName("INVOICE", "TOKEN");
         tokenConfig = tokenConfig == null ? new AppConfig() : tokenConfig;
@@ -254,6 +242,17 @@ public class CostDetailServiceImpl implements CostDetailService {
         }
         String fileName = invoice.getOriginalFilename();
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        // 如果不是这三种格式的文件，那么需要转码
+//        if (!fileType.equalsIgnoreCase("pcm") || !fileType.equalsIgnoreCase("wav") || !fileType.equalsIgnoreCase("amr")){
+//            File tempInvoice = new File(UUIDUtil.get16BitUUID())
+//            InvoiceConvertUtil.getPcmAudioInputStream(invoice.);
+//        }
+        byte[] content;
+        try {
+            content = invoice.getBytes();
+        } catch (IOException e){
+            throw new BizException(e);
+        }
         String result = invoiceService.getInvoiceContent(token, fileType, content);
         CostDetailBo costDetail = new CostDetailBo();
         costDetail.setCostDesc(result);

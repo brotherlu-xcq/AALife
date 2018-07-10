@@ -3,6 +3,7 @@ package com.aalife.service;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
 import com.aalife.bo.CostGroupUserBo;
+import com.aalife.bo.ExtendCostCleanBo;
 import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.User;
 

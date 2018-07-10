@@ -3,7 +3,9 @@ package com.aalife.service.impl;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
 import com.aalife.bo.CostGroupUserBo;
+import com.aalife.bo.ExtendCostCleanBo;
 import com.aalife.dao.entity.*;
+import com.aalife.dao.repository.CostCleanRepository;
 import com.aalife.dao.repository.CostDetailRepository;
 import com.aalife.dao.repository.CostGroupApprovalRepository;
 import com.aalife.dao.repository.CostGroupRepository;
@@ -44,6 +46,8 @@ public class CostGroupServiceImpl implements CostGroupService {
     private CostDetailRepository costDetailRepository;
     @Autowired
     private CostGroupApprovalRepository costGroupApprovalRepository;
+    @Autowired
+    private CostCleanRepository costCleanRepository;
     @Autowired
     private WebContext webContext;
 
