@@ -68,7 +68,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         String data = null;
         String exception = null;
         Date startDate = new Date();
-        String devPid = appConfigRepository.findAppConfigValueByName("INVOICE", "DEV_ID");
+        String devPid = appConfigRepository.findAppConfigValueByName("INVOICE", "DEV_PID");
         String rate = appConfigRepository.findAppConfigValueByName("INVOICE", "RATE");
         try {
             String speech = Base64.getEncoder().encodeToString(content);

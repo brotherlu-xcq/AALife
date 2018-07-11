@@ -88,7 +88,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         String costDateStr = costDetailBo.getCostDate();
         Date costDate;
         try {
-            costDate = FormatUtil.parseString2Date(costDateStr, "yyyy-MM-dd");
+            costDate = FormatUtil.parseString2Date(costDateStr, SystemConstant.DATEPATTERN);
         } catch (ParseException e) {
             throw new BizException("时间格式错误，请参照 yyyy-MM-dd");
         }
@@ -112,7 +112,7 @@ public class CostDetailServiceImpl implements CostDetailService {
     }
 
     @Override
-    public void cleanCostDetail(Integer groupId, String comment) {
+    public Integer cleanCostDetail(Integer groupId, String comment) {
         //校验是否有数据
         int unCleanCount = costDetailRepository.findUnCleanDetailCount(groupId);
         if (unCleanCount == 0){
@@ -128,7 +128,9 @@ public class CostDetailServiceImpl implements CostDetailService {
         costClean.setEntryDate(new Date());
         costCleanRepository.save(costClean);
         // 开始结算
-        costDetailRepository.cleanCostDetailByGroup(groupId, costClean.getCleanId());
+        Integer cleanId = costClean.getCleanId();
+        costDetailRepository.cleanCostDetailByGroup(groupId, cleanId);
+        return cleanId;
     }
 
     @Override

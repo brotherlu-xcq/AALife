@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mosesc
@@ -46,9 +48,11 @@ public class CostDetailApi {
 
     @RequestMapping(value = "/costDetail/{groupId}/clean", method = RequestMethod.DELETE)
     @RolePermission(needPermission = PermissionType.ADMIN)
-    public JsonEntity<String> cleanCostDetail(@PathVariable(value = "groupId") Integer groupId, @RequestBody String comment){
-        costDetailService.cleanCostDetail(groupId, comment);
-        return ResponseHelper.createInstance("success");
+    public JsonEntity<Map<String, Integer>> cleanCostDetail(@PathVariable(value = "groupId") Integer groupId, @RequestBody String comment){
+        Map<String, Integer> data = new HashMap<>(2);
+        Integer cleanId = costDetailService.cleanCostDetail(groupId, comment);
+        data.put("cleanId", cleanId);
+        return ResponseHelper.createInstance(data);
     }
 
     @RequestMapping(value = "/costDetail/{groupId}/list", method = RequestMethod.POST)

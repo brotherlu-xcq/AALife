@@ -25,7 +25,7 @@ public interface CostDetailService {
      * @param groupId
      * @param comment
      */
-    void cleanCostDetail(Integer groupId, String comment);
+    Integer cleanCostDetail(Integer groupId, String comment);
 
     /**
      * 查询账单中为结算的记录，分页查询
