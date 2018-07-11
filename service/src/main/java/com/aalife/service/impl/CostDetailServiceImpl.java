@@ -113,10 +113,16 @@ public class CostDetailServiceImpl implements CostDetailService {
 
     @Override
     public void cleanCostDetail(Integer groupId, String comment) {
+        //校验是否有数据
+        int unCleanCount = costDetailRepository.findUnCleanDetailCount(groupId);
+        if (unCleanCount == 0){
+            throw new BizException("没有可以结算的记录");
+        }
         // 创建结算记录
         User currentUser = webContext.getCurrentUser();
         CostClean costClean = new CostClean();
         costClean.setUser(currentUser);
+        costClean.setCostGroup(costGroupRepository.findGroupById(groupId));
         costClean.setComment(comment);
         costClean.setEntryId(currentUser.getUserId());
         costClean.setEntryDate(new Date());

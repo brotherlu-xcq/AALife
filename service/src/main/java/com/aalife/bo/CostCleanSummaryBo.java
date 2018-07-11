@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class CostCleanSummaryBo {
     private CostGroupBo costGroupBo;
+    private CostCleanBo costCleanBo;
     private List<CostCleanCategoryBo> categorySummary;
     private List<CostGroupUserBo> userSummary;
 
@@ -17,6 +18,14 @@ public class CostCleanSummaryBo {
 
     public void setCostGroupBo(CostGroupBo costGroupBo) {
         this.costGroupBo = costGroupBo;
+    }
+
+    public CostCleanBo getCostCleanBo() {
+        return costCleanBo;
+    }
+
+    public void setCostCleanBo(CostCleanBo costCleanBo) {
+        this.costCleanBo = costCleanBo;
     }
 
     public List<CostCleanCategoryBo> getCategorySummary() {

@@ -115,7 +115,7 @@ public class CostGroupServiceImpl implements CostGroupService {
         User user = webContext.getCurrentUser();
         Integer userId = user.getUserId();
         // 检查账单消费记录是否都结算
-        BigDecimal groupTotalCost = costDetailRepository.findUnCleanTotalCostByGroup(groupId);
+        BigDecimal groupTotalCost = costDetailRepository.findTotalCostByGroup(groupId);
         if (groupTotalCost != null){
             throw new BizException("删除账单前请先结算所有消费");
         }
@@ -142,7 +142,7 @@ public class CostGroupServiceImpl implements CostGroupService {
             throw new BizException("退出该账单前需指定新的管理员或直接删除该账单");
         }
         // 校验该用户的账单是否已经结算
-        BigDecimal groupCost = costDetailRepository.findUnCleanTotalCostByGroup(groupId);
+        BigDecimal groupCost = costDetailRepository.findTotalCostByGroup(groupId);
         if (groupCost != null){
             throw new BizException("所在分组未结算，请先结算后再退出或联系账单管理员删除");
         }
@@ -162,7 +162,7 @@ public class CostGroupServiceImpl implements CostGroupService {
             throw new BizException("不能删除自己，可以选择退出操作或联系另一管理员");
         }
         // 删除用户前需结算该用户的消费记录
-        BigDecimal userCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, userId);
+        BigDecimal userCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, userId);
         if (userCost != null && userCost.intValue() != 0){
             throw new BizException("该用户有未结算的记录");
         }
@@ -209,7 +209,7 @@ public class CostGroupServiceImpl implements CostGroupService {
             CostGroupUser targetUser = costGroupUserRepository.findCostGroupByUserAndGroup(targetUserId, groupId);
             costGroupUserBo.setAdmin(targetUser.getAdmin());
             // 设置消费状况
-            BigDecimal totalCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, targetUserId);
+            BigDecimal totalCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, targetUserId);
             totalCost = totalCost == null ? new BigDecimal(0) : totalCost;
             groupTotalCost = groupTotalCost.add(totalCost);
             costGroupUserBo.setTotalCost(totalCost);

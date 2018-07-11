@@ -1,5 +1,6 @@
 package com.aalife.service;
 
+import com.aalife.bo.CostCleanSummaryBo;
 import com.aalife.bo.ExtendCostCleanBo;
 
 import java.util.List;
@@ -15,4 +16,12 @@ public interface CostCleanService {
      * @return
      */
     List<ExtendCostCleanBo> listCostCleans(Integer groupId);
+
+    /**
+     * 根据结算Id和账单Id查询对应得
+     * @param groupId
+     * @param cleanId
+     * @return
+     */
+    CostCleanSummaryBo findCostCleanSummaryById(Integer groupId, Integer cleanId);
 }

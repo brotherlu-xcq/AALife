@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author mosesc
@@ -22,25 +25,44 @@ public interface CostDetailRepository extends JpaRepository<CostDetail, Integer>
      * @param cleanId
      */
     @Modifying
-    @Query("UPDATE CostDetail cd SET cd.costClean.cleanId = :cleanId WHERE cd.costGroup.groupId = :groupId AND cd.deleteId IS NULL")
+    @Query(value = "UPDATE cost_detail SET clean_id= :cleanId WHERE group_id = :groupId AND clean_id IS NULL AND delete_id IS NULL", nativeQuery = true)
     void cleanCostDetailByGroup(@Param(value = "groupId") Integer groupId, @Param(value = "cleanId") Integer cleanId);
 
     /**
      * 根据用户ID和账单查询未结算的总金额
      * @param groupId
      * @param targetUserId
+     * @param cleanId
+     * @return
+     */
+    @Query(value = "SELECT SUM(cost_money) FROM cost_detail WHERE group_id = :groupId AND user_id= :userId AND clean_id = :cleanId AND delete_id is NULL", nativeQuery = true)
+    BigDecimal findTotalCostByUserAndGroup(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer targetUserId, @Param(value = "cleanId") Integer cleanId);
+
+    /**
+     * 根据用户ID和账单查询未结算的总金额，查询未结算的记录
+     * @param groupId
+     * @param targetUserId
      * @return
      */
     @Query(value = "SELECT SUM(cost_money) FROM cost_detail WHERE group_id = :groupId AND user_id= :userId AND clean_id IS NULL AND delete_id is NULL", nativeQuery = true)
-    BigDecimal findUnCleanTotalCostByUserAndGroup(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer targetUserId);
+    BigDecimal findTotalCostByUserAndGroup(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer targetUserId);
 
     /**
      * 获取账单为结算的记录
      * @param groupId
+     * @param cleanId
+     * @return
+     */
+    @Query(value = "SELECT SUM(cost_money) FROM cost_detail WHERE group_id = :groupId AND clean_id = :cleanId AND delete_id is NULL", nativeQuery = true)
+    BigDecimal findTotalCostByGroup(@Param(value = "groupId")Integer groupId, @Param(value = "cleanId") Integer cleanId);
+
+    /**
+     * 获取账单为结算的记录，查询未结算的记录
+     * @param groupId
      * @return
      */
     @Query(value = "SELECT SUM(cost_money) FROM cost_detail WHERE group_id = :groupId AND clean_id IS NULL AND delete_id is NULL", nativeQuery = true)
-    BigDecimal findUnCleanTotalCostByGroup(@Param(value = "groupId")Integer groupId);
+    BigDecimal findTotalCostByGroup(@Param(value = "groupId")Integer groupId);
 
     /**
      * 根据id假删除
@@ -50,4 +72,29 @@ public interface CostDetailRepository extends JpaRepository<CostDetail, Integer>
     @Modifying
     @Query("UPDATE CostDetail cd SET cd.deleteId = :userId, cd.deleteDate = now() WHERE cd.costId = :costId AND cd.deleteId IS NULL")
     void deleteCostDetailById(@Param(value = "costId")Integer costId, @Param(value = "userId")Integer userId);
+
+    /**
+     * 查询消费分类的花费情况
+     * @param groupId
+     * @param cleanId
+     * @return
+     */
+    @Query(value = "SELECT cate_id, SUM(cost_money) FROM cost_detail WHERE group_id = :groupId AND clean_id = :cleanId AND delete_id IS NULL GROUP BY cate_id", nativeQuery = true)
+    List<Object> findTotalCostForCostCateByGroup(@Param(value = "groupId")Integer groupId, @Param(value = "cleanId")Integer cleanId);
+
+    /**
+     * 查询消费分类的花费情况，查询未结算的记录
+     * @param groupId
+     * @return
+     */
+    @Query(value = "SELECT cate_id, SUM(cost_money) FROM cost_detail WHERE group_id = :groupId AND clean_id IS NULL AND delete_id IS NULL GROUP BY cate_id", nativeQuery = true)
+    List<Object> findTotalCostForCostCateByGroup(@Param(value = "groupId")Integer groupId);
+
+    /**
+     * 获取未计算记录的数量
+     * @param groupId
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_detail WHERE group_id = :groupId AND clean_id IS NULL AND delete_id IS NULL", nativeQuery = true)
+    int findUnCleanDetailCount(@Param(value = "groupId") Integer groupId);
 }

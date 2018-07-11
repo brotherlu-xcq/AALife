@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author mosesc
@@ -28,6 +30,7 @@ public class CostUserRemarkServiceImpl implements CostUserRemarkService {
     private UserRepository userRepository;
     @Autowired
     private WebContext webContext;
+    private static Map<String, String> remarkNames = new HashMap<>(8);
 
     @Override
     public void createRemarkName(CostUserRemarkBo costUserRemarkBo) {
@@ -52,5 +55,18 @@ public class CostUserRemarkServiceImpl implements CostUserRemarkService {
         }
         costUserRemark.setRemarkName(remarkName);
         costUserRemarkRepository.save(costUserRemark);
+        remarkNames = new HashMap<>(8);
+    }
+
+    @Override
+    public String getRemarkName(Integer sourceUserId, Integer targetUserId, String targetUserNickName) {
+        String key = sourceUserId+"-"+targetUserId;
+        String remarkName = remarkNames.get(key);
+        if (remarkName == null){
+            CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(sourceUserId, targetUserId);
+            remarkName = costUserRemark == null ? targetUserNickName : costUserRemark.getRemarkName();
+            remarkNames.put(key, remarkName);
+        }
+        return remarkName;
     }
 }

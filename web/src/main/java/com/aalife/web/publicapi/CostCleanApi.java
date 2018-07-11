@@ -35,8 +35,14 @@ public class CostCleanApi {
         return ResponseHelper.createInstance(costCleanService.listCostCleans(groupId));
     }
 
-    @RequestMapping(value = "/costClean/{}")
-    public JsonEntity<CostCleanSummaryBo> listCostCleanSummary(){
-        return null;
+    @RequestMapping(value = "/costClean/{cleanId}/costGroup/{groupId}", method = RequestMethod.GET)
+    @RolePermission(needPermission = PermissionType.USER)
+    public JsonEntity<CostCleanSummaryBo> listCostCleanSummary(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "cleanId") Integer cleanId){
+        return ResponseHelper.createInstance(costCleanService.findCostCleanSummaryById(groupId, cleanId));
+    }
+    @RequestMapping(value = "/costClean/unClean/costGroup/{groupId}", method = RequestMethod.GET)
+    @RolePermission(needPermission = PermissionType.USER)
+    public JsonEntity<CostCleanSummaryBo> listCostCleanSummary(@PathVariable(value = "groupId") Integer groupId){
+        return ResponseHelper.createInstance(costCleanService.findCostCleanSummaryById(groupId, null));
     }
 }

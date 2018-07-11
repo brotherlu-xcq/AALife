@@ -12,4 +12,13 @@ public interface CostUserRemarkService {
      * @param costUserRemarkBo
      */
     void createRemarkName(CostUserRemarkBo costUserRemarkBo);
+
+    /**
+     * 获取用户的昵称
+     * @param sourceUserId
+     * @param targetUserId
+     * @param targetUserNickName
+     * @return
+     */
+    String getRemarkName(Integer sourceUserId, Integer targetUserId, String targetUserNickName);
 }

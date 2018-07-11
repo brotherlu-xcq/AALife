@@ -107,12 +107,13 @@ public class UserServiceImpl implements UserService {
             if (costGroupUsersCount.size() == 1){
                 continue;
             }
-            BigDecimal groupCost = costDetailRepository.findUnCleanTotalCostByUserAndGroup(groupId, userId);
-            BigDecimal groupTotalCost = costDetailRepository.findUnCleanTotalCostByGroup(groupId);
+            BigDecimal groupCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, userId);
+            BigDecimal groupTotalCost = costDetailRepository.findTotalCostByGroup(groupId);
             // 计算总消费
             groupCost = groupCost == null ? new BigDecimal(0) : groupCost;
             totalCost = totalCost.add(groupCost);
             // 计算平均消费
+            groupTotalCost = groupTotalCost == null ? new BigDecimal(0) : groupTotalCost;
             BigDecimal count = new BigDecimal(costGroupUsersCount.size());
             BigDecimal groupAverageCost = groupTotalCost.divide(count, 2);
             BigDecimal groupLeftCost = groupAverageCost.subtract(groupCost);
