@@ -96,6 +96,15 @@ CREATE TABLE `cost_clean` (
   KEY `user_id` (`group_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `cost_clean_user`;
+CREATE TABLE `cost_clean_user` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `clean_id` INT(11) NOT NULL,
+  `user_id` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `cleanId` (`clean_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
 DROP TABLE IF EXISTS `cost_category`;
 CREATE TABLE `cost_category` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,

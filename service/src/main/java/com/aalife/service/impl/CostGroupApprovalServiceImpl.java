@@ -17,6 +17,7 @@ import com.aalife.dao.repository.CostUserRemarkRepository;
 import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.CostGroupApprovalService;
+import com.aalife.service.CostUserRemarkService;
 import com.aalife.service.WebContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,9 +44,7 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
     @Autowired
     private CostGroupUserRepository costGroupUserRepository;
     @Autowired
-    private CostUserRemarkRepository costUserRemarkRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private CostUserRemarkService costUserRemarkService;
 
     @Override
     public void createNewApproval(ApprovalBo approvalBo) {
@@ -88,6 +87,7 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
         }
         CostGroup costGroup = null;
         CostGroupBo costGroupBo = null;
+        Integer currentUserId = webContext.getCurrentUser().getUserId();
         for (CostGroupApproval costGroupApproval : costGroupApprovals){
             ApprovalInfoBo approvalInfoBo = new ApprovalInfoBo();
             approvalInfoBo.setComment(costGroupApproval.getComment());
@@ -104,13 +104,15 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
             //设置用户信息
             ExtendUserBo extendUserBo = new ExtendUserBo();
             User user = costGroupApproval.getUser();
-            extendUserBo.setUserId(user.getUserId());
-            extendUserBo.setNickName(user.getNickName());
+            String nickName = user.getNickName();
+            Integer targetUserId = user.getUserId();
+            extendUserBo.setUserId(targetUserId);
+            extendUserBo.setNickName(nickName);
             extendUserBo.setAvatarUrl(user.getAvatarUrl());
             approvalInfoBo.setUser(extendUserBo);
             // 设置备注名
-            CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(webContext.getCurrentUser().getUserId(), user.getUserId());
-            extendUserBo.setRemarkName(costUserRemark == null ? user.getNickName() : costUserRemark.getRemarkName());
+            String remarkName = costUserRemarkService.getRemarkName(currentUserId, targetUserId, nickName);
+            extendUserBo.setRemarkName(remarkName);
             approvalInfoBo.setCostGroup(costGroupBo);
             approvalInfoBos.add(approvalInfoBo);
         }

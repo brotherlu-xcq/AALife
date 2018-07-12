@@ -14,18 +14,23 @@ import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.AppConfig;
 import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.entity.CostClean;
+import com.aalife.dao.entity.CostCleanUser;
 import com.aalife.dao.entity.CostDetail;
 import com.aalife.dao.entity.CostGroup;
+import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.CostUserRemark;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.AppConfigRepository;
 import com.aalife.dao.repository.CostCategoryRepository;
 import com.aalife.dao.repository.CostCleanRepository;
+import com.aalife.dao.repository.CostCleanUserRepository;
 import com.aalife.dao.repository.CostDetailRepository;
 import com.aalife.dao.repository.CostGroupRepository;
+import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.CostUserRemarkRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.CostDetailService;
+import com.aalife.service.CostUserRemarkService;
 import com.aalife.service.InvoiceService;
 import com.aalife.service.WebContext;
 import com.aalife.utils.DateUtil;
@@ -39,6 +44,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -72,25 +78,29 @@ public class CostDetailServiceImpl implements CostDetailService {
     @Autowired
     private CostCleanRepository costCleanRepository;
     @Autowired
-    private CostUserRemarkRepository costUserRemarkRepository;
+    private CostCleanUserRepository costCleanUserRepository;
+    @Autowired
+    private CostUserRemarkService costUserRemarkService;
     @Autowired
     private AppConfigRepository appConfigRepository;
     @Autowired
     private WebContext webContext;
     @Autowired
     private InvoiceService invoiceService;
+    @Autowired
+    private CostGroupUserRepository costGroupUserRepository;
 
     @Override
     public void createNewCostDetail(NewCostDetailBo costDetailBo) {
         User currentUser = webContext.getCurrentUser();
-        String costDesc = costDetailBo.getCostDesc();
+        String costDesc = costDetailBo.getCostDesc() == null ? null : costDetailBo.getCostDesc().trim();
         CostCategory costCategory = costCategoryRepository.findOne(costDetailBo.getCateId());
         String costDateStr = costDetailBo.getCostDate();
         Date costDate;
         try {
             costDate = FormatUtil.parseString2Date(costDateStr, SystemConstant.DATEPATTERN);
         } catch (ParseException e) {
-            throw new BizException("时间格式错误，请参照 yyyy-MM-dd");
+            throw new BizException("时间格式错误，请参照 yyyy-MM-dd", e);
         }
         if (costCategory == null){
             throw new BizException("未查询到对应得分类");
@@ -113,6 +123,10 @@ public class CostDetailServiceImpl implements CostDetailService {
 
     @Override
     public Integer cleanCostDetail(Integer groupId, String comment) {
+        comment = comment == null ? comment : comment.trim();
+        if (StringUtils.isEmpty(comment)){
+            throw new BizException("结算备注不能为空");
+        }
         //校验是否有数据
         int unCleanCount = costDetailRepository.findUnCleanDetailCount(groupId);
         if (unCleanCount == 0){
@@ -127,8 +141,18 @@ public class CostDetailServiceImpl implements CostDetailService {
         costClean.setEntryId(currentUser.getUserId());
         costClean.setEntryDate(new Date());
         costCleanRepository.save(costClean);
-        // 开始结算
         Integer cleanId = costClean.getCleanId();
+        // 创建结算时的用户列表
+        List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
+        List<CostCleanUser> costCleanUsers = new ArrayList<>();
+        costGroupUsers.forEach(costGroupUser -> {
+            CostCleanUser costCleanUser = new CostCleanUser();
+            costCleanUser.setCostClean(costClean);
+            costCleanUser.setUser(costGroupUser.getUser());
+            costCleanUsers.add(costCleanUser);
+        });
+        costCleanUserRepository.save(costCleanUsers);
+        // 开始结算
         costDetailRepository.cleanCostDetailByGroup(groupId, cleanId);
         return cleanId;
     }
@@ -140,8 +164,6 @@ public class CostDetailServiceImpl implements CostDetailService {
         Page<CostDetail> costDetailPage = costDetailRepository.findAll(specification, pageRequest);
         List<CostDetail> costDetails = costDetailPage.getContent();
         List<CostDetailBo> costDetailBos = new ArrayList<>();
-        // 用户存放不至于每次重复查
-        Map<String, String> remarkNames = new HashMap<>(8);
         User currentUser = webContext.getCurrentUser();
         Integer currentUserId = currentUser.getUserId();
         if (costDetails != null){
@@ -149,17 +171,13 @@ public class CostDetailServiceImpl implements CostDetailService {
                 CostDetailBo costDetailBo = new CostDetailBo();
                 // 设置用户信息
                 User user = costDetail.getUser();
+                Integer targetUserId = user.getUserId();
+                String nickName = user.getNickName();
                 ExtendUserBo userBo = new ExtendUserBo();
                 userBo.setAvatarUrl(user.getAvatarUrl());
-                userBo.setNickName(user.getNickName());
+                userBo.setNickName(nickName);
                 userBo.setUserId(user.getUserId());
-                String key = currentUserId + "-"+user.getUserId();
-                String remarkName = remarkNames.get(key);
-                if (remarkName == null){
-                    CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(currentUserId, user.getUserId());
-                    remarkName = costUserRemark == null ? user.getNickName() : costUserRemark.getRemarkName();
-                    remarkNames.put(key, remarkName);
-                }
+                String remarkName = costUserRemarkService.getRemarkName(currentUserId, targetUserId, nickName);
                 userBo.setRemarkName(remarkName);
                 // 设置基本消费信息
                 costDetailBo.setUser(userBo);
@@ -191,17 +209,12 @@ public class CostDetailServiceImpl implements CostDetailService {
                     User cleanUser = costClean.getUser();
                     ExtendUserBo cleanUserBo = new ExtendUserBo();
                     Integer cleanUserId = cleanUser.getUserId();
+                    String cleanNickName = cleanUser.getNickName();
                     cleanUserBo.setUserId(cleanUserId);
-                    cleanUserBo.setNickName(cleanUser.getNickName());
+                    cleanUserBo.setNickName(cleanNickName);
                     cleanUserBo.setAvatarUrl(cleanUser.getAvatarUrl());
-                    String cleanKey = currentUserId + "-"+cleanUserId;
-                    String cleanRemarkName = remarkNames.get(cleanKey);
                     // 设置昵称
-                    if (cleanRemarkName == null){
-                        CostUserRemark cleanCostUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(cleanUserId, cleanUserId);
-                        cleanRemarkName = cleanRemarkName == null ? cleanUser.getNickName() : cleanCostUserRemark.getRemarkName();
-                        remarkNames.put(cleanKey, cleanRemarkName);
-                    }
+                    String cleanRemarkName = costUserRemarkService.getRemarkName(cleanUserId, cleanUserId, cleanNickName);
                     cleanUserBo.setRemarkName(cleanRemarkName);
                     costCleanBo.setUser(cleanUserBo);
                     costDetailBo.setCostClean(costCleanBo);
@@ -212,7 +225,7 @@ public class CostDetailServiceImpl implements CostDetailService {
     }
 
     @Override
-    public void deleteCostDetail(Integer costId) {
+    public void deleteCostDetail(Integer groupId, Integer costId) {
         User currentUser = webContext.getCurrentUser();
         CostDetail costDetail = costDetailRepository.findOne(costId);
         if (costDetail == null || costDetail.getDeleteId() != null){
@@ -221,10 +234,13 @@ public class CostDetailServiceImpl implements CostDetailService {
         if (costDetail.getCostClean() != null){
             throw new BizException("此消费记录已经结算");
         }
-        if (!currentUser.equals(costDetail.getUser().getUserId())){
-            throw new UnauthorizedException();
+        Integer currentUserId = currentUser.getUserId();
+        // 只有自己或则是管理员可以删除当前用户的记录
+        CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(currentUserId, groupId);
+        if (!currentUserId.equals(costDetail.getUser().getUserId()) && costGroupUser.getAdmin().equals('N')){
+            throw new BizException("只能删除自己的消费记录");
         }
-        costDetailRepository.deleteCostDetailById(costId, currentUser.getUserId());
+        costDetailRepository.deleteCostDetailById(costId, currentUserId);
     }
 
     @Override
@@ -250,11 +266,6 @@ public class CostDetailServiceImpl implements CostDetailService {
         }
         String fileName = invoice.getOriginalFilename();
         String fileType = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
-        // 如果不是这三种格式的文件，那么需要转码
-//        if (!fileType.equalsIgnoreCase("pcm") || !fileType.equalsIgnoreCase("wav") || !fileType.equalsIgnoreCase("amr")){
-//            File tempInvoice = new File(UUIDUtil.get16BitUUID())
-//            InvoiceConvertUtil.getPcmAudioInputStream(invoice.);
-//        }
         byte[] content;
         try {
             content = invoice.getBytes();

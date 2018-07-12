@@ -47,7 +47,7 @@ public class CostDetailApi {
     }
 
     @RequestMapping(value = "/costDetail/{groupId}/clean", method = RequestMethod.DELETE)
-    @RolePermission(needPermission = PermissionType.ADMIN)
+    @RolePermission(needPermission = PermissionType.USER)
     public JsonEntity<Map<String, Integer>> cleanCostDetail(@PathVariable(value = "groupId") Integer groupId, @RequestBody String comment){
         Map<String, Integer> data = new HashMap<>(2);
         Integer cleanId = costDetailService.cleanCostDetail(groupId, comment);
@@ -83,9 +83,10 @@ public class CostDetailApi {
      * @param costId
      * @return
      */
-    @RequestMapping(value = "/costDetail/detail/{costId}", method = RequestMethod.DELETE)
-    public JsonEntity<String> deleteCostDetail(@PathVariable(value = "costId") Integer costId){
-        costDetailService.deleteCostDetail(costId);
+    @RequestMapping(value = "/costDetail/costGroup/{groupId}detail/{costId}", method = RequestMethod.DELETE)
+    @RolePermission(needPermission = PermissionType.USER)
+    public JsonEntity<String> deleteCostDetail(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "costId") Integer costId){
+        costDetailService.deleteCostDetail(groupId, costId);
         return ResponseHelper.createInstance("success");
     }
 

@@ -36,9 +36,10 @@ public interface CostDetailService {
 
     /**
      * 删除消费记录
+     * @param groupId
      * @param costId
      */
-    void deleteCostDetail(Integer costId);
+    void deleteCostDetail(Integer groupId, Integer costId);
 
     /**
      * 用户录音获取消费信息

@@ -15,6 +15,7 @@ import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.framework.constant.PermissionType;
 import com.aalife.service.CostGroupService;
+import com.aalife.service.CostUserRemarkService;
 import com.aalife.service.WebContext;
 import com.aalife.utils.UUIDUtil;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
@@ -41,13 +42,11 @@ public class CostGroupServiceImpl implements CostGroupService {
     @Autowired
     private CostGroupUserRepository costGroupUserRepository;
     @Autowired
-    private CostUserRemarkRepository costUserRemarkRepository;
+    private CostUserRemarkService costUserRemarkService;
     @Autowired
     private CostDetailRepository costDetailRepository;
     @Autowired
     private CostGroupApprovalRepository costGroupApprovalRepository;
-    @Autowired
-    private CostCleanRepository costCleanRepository;
     @Autowired
     private WebContext webContext;
 
@@ -81,6 +80,7 @@ public class CostGroupServiceImpl implements CostGroupService {
     public void updateCostGroup(CostGroupBo costGroupBo) {
         String groupName = costGroupBo.getGroupName();
         Integer groupId = costGroupBo.getGroupNo();
+        groupName = groupName == null ? null : groupName.trim();
         if (StringUtils.isEmpty(groupName)){
             throw new BizException("账单名不能为空");
         }
@@ -144,7 +144,7 @@ public class CostGroupServiceImpl implements CostGroupService {
         // 校验该用户的账单是否已经结算
         BigDecimal groupCost = costDetailRepository.findTotalCostByGroup(groupId);
         if (groupCost != null){
-            throw new BizException("所在分组未结算，请先结算后再退出或联系账单管理员删除");
+            throw new BizException("所在账单还未结算，请先结算或联系账单管理员");
         }
         costGroupUserRepository.deleteCostGroupUser(userId, groupId, userId);
     }
@@ -195,15 +195,12 @@ public class CostGroupServiceImpl implements CostGroupService {
         for (CostGroupUser costGroupUserTemp : costGroupUsers){
             CostGroupUserBo costGroupUserBo = new CostGroupUserBo();
             Integer targetUserId = costGroupUserTemp.getUser().getUserId();
+            // 设置备注名
+            String nickName = costGroupUserTemp.getUser().getNickName();
             costGroupUserBo.setUserId(targetUserId);
-            CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(userId, targetUserId);
-            // 设置昵称
-            if (costUserRemark != null){
-                costGroupUserBo.setRemarkName(costUserRemark.getRemarkName());
-            } else {
-                costGroupUserBo.setRemarkName(costGroupUserTemp.getUser().getNickName());
-            }
-            costGroupUserBo.setNickName(costGroupUserTemp.getUser().getNickName());
+            String remarkName = costUserRemarkService.getRemarkName(userId, targetUserId, nickName);
+            costGroupUserBo.setRemarkName(remarkName);
+            costGroupUserBo.setNickName(nickName);
             costGroupUserBo.setAvatarUrl(costGroupUserTemp.getUser().getAvatarUrl());
             // 设置角色
             CostGroupUser targetUser = costGroupUserRepository.findCostGroupByUserAndGroup(targetUserId, groupId);
@@ -280,12 +277,8 @@ public class CostGroupServiceImpl implements CostGroupService {
         String nickName = targetUser.getNickName();
         costGroupUserBo.setNickName(nickName);
         costGroupUserBo.setAvatarUrl(targetUser.getAvatarUrl());
-        CostUserRemark costUserRemark = costUserRemarkRepository.findRemarkBySourceAndTarget(currentUser.getUserId(), userId);
-        costGroupUserBo.setRemarkName(nickName);
-        if (costUserRemark != null){
-            costGroupUserBo.setRemarkName(costUserRemark.getRemarkName());
-        }
-
+        String remarkName = costUserRemarkService.getRemarkName(currentUser.getUserId(), userId, nickName);
+        costGroupUserBo.setRemarkName(remarkName);
         costGroupUserBo.setAdmin(costGroupUser.getAdmin());
         return costGroupUserBo;
     }

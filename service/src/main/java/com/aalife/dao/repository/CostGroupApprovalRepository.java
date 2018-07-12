@@ -22,7 +22,7 @@ public interface CostGroupApprovalRepository extends JpaRepository<CostGroupAppr
      * @param groupId
      * @return
      */
-    @Query("SELECT cga FROM CostGroupApproval cga WHERE cga.user.userId = :userId AND cga.costGroup.groupId = :groupId and cga.status = 0 AND cga.costGroup.deleteId IS NULL")
+    @Query("SELECT cga FROM CostGroupApproval cga WHERE cga.user.userId = :userId AND cga.costGroup.groupId = :groupId  AND cga.costGroup.deleteId IS NULL")
     CostGroupApproval findApprovalByUserAndGroup(@Param(value = "userId") Integer userId, @Param(value = "groupId") Integer groupId);
 
     /**

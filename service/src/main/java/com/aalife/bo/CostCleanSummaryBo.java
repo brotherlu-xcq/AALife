@@ -7,25 +7,25 @@ import java.util.List;
  * @date 2018-07-10
  */
 public class CostCleanSummaryBo {
-    private CostGroupBo costGroupBo;
-    private CostCleanBo costCleanBo;
+    private CostGroupBo costGroup;
+    private CostCleanBo costClean;
     private List<CostCleanCategoryBo> categorySummary;
     private List<CostGroupUserBo> userSummary;
 
-    public CostGroupBo getCostGroupBo() {
-        return costGroupBo;
+    public CostGroupBo getCostGroup() {
+        return costGroup;
     }
 
-    public void setCostGroupBo(CostGroupBo costGroupBo) {
-        this.costGroupBo = costGroupBo;
+    public void setCostGroup(CostGroupBo costGroup) {
+        this.costGroup = costGroup;
     }
 
-    public CostCleanBo getCostCleanBo() {
-        return costCleanBo;
+    public CostCleanBo getCostClean() {
+        return costClean;
     }
 
-    public void setCostCleanBo(CostCleanBo costCleanBo) {
-        this.costCleanBo = costCleanBo;
+    public void setCostClean(CostCleanBo costClean) {
+        this.costClean = costClean;
     }
 
     public List<CostCleanCategoryBo> getCategorySummary() {

@@ -10,12 +10,14 @@ import com.aalife.bo.ExtendUserBo;
 import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.entity.CostClean;
+import com.aalife.dao.entity.CostCleanUser;
 import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.CostUserRemark;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.CostCategoryRepository;
 import com.aalife.dao.repository.CostCleanRepository;
+import com.aalife.dao.repository.CostCleanUserRepository;
 import com.aalife.dao.repository.CostDetailRepository;
 import com.aalife.dao.repository.CostGroupRepository;
 import com.aalife.dao.repository.CostGroupUserRepository;
@@ -56,6 +58,8 @@ public class CostCleanServiceImpl implements CostCleanService {
     @Autowired
     private CostGroupRepository costGroupRepository;
     @Autowired
+    private CostCleanUserRepository costCleanUserRepository;
+    @Autowired
     private CostUserRemarkService costUserRemarkService;
     @Autowired
     private CostCategoryRepository categoryRepository;
@@ -85,7 +89,7 @@ public class CostCleanServiceImpl implements CostCleanService {
             costGroupBo.setGroupNo(costGroup.getGroupId());
             costGroupBo.setGroupName(costGroup.getGroupName());
             costGroupBo.setGroupCode(costGroup.getGroupCode());
-            extendCostCleanBo.setCostGroupBo(costGroupBo);
+            extendCostCleanBo.setCostGroup(costGroupBo);
             // 设置用户信息
             User user = costClean.getUser();
             String nickName = user.getNickName();
@@ -101,6 +105,10 @@ public class CostCleanServiceImpl implements CostCleanService {
             BigDecimal groupTotalCost = costDetailRepository.findTotalCostByGroup(groupId, cleanId);
             groupTotalCost = groupTotalCost == null ? new BigDecimal(0) : groupTotalCost;
             extendCostCleanBo.setTotalCost(groupTotalCost);
+            // 设置平均消费
+            List<CostCleanUser> costCleanUsers = costCleanUserRepository.findCostCleanUsersByCleanId(cleanId);
+            BigDecimal count = new BigDecimal(costCleanUsers.size());
+            extendCostCleanBo.setAverageCost(groupTotalCost.divide(count, 2));
             extendCostCleanBos.add(extendCostCleanBo);
         }
         return extendCostCleanBos;
@@ -108,7 +116,6 @@ public class CostCleanServiceImpl implements CostCleanService {
 
     @Override
     public CostCleanSummaryBo findCostCleanSummaryById(Integer groupId, Integer cleanId) {
-        Integer currentUserId = webContext.getCurrentUser().getUserId();
         CostCleanSummaryBo costCleanSummaryBo = new CostCleanSummaryBo();
         // 设置账单信息
         CostGroupBo costGroupBo = new CostGroupBo();
@@ -116,7 +123,7 @@ public class CostCleanServiceImpl implements CostCleanService {
         costGroupBo.setGroupNo(groupId);
         costGroupBo.setGroupName(costGroup.getGroupName());
         costGroupBo.setGroupCode(costGroup.getGroupCode());
-        costCleanSummaryBo.setCostGroupBo(costGroupBo);
+        costCleanSummaryBo.setCostGroup(costGroupBo);
         // 设置结算信息
         if (cleanId != null){
             CostClean costClean = costCleanRepository.findOne(cleanId);
@@ -137,7 +144,7 @@ public class CostCleanServiceImpl implements CostCleanService {
             userBo.setNickName(nickName);
             userBo.setRemarkName(costUserRemarkService.getRemarkName(webContext.getCurrentUser().getUserId(), targetUserId, nickName));
             costCleanBo.setUser(userBo);
-            costCleanSummaryBo.setCostCleanBo(costCleanBo);
+            costCleanSummaryBo.setCostClean(costCleanBo);
         }
         // 设置按分类结算信息
         List<CostCleanCategoryBo> categorySummary = new ArrayList<>();
@@ -165,40 +172,57 @@ public class CostCleanServiceImpl implements CostCleanService {
         costCleanSummaryBo.setCategorySummary(categorySummary);
         // 按用户设置消费信息
         List<CostGroupUserBo> userSummary = new ArrayList<>();
-        List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
         BigDecimal groupTotalCost;
         if (cleanId == null){
             groupTotalCost = costDetailRepository.findTotalCostByGroup(groupId);
         } else {
             groupTotalCost = costDetailRepository.findTotalCostByGroup(groupId, cleanId);
         }
-
         groupTotalCost = groupTotalCost == null ? new BigDecimal(0) : groupTotalCost;
-        BigDecimal userCount = new BigDecimal(costGroupUsers.size());
-        BigDecimal groupAverageCost = groupTotalCost.divide(userCount, 2);
-        costGroupUsers.forEach(costGroupUser -> {
-            Integer targetUserId = costGroupUser.getUser().getUserId();
-            String nickName = costGroupUser.getUser().getNickName();
-            CostGroupUserBo costGroupUserBo = new CostGroupUserBo();
-            costGroupUserBo.setUserId(targetUserId);
-            costGroupUserBo.setAverageCost(groupAverageCost);
-            costGroupUserBo.setAvatarUrl(costGroupUser.getUser().getAvatarUrl());
-            costGroupUserBo.setAdmin(costGroupUser.getAdmin());
-            costGroupUserBo.setNickName(nickName);
-            costGroupUserBo.setRemarkName(costUserRemarkService.getRemarkName(currentUserId, targetUserId, nickName));
-            BigDecimal userTotalCost;
-            if (cleanId == null){
-                userTotalCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, targetUserId);
-            } else {
-                userTotalCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, targetUserId, cleanId);
-            }
-            userTotalCost = userTotalCost == null ? new BigDecimal(0) : userTotalCost;
-            BigDecimal leftCost = userTotalCost.subtract(groupAverageCost);
-            costGroupUserBo.setLeftCost(leftCost);
-            costGroupUserBo.setTotalCost(userTotalCost);
-            userSummary.add(costGroupUserBo);
-            costCleanSummaryBo.setUserSummary(userSummary);
-        });
+        // 获取未结算的用户信息
+        if (cleanId == null){
+            List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
+            BigDecimal userCount = new BigDecimal(costGroupUsers.size());
+            BigDecimal groupAverageCost = groupTotalCost.divide(userCount, 2);
+            costGroupUsers.forEach(costGroupUser -> {
+                User user = costGroupUser.getUser();
+                userSummary.add(createCostGroupUserBo(user, groupId, cleanId, groupAverageCost));
+                costCleanSummaryBo.setUserSummary(userSummary);
+            });
+        } else {
+            List<CostCleanUser> costCleanUsers = costCleanUserRepository.findCostCleanUsersByCleanId(cleanId);
+            BigDecimal userCount = new BigDecimal(costCleanUsers.size());
+            BigDecimal groupAverageCost = groupTotalCost.divide(userCount, 2);
+            costCleanUsers.forEach(costCleanUser -> {
+                User user = costCleanUser.getUser();
+                userSummary.add(createCostGroupUserBo(user, groupId, cleanId, groupAverageCost));
+                costCleanSummaryBo.setUserSummary(userSummary);
+            });
+        }
         return costCleanSummaryBo;
+    }
+
+    private CostGroupUserBo createCostGroupUserBo(User user, Integer groupId, Integer cleanId, BigDecimal groupAverageCost){
+        Integer currentUserId = webContext.getCurrentUser().getUserId();
+        Integer targetUserId = user.getUserId();
+        String nickName = user.getNickName();
+        CostGroupUserBo costGroupUserBo = new CostGroupUserBo();
+        costGroupUserBo.setUserId(targetUserId);
+        costGroupUserBo.setAvatarUrl(user.getAvatarUrl());
+        //todo costGroupUserBo.setAdmin(costCleanUser.getAdmin());
+        costGroupUserBo.setNickName(nickName);
+        costGroupUserBo.setAverageCost(groupAverageCost);
+        costGroupUserBo.setRemarkName(costUserRemarkService.getRemarkName(currentUserId, targetUserId, nickName));
+        BigDecimal userTotalCost;
+        if (cleanId == null){
+            userTotalCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, targetUserId);
+        } else {
+            userTotalCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, targetUserId, cleanId);
+        }
+        userTotalCost = userTotalCost == null ? new BigDecimal(0) : userTotalCost;
+        BigDecimal leftCost = userTotalCost.subtract(groupAverageCost);
+        costGroupUserBo.setLeftCost(leftCost);
+        costGroupUserBo.setTotalCost(userTotalCost);
+        return costGroupUserBo;
     }
 }

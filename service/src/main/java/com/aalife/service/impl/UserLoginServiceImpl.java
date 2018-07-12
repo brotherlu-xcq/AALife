@@ -21,7 +21,7 @@ import java.util.Date;
 @Transactional(rollbackFor = BizException.class)
 public class UserLoginServiceImpl implements UserLoginService {
     @Autowired
-    private UserLoginRepository userLoginReposity;
+    private UserLoginRepository userLoginRepository;
 
     @Override
     public void createLoginLog(User user) {
@@ -29,6 +29,6 @@ public class UserLoginServiceImpl implements UserLoginService {
         userLogin.setEntryDate(new Date());
         userLogin.setUser(user);
         userLogin.setEntryId(SystemConstant.SYSTEM_ID);
-        userLoginReposity.save(userLogin);
+        userLoginRepository.save(userLogin);
     }
 }
