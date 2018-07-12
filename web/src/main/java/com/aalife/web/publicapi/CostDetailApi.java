@@ -83,7 +83,7 @@ public class CostDetailApi {
      * @param costId
      * @return
      */
-    @RequestMapping(value = "/costDetail/costGroup/{groupId}detail/{costId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/costDetail/costGroup/{groupId}/detail/{costId}", method = RequestMethod.DELETE)
     @RolePermission(needPermission = PermissionType.USER)
     public JsonEntity<String> deleteCostDetail(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "costId") Integer costId){
         costDetailService.deleteCostDetail(groupId, costId);
