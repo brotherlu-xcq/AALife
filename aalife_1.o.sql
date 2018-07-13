@@ -165,6 +165,20 @@ CREATE TABLE `user_action_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `user_wx_form`;
+CREATE TABLE `user_wx_form` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `form_id` INT(11) NOT NULL,
+  `comment` VARCHAR(100) DEFAULT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  `delete_id` INT(11) DEFAULT NULL,
+  `delete_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `userId` (`user_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('1','吃喝','icon-chichihehe:before','-9999','2018-06-22 18:07:29');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('2','娱乐','icon-yule:beforee','-9999','2018-06-22 18:07:47');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('3','家电','icon-jiadian:before','-9999','2018-06-22 18:08:07');
