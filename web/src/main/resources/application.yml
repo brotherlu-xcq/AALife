@@ -9,6 +9,15 @@ swagger:
     email: 1285823170@qq.com
     url:
 
+threadPool:
+  name: aalife-async-thread
+  keepAlive: 5
+  allowCoreTimeOut: true
+  size:
+    max: 10
+    core: 3
+    capacity: 200
+
 server:
   port: 443
   ssl:

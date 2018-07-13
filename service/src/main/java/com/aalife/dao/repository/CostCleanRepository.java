@@ -19,6 +19,6 @@ public interface CostCleanRepository extends JpaRepository<CostClean, Integer> {
      * @param groupId
      * @return
      */
-    @Query("SELECT cl FROM CostClean cl WHERE cl.costGroup.groupId = :groupId")
+    @Query("SELECT cl FROM CostClean cl WHERE cl.costGroup.groupId = :groupId ORDER BY cl.cleanId DESC ")
     List<CostClean> findCostCleansByGroupId(@Param(value = "groupId")Integer groupId);
 }

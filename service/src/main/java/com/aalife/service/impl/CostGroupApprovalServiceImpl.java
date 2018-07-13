@@ -4,7 +4,9 @@ import com.aalife.bo.ApprovalBo;
 import com.aalife.bo.ApprovalInfoBo;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.ExtendUserBo;
+import com.aalife.bo.WxNotificationDetailBo;
 import com.aalife.constant.ApprovalStatus;
+import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.CostGroupApproval;
 import com.aalife.dao.entity.CostGroupUser;
@@ -18,6 +20,7 @@ import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.CostGroupApprovalService;
 import com.aalife.service.CostUserRemarkService;
+import com.aalife.service.NotificationService;
 import com.aalife.service.WebContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +29,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mosesc
@@ -45,6 +50,8 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
     private CostGroupUserRepository costGroupUserRepository;
     @Autowired
     private CostUserRemarkService costUserRemarkService;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public void createNewApproval(ApprovalBo approvalBo) {
@@ -76,6 +83,10 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
             costGroupApproval.setComment(comment);
         }
         costGroupApprovalRepository.save(costGroupApproval);
+        // 初始化发送信息的内容
+        WxNotificationDetailBo data = new WxNotificationDetailBo();
+        Integer groupId = costGroup.getGroupId();
+        notificationService.sendWxNotification(groupId, SystemConstant.APPROVAL_REQUEST, data, groupId);
     }
 
     @Override
