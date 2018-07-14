@@ -141,7 +141,7 @@ CREATE TABLE `app_config` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `app_name` VARCHAR(20) NOT NULL,
   `config_name` VARCHAR(50) NOT NULL,
-  `config_value` VARCHAR(100) DEFAULT NULL,
+  `config_value` VARCHAR(250) DEFAULT NULL,
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`,`app_name`,`config_name`)
@@ -162,14 +162,15 @@ CREATE TABLE `user_action_log` (
   `end_date` DATETIME DEFAULT NULL,
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `userId` (`user_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `user_wx_form`;
 CREATE TABLE `user_wx_form` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `user_id` INT(11) NOT NULL,
-  `form_id` INT(11) NOT NULL,
+  `form_id` VARCHAR(100) NOT NULL,
   `comment` VARCHAR(100) DEFAULT NULL,
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
@@ -195,5 +196,15 @@ INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entr
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('5','WX','APPID','wx9c7abce098df46e1','-9999','2018-06-27 18:13:32');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('6','WX','SECRET','9fcee84ff426e4a939833a87e56c32e9','-9999','2018-06-27 18:13:49');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('7','WX','HOST','https://api.weixin.qq.com/sns/jscode2session','-9999','2018-06-27 18:14:17');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('8','AALIFE','ENV','DEV','-9999','2018-07-09 10:08:36');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('10','INVOICE','TOKEN','24.90086ab62e7790c6c37f10b43dec2866.2592000.1533695317.282335-10462243','-9999','2018-07-09 10:28:37');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('11','INVOICE','DEV_PID','1536','-9999','2018-07-09 17:57:43');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('12','INVOICE','RATE','16000','-9999','2018-07-09 17:58:13');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('13','WX','TEMPLATE_HOST','https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=','-9999','2018-07-13 18:02:58');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('14','WX','SESSION_HOST','https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx9c7abce098df46e1&secret=9fcee84ff426e4a939833a87e56c32e9','-9999','2018-07-13 20:27:57');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('15','WX_PAGE','APPROVAL_REQUEST','pages/index/index?groupId=','-9999','2018-07-13 22:43:08');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('16','WX_TEMP','APPROVAL_REQUEST','MHNNdUvDh5lYh1rEMB9D8EGgQtMz9J2S9DFbyRpXWYw','-9999','2018-07-13 22:43:43');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('17','WX_PAGE','CLEAN_RESULT','pages/settleDetail/settleDetail','-9999','2018-07-13 22:44:57');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('18','WX_TEMP','CLEAN_RESULT','PncFKdUq4YVB88mT4SWnTR8RVas2H4h-fSqO4usThCQ','-9999','2018-07-13 23:49:58');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('19','WX_TEMP','APPROVAL_PASS','OncK6zz6194ietR8BVWtQKmz-7EtOhmB0WJyp3pbopg','-9999','2018-07-13 23:55:45');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('20','WX_PAGE','APPROVAL_PASS','pages/index/index?groupId=','-9999','2018-07-14 00:43:25');

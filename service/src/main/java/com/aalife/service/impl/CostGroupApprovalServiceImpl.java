@@ -22,6 +22,7 @@ import com.aalife.service.CostGroupApprovalService;
 import com.aalife.service.CostUserRemarkService;
 import com.aalife.service.NotificationService;
 import com.aalife.service.WebContext;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,7 @@ import java.util.Map;
 @Service
 @Transactional(rollbackFor = BizException.class)
 public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
+    private static Logger logger = Logger.getLogger(CostGroupApprovalService.class);
     @Autowired
     private CostGroupRepository costGroupRepository;
     @Autowired
@@ -81,12 +83,34 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
             costGroupApproval.setEntryDate(new Date());
         } else{
             costGroupApproval.setComment(comment);
+            costGroupApproval.setStatus(0);
+            costGroupApproval.setApprovalUser(null);
+            costGroupApproval.setApprovalDate(null);
         }
         costGroupApprovalRepository.save(costGroupApproval);
         // 初始化发送信息的内容
-        WxNotificationDetailBo data = new WxNotificationDetailBo();
-        Integer groupId = costGroup.getGroupId();
-        notificationService.sendWxNotification(groupId, SystemConstant.APPROVAL_REQUEST, data, groupId);
+        try{
+            Integer groupId = costGroup.getGroupId();
+            List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
+            costGroupUsers.forEach(costGroupUser1 -> {
+                if (costGroupUser1.getAdmin().equals('Y')){
+                    WxNotificationDetailBo data = new WxNotificationDetailBo();
+                    Map<String, Object> groupName = new HashMap<>(2);
+                    groupName.put("value", costGroup.getGroupName());
+                    data.setKeyword1(groupName);
+                    Map<String, Object> userName = new HashMap<>(2);
+                    userName.put("value", currentUser.getNickName());
+                    data.setKeyword2(userName);
+                    Map<String, Object> commentTemp = new HashMap<>(2);
+                    commentTemp.put("value", comment);
+                    data.setKeyword3(commentTemp);
+                    Integer targetUserId = costGroupUser1.getUser().getUserId();
+                    notificationService.sendWxNotification(targetUserId, SystemConstant.APPROVAL_REQUEST, data, String.valueOf(groupId));
+                }
+            });
+        } catch (Exception e){
+            logger.error("异步发送信息失败", e);
+        }
     }
 
     @Override
@@ -152,5 +176,21 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
         costGroupUser.setEntryId(currentUser.getUserId());
         costGroupUser.setEntryDate(new Date());
         costGroupUserRepository.save(costGroupUser);
+        // 异步发送信息
+        try{
+            WxNotificationDetailBo data = new WxNotificationDetailBo();
+            Map<String, Object> groupName = new HashMap<>(2);
+            groupName.put("value", costGroup.getGroupName());
+            data.setKeyword1(groupName);
+            Map<String, Object> userName = new HashMap<>(2);
+            userName.put("value", currentUser.getNickName());
+            data.setKeyword2(userName);
+            Map<String, Object> commentTemp = new HashMap<>(2);
+            commentTemp.put("value", "欢迎加入哦");
+            data.setKeyword3(commentTemp);
+            notificationService.sendWxNotification(userId, SystemConstant.APPROVAL_PASS, data, String.valueOf(groupId));
+        } catch (Exception e){
+            logger.error("异步发送信息失败", e);
+        }
     }
 }

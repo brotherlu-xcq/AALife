@@ -1,15 +1,6 @@
 package com.aalife.service.impl;
 
-import com.aalife.bo.BaseQueryBo;
-import com.aalife.bo.BaseQueryResultBo;
-import com.aalife.bo.CostCategoryBo;
-import com.aalife.bo.CostCleanBo;
-import com.aalife.bo.CostDetailBo;
-import com.aalife.bo.CostGroupBo;
-import com.aalife.bo.ExtendUserBo;
-import com.aalife.bo.NewCostDetailBo;
-import com.aalife.bo.WxQueryBo;
-import com.aalife.bo.WxQueryCriteriaBo;
+import com.aalife.bo.*;
 import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.AppConfig;
 import com.aalife.dao.entity.CostCategory;
@@ -29,10 +20,7 @@ import com.aalife.dao.repository.CostGroupRepository;
 import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.CostUserRemarkRepository;
 import com.aalife.exception.BizException;
-import com.aalife.service.CostDetailService;
-import com.aalife.service.CostUserRemarkService;
-import com.aalife.service.InvoiceService;
-import com.aalife.service.WebContext;
+import com.aalife.service.*;
 import com.aalife.utils.DateUtil;
 import com.aalife.utils.FormatUtil;
 import org.apache.log4j.Logger;
@@ -54,6 +42,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,6 +78,8 @@ public class CostDetailServiceImpl implements CostDetailService {
     private InvoiceService invoiceService;
     @Autowired
     private CostGroupUserRepository costGroupUserRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public void createNewCostDetail(NewCostDetailBo costDetailBo) {
@@ -133,10 +124,11 @@ public class CostDetailServiceImpl implements CostDetailService {
             throw new BizException("没有可以结算的记录");
         }
         // 创建结算记录
+        CostGroup costGroup = costGroupRepository.findGroupById(groupId);
         User currentUser = webContext.getCurrentUser();
         CostClean costClean = new CostClean();
         costClean.setUser(currentUser);
-        costClean.setCostGroup(costGroupRepository.findGroupById(groupId));
+        costClean.setCostGroup(costGroup);
         costClean.setComment(comment);
         costClean.setEntryId(currentUser.getUserId());
         costClean.setEntryDate(new Date());
@@ -154,6 +146,45 @@ public class CostDetailServiceImpl implements CostDetailService {
         costCleanUserRepository.save(costCleanUsers);
         // 开始结算
         costDetailRepository.cleanCostDetailByGroup(groupId, cleanId);
+        // 异步发送微信信息
+        try {
+            BigDecimal groupTotalCost = costDetailRepository.findTotalCostByGroup(groupId, cleanId);
+            groupTotalCost = groupTotalCost == null ? new BigDecimal(0) : groupTotalCost;
+            BigDecimal count = new BigDecimal(costGroupUsers.size());
+            BigDecimal averageCost = groupTotalCost.divide(count, 2);
+            // 初始化发送信息的内容
+            BigDecimal zero = new BigDecimal(0);
+            costGroupUsers.forEach(costGroupUser -> {
+                BigDecimal userCost = costDetailRepository.findTotalCostByUserAndGroup(groupId, costGroupUser.getUser().getUserId(), cleanId);
+                userCost = userCost == null ? new BigDecimal(0) : userCost;
+                BigDecimal leftCost = userCost.subtract(averageCost);
+                WxNotificationDetailBo data = new WxNotificationDetailBo();
+                Map<String, Object> groupName = new HashMap<>(2);
+                groupName.put("value", costGroup.getGroupName());
+                data.setKeyword1(groupName);
+                Map<String, Object> userName = new HashMap<>(2);
+                userName.put("value", currentUser.getNickName());
+                data.setKeyword2(userName);
+                Map<String, Object> averageCostTemp = new HashMap<>(2);
+                averageCostTemp.put("value", userCost.doubleValue() + "元");
+                data.setKeyword3(averageCostTemp);
+                Map<String, Object> groupTotalCostTemp = new HashMap<>(2);
+                groupTotalCostTemp.put("value", averageCost.doubleValue() + "元");
+                data.setKeyword4(groupTotalCostTemp);
+                Map<String, Object> leftCostTemp = new HashMap<>(2);
+                String sax = "收";
+                if (leftCost.compareTo(zero) < 0){
+                    leftCost = zero.subtract(leftCost);
+                    sax = "付";
+                }
+                leftCostTemp.put("value", sax+leftCost.doubleValue() + "元");
+                data.setKeyword5(leftCostTemp);
+                String tail = "?groupId="+groupId+"&cleanId="+cleanId;
+                notificationService.sendWxNotification(costGroupUser.getUser().getUserId(), SystemConstant.CLEAN_RESULT, data, tail);
+            });
+        } catch (Exception e){
+            logger.error("异步发送信息失败", e);
+        }
         return cleanId;
     }
 

@@ -20,7 +20,7 @@ public interface NotificationService {
      * @param targetUserId
      * @param templateCate
      * @param content
-     * @param targetId
+     * @param tail
      */
-    void sendWxNotification(Integer targetUserId, String templateCate, WxNotificationDetailBo content, Integer targetId);
+    void sendWxNotification(Integer targetUserId, String templateCate, WxNotificationDetailBo content, String tail);
 }

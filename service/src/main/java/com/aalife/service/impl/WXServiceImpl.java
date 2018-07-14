@@ -1,6 +1,7 @@
 package com.aalife.service.impl;
 
 import com.aalife.bo.WxUserBo;
+import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.User;
 import com.aalife.dao.repository.AppConfigRepository;
 import com.aalife.exception.BizException;
@@ -14,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -32,7 +34,6 @@ public class WXServiceImpl implements WXService {
 
     @Override
     public User getWXUserInfo(WxUserBo wxUser) {
-
         String appId = appConfigRepository.findAppConfigValueByName("WX", "APPID");
         String secret = appConfigRepository.findAppConfigValueByName("WX", "SECRET");
         String host = appConfigRepository.findAppConfigValueByName("WX", "HOST");
@@ -76,6 +77,32 @@ public class WXServiceImpl implements WXService {
         } catch (Exception e){
             logger.error("解析用户信息出错", e);
             throw new BizException("解析用户信息出错");
+        }
+    }
+
+    @Override
+    public String getWXUserAccessToken() {
+        String url = appConfigRepository.findAppConfigValueByName(SystemConstant.WX, SystemConstant.SESSION_HOST);
+        String data = null;
+        String exception = null;
+        Date startDate = new Date();
+        try {
+            data = HttpUtil.doGet(url);
+            JSONObject object = JSON.parseObject(data);
+            String accessToken = object.getString(SystemConstant.WX_ACCESS_TOKEN);
+            if (StringUtils.isEmpty(accessToken)){
+                throw new BizException("获取微信Token失败，返回数据"+data);
+            }
+            return accessToken;
+        } catch (Exception e){
+            exception = e.getMessage();
+            throw new BizException("获取微信Token失败", e);
+        } finally {
+            try {
+                userActionLogService.saveUserActionLog(WXService.class.getName()+".getWXUserAccessToken", "GET "+url, null, data, exception, null, null, startDate, new Date());
+            } catch (Exception e){
+                logger.warn("保存日志失败", e);
+            }
         }
     }
 }

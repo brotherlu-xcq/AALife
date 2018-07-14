@@ -17,4 +17,9 @@ public class SystemConstant {
 
     public static final String WX_PAGE = "WX_PAGE";
     public static final String WX_TEMP = "WX_TEMP";
+
+    public static final String WX = "WX";
+    public static final String TEMPLATE_HOST = "TEMPLATE_HOST";
+    public static final String SESSION_HOST = "SESSION_HOST";
+    public static final String WX_ACCESS_TOKEN = "access_token";
 }

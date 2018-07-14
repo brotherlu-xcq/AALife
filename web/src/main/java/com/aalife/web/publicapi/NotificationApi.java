@@ -23,7 +23,7 @@ public class NotificationApi {
     @Autowired
     private NotificationService notificationService;
 
-    @RequestMapping(value = "/notification/collect/id", method = RequestMethod.POST)
+    @RequestMapping(value = "/notification/collect/formId", method = RequestMethod.POST)
     public JsonEntity<String> collectFormId(@RequestBody String formId){
         notificationService.collectFormId(formId);
         return ResponseHelper.createInstance("success");

@@ -14,4 +14,10 @@ public interface WXService {
      * @return
      */
     User getWXUserInfo(WxUserBo wxUser);
+
+    /**
+     * 请求获取微信session
+     * @return
+     */
+    String getWXUserAccessToken();
 }

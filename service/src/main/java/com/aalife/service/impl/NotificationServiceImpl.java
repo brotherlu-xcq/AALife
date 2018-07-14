@@ -7,6 +7,7 @@ import com.aalife.dao.entity.User;
 import com.aalife.dao.entity.UserWxForm;
 import com.aalife.dao.repository.AppConfigRepository;
 import com.aalife.dao.repository.UserWxFormRepository;
+import com.aalife.exception.BizException;
 import com.aalife.service.NotificationService;
 import com.aalife.service.UserActionLogService;
 import com.aalife.service.WXService;
@@ -14,6 +15,8 @@ import com.aalife.service.WebContext;
 import com.aalife.utils.DateUtil;
 import com.aalife.utils.HttpUtil;
 import com.aalife.utils.JSONUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -41,6 +44,8 @@ public class NotificationServiceImpl implements NotificationService {
     private AppConfigRepository appConfigRepository;
     @Autowired
     private UserActionLogService userActionLogService;
+    @Autowired
+    private WXService wxService;
 
     @Override
     public void collectFormId(String formId) {
@@ -59,7 +64,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Async
-    public void sendWxNotification(Integer targetUserId, String templateCate, WxNotificationDetailBo content, Integer targetId) {
+    public void sendWxNotification(Integer targetUserId, String templateCate, WxNotificationDetailBo content, String tail) {
         logger.info("================== 开始异步发送微信通知 ===================");
         long startTime = System.currentTimeMillis();
         List<UserWxForm> userWxForms = userWxFormRepository.findUserWxFormByUserId(targetUserId);
@@ -67,6 +72,11 @@ public class NotificationServiceImpl implements NotificationService {
         String userName = null;
         if (userWxForms != null && userWxForms.size() > 0){
             User targetUser = null;
+            String templateId = appConfigRepository.findAppConfigValueByName(SystemConstant.WX_TEMP, templateCate);
+            String pagePath = appConfigRepository.findAppConfigValueByName(SystemConstant.WX_PAGE, templateCate);
+            String url = appConfigRepository.findAppConfigValueByName(SystemConstant.WX, SystemConstant.TEMPLATE_HOST);
+            String accessToken = wxService.getWXUserAccessToken();
+            url = url + accessToken;
             for (UserWxForm userWxForm : userWxForms){
                 targetUser = targetUser == null ? userWxForm.getUser() : targetUser;
                 String wxOpenId = targetUser.getWxOpenId();
@@ -75,24 +85,27 @@ public class NotificationServiceImpl implements NotificationService {
                 wxNotificationBo.setData(content);
                 wxNotificationBo.setForm_id(userWxForm.getFormId());
                 wxNotificationBo.setTouser(wxOpenId);
-                wxNotificationBo.setEmphasis_keyword("keyword1");
-                wxNotificationBo.setPage("");
+                wxNotificationBo.setEmphasis_keyword("keyword1.DATA");
+                wxNotificationBo.setPage(pagePath+tail);
                 wxNotificationBo.setTemplate_id(templateId);
-                String url = null;
+                String contentTemp = JSONUtil.object2JsonString(wxNotificationBo);
                 String data = null;
                 String exception = null;
                 Date today = new Date();
                 userName = targetUser.getNickName();
-
+                // 如果formId超时那么删除它
                 Date entryDate = userWxForm.getEntryDate();
                 boolean outTime = DateUtil.getHoursGap(entryDate, today)/24 > 7;
-                // 如果formId超时那么删除它
                 if (outTime){
                     deleteFormId(userWxForm, SystemConstant.NOTIFICATION_MSG1);
                     continue;
                 }
                 try {
-                    data = HttpUtil.doPost(url, JSONUtil.object2JsonString(wxNotificationBo));
+                    data = HttpUtil.doPost(url, contentTemp);
+                    JSONObject object = JSON.parseObject(data);
+                    if (object.getIntValue("errcode") != 0){
+                        throw new BizException("发送微信模板信息失败，返回数据："+data);
+                    }
                     deleteFormId(userWxForm, SystemConstant.NOTIFICATION_MSG2);
                     sentNotification = true;
                     logger.info("=============== 成功向用户：{userId:"+targetUserId+", userName: "+userName+"}发送通知 ===============");
@@ -104,7 +117,7 @@ public class NotificationServiceImpl implements NotificationService {
                 } finally {
                     // 保存请求日志
                     try {
-                        userActionLogService.saveUserActionLog(NotificationService.class.getName()+".sendWxNotification", "POST "+url, content, data, exception, null, null, today, new Date());
+                        userActionLogService.saveUserActionLog(NotificationService.class.getName()+".sendWxNotification", "POST "+url, contentTemp, data, exception, null, null, today, new Date());
                     } catch (Exception e){
                         logger.info("保存请求日志失败", e);
                     }
