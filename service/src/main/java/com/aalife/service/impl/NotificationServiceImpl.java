@@ -53,7 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
     private WXService wxService;
     @Autowired
     private JavaMailSender javaMailSender;
-    @Value("spring.mail.from")
+    @Value("${spring.mail.from}")
     private String mailFrom;
 
     @Override
@@ -151,6 +151,8 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendMailNotification(String to, String cc, String bcc, String subject, String mailContent, String fileToAttach) {
         logger.info("================= 发送邮件信息开始，收件人："+to+" ======================");
         long startTime = System.currentTimeMillis();
+        Date today = new Date();
+        String exception = null;
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
@@ -160,7 +162,15 @@ public class NotificationServiceImpl implements NotificationService {
             helper.setText(mailContent, true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
+            exception = e.getMessage();
             logger.warn("发送邮件失败", e);
+        } finally {
+            // 保存发送邮件日志
+            try {
+                userActionLogService.saveUserActionLog(NotificationService.class.getName()+".sendMailNotification", null, "{from:"+mailFrom+"， to:"+to+", cc:"+cc+", subject: "+subject+", content: "+mailContent+"}", null, exception, null, null, today, new Date());
+            } catch (Exception e){
+                logger.info("保存邮件日志失败", e);
+            }
         }
         long gaps = System.currentTimeMillis() - startTime;
         logger.info("================= 发送邮件信息结束，花费时间："+gaps+"ms ==================");

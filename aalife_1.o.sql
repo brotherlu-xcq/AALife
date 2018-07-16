@@ -7,9 +7,9 @@ CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `wx_openid` varchar(50) NOT NULL,
   `nick_name` varchar(50) DEFAULT NULL,
+  `avatar_url` varchar(250) DEFAULT NULL,
   `entry_id` int(11) NOT NULL,
   `entry_date` datetime NOT NULL,
-  `avatar_url` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userI1` (`wx_openid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
@@ -62,8 +62,8 @@ CREATE TABLE `cost_group_approval` (
   `status` INT(11) NOT NULL DEFAULT '0' COMMENT '0：未处理 1：已接受',
   `approval_id` INT(11) DEFAULT NULL,
   `approval_date` DATETIME DEFAULT NULL,
-  `entry_date` DATETIME NOT NULL,
   `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   KEY `cost_group_approvalI1` (`group_id`),
   KEY `cost_group_approvalI2` (`approval_id`),
@@ -141,7 +141,7 @@ CREATE TABLE `app_config` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `app_name` VARCHAR(20) NOT NULL,
   `config_name` VARCHAR(50) NOT NULL,
-  `config_value` VARCHAR(250) DEFAULT NULL,
+  `config_value` TEXT DEFAULT NULL,
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`,`app_name`,`config_name`)
@@ -209,7 +209,7 @@ INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entr
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('18','WX_TEMP','CLEAN_RESULT','PncFKdUq4YVB88mT4SWnTR8RVas2H4h-fSqO4usThCQ','-9999','2018-07-13 23:49:58');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('19','WX_TEMP','APPROVAL_PASS','OncK6zz6194ietR8BVWtQKmz-7EtOhmB0WJyp3pbopg','-9999','2018-07-13 23:55:45');
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('20','WX_PAGE','APPROVAL_PASS','pages/index/index?groupId=','-9999','2018-07-14 00:43:25');
-INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('9','MAIL_TEMP','DAILY_REPORT','<html>\r\n<body>\r\n    <h1>${date}网站统计报表</h1>\r\n    <table>\r\n        <thead>\r\n            <th>业务模块</th>\r\n            <th>日增量</th>\r\n        </thead>\r\n        <tbody>\r\n            <#list data as item>\r\n                <tr>\r\n                    <td>${item.name}</td>\r\n                    <td>${item.value}</td>\r\n                </tr>\r\n            </#list>\r\n        </tbody>\r\n    </table>\r\n</body>\r\n</html>','-9999','2018-07-16 18:25:24');
-INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('10','MAIL_TO','DAILY_REPORT','1285823170@qq.com','-9999','2018-07-16 18:25:50');
-INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('11','MAIL_CC','DAILY_REPORT','1285823170@qq.com','-9999','2018-07-16 18:26:14');
-INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('12','MAIL_SUB','DAILY_REPORT','测试邮件','-9999','2018-07-16 18:26:39');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('21','MAIL_TEMP','DAILY_REPORT','<table>\r\n	<th>业务块</th>\r\n	<th>数量</th>\r\n	<#list data as item>\r\n	<tr>\r\n		<td>${item.name}</td>\r\n		<td>${item.value}</td>\r\n	</tr>\r\n	</#list>\r\n</table>','-9999','2018-07-16 18:25:24');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('22','MAIL_TO','DAILY_REPORT','1285823170@qq.com','-9999','2018-07-16 18:25:50');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('23','MAIL_CC','DAILY_REPORT','1285823170@qq.com','-9999','2018-07-16 18:26:14');
+INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('24','MAIL_SUB','DAILY_REPORT','测试邮件','-9999','2018-07-16 18:26:39');

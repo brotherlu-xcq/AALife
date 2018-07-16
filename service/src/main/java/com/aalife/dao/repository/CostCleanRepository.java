@@ -21,4 +21,11 @@ public interface CostCleanRepository extends JpaRepository<CostClean, Integer> {
      */
     @Query("SELECT cl FROM CostClean cl WHERE cl.costGroup.groupId = :groupId ORDER BY cl.cleanId DESC ")
     List<CostClean> findCostCleansByGroupId(@Param(value = "groupId")Integer groupId);
+
+    /**
+     * 查询每日新建的消费记录总数
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_clean WHERE datediff(now(), entry_date) = 0", nativeQuery = true)
+    Integer findCostCleanDailyReport();
 }

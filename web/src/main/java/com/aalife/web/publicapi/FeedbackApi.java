@@ -1,9 +1,10 @@
 package com.aalife.web.publicapi;
 
-import com.aalife.web.util.JsonEntity;
+import com.aalife.service.ReporterService;
 import io.swagger.annotations.Api;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,9 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2018-06-12
  */
 @Api
-@RequiresAuthentication
 @RestController
 @RequestMapping(value = "/public/api")
 public class FeedbackApi {
-//    public JsonEntity<String> createNew
+    @Autowired
+    private ReporterService reporterService;
+
+    @RequestMapping(value = "/sendEmail", method = RequestMethod.GET)
+    public void testSendEmail(){
+        reporterService.sendDailyBizNotification();
+    }
 }

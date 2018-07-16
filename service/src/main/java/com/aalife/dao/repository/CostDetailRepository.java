@@ -109,13 +109,13 @@ public interface CostDetailRepository extends JpaRepository<CostDetail, Integer>
      * 查询每日新建的消费记录总数
      * @return
      */
-    @Query(value = "SELECT count(id) FROM cost_detail WHERE datediff(entry_date, now()) = 0 WHERE datediff(now(), delete_date) = 0", nativeQuery = true)
+    @Query(value = "SELECT count(id) FROM cost_detail WHERE datediff(now(), delete_date) = 0", nativeQuery = true)
     Integer findCostDetailDeleteDailyReport();
 
     /**
      * 查询每日新建的消费记录总数
      * @return
      */
-    @Query(value = "SELECT count(cd.id) FROM cost_detail cd WHERE datediff(cdentry_date, now()) = 0 WHERE ", nativeQuery = true)
+    @Query(value = "SELECT count(cd.id) FROM cost_detail cd INNER JOIN cost_clean cc ON cc.id = cd.clean_id WHERE datediff(cc.entry_date, now()) = 0", nativeQuery = true)
     Integer findCostDetailCleanDailyReport();
 }

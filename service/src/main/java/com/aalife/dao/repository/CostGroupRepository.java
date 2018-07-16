@@ -51,6 +51,6 @@ public interface CostGroupRepository extends JpaRepository<CostGroup, Integer> {
      * 查询今天删除的账单
      * @return
      */
-    @Query(value = "SELECT count(id) FROM cost_group WHERE datediff(entry_date, now()) = 0 WHERE delete_id IS NULL", nativeQuery = true)
+    @Query(value = "SELECT count(id) FROM cost_group WHERE datediff(delete_date, now()) = 0", nativeQuery = true)
     Integer findCostGroupDeleteDailyReport();
 }
