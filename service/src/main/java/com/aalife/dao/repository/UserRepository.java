@@ -19,4 +19,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
      */
     @Query("SELECT u from User u where u.wxOpenId = :openId")
     User findUserWithOpenId(@Param(value = "openId")String openId);
+
+    /**
+     * 查询今天创建的用户数
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM user WHERE datediff(entry_date , now()) = 0", nativeQuery = true)
+    Integer findDailyUserReport();
 }

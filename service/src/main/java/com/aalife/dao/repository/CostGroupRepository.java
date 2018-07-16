@@ -39,4 +39,18 @@ public interface CostGroupRepository extends JpaRepository<CostGroup, Integer> {
     @Modifying
     @Query("UPDATE CostGroup cg SET cg.deleteId = :userId, cg.deleteDate = now() WHERE cg.groupId = :groupId")
     void deleteCostGroup(@Param(value = "groupId") Integer groupId, @Param(value = "userId") Integer userId);
+
+    /**
+     * 查询今天新建的账单
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_group WHERE datediff(entry_date, now()) = 0", nativeQuery = true)
+    Integer findCostGroupNewDailyReport();
+
+    /**
+     * 查询今天删除的账单
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_group WHERE datediff(entry_date, now()) = 0 WHERE delete_id IS NULL", nativeQuery = true)
+    Integer findCostGroupDeleteDailyReport();
 }

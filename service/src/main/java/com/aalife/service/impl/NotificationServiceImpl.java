@@ -19,14 +19,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author mosesc
@@ -46,6 +51,10 @@ public class NotificationServiceImpl implements NotificationService {
     private UserActionLogService userActionLogService;
     @Autowired
     private WXService wxService;
+    @Autowired
+    private JavaMailSender javaMailSender;
+    @Value("spring.mail.from")
+    private String mailFrom;
 
     @Override
     public void collectFormId(String formId) {
@@ -100,9 +109,11 @@ public class NotificationServiceImpl implements NotificationService {
                     deleteFormId(userWxForm, SystemConstant.NOTIFICATION_MSG1);
                     continue;
                 }
+                // 开始发送模板信息
                 try {
                     data = HttpUtil.doPost(url, contentTemp);
                     JSONObject object = JSON.parseObject(data);
+                    // errcode为0代表发送成功
                     if (object.getIntValue("errcode") != 0){
                         throw new BizException("发送微信模板信息失败，返回数据："+data);
                     }
@@ -134,6 +145,25 @@ public class NotificationServiceImpl implements NotificationService {
         }
         long gaps = System.currentTimeMillis() - startTime;
         logger.info("================== 发送通知结束，花费时间：" + gaps + "ms =================");
+    }
+
+    @Override
+    public void sendMailNotification(String to, String cc, String bcc, String subject, String mailContent, String fileToAttach) {
+        logger.info("================= 发送邮件信息开始，收件人："+to+" ======================");
+        long startTime = System.currentTimeMillis();
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setFrom(mailFrom);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(mailContent, true);
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            logger.warn("发送邮件失败", e);
+        }
+        long gaps = System.currentTimeMillis() - startTime;
+        logger.info("================= 发送邮件信息结束，花费时间："+gaps+"ms ==================");
     }
 
     /**

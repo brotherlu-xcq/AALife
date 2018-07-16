@@ -12,7 +12,7 @@ CREATE TABLE `user` (
   `avatar_url` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `userI1` (`wx_openid`)
-) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
 
 DROP TABLE IF EXISTS `user_login`;
@@ -22,7 +22,7 @@ CREATE TABLE `user_login` (
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_loginI1` (`user_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group`;
@@ -36,7 +36,7 @@ CREATE TABLE `cost_group` (
   `delete_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `cost_groupI1` (`group_code`)
-) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
+) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group_user`;
 CREATE TABLE `cost_group_user` (
@@ -49,8 +49,8 @@ CREATE TABLE `cost_group_user` (
   `delete_id` INT(11) DEFAULT NULL,
   `delete_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `group_id` (`group_id`)
+  KEY `cost_group_userI1` (`user_id`),
+  KEY `cost_group_userI2` (`group_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_group_approval`;
@@ -65,10 +65,10 @@ CREATE TABLE `cost_group_approval` (
   `entry_date` DATETIME NOT NULL,
   `entry_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `group_id` (`group_id`),
-  KEY `approval_id` (`approval_id`),
-  KEY `cost_group_approval_ibfk_2` (`user_id`)
-) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
+  KEY `cost_group_approvalI1` (`group_id`),
+  KEY `cost_group_approvalI2` (`approval_id`),
+  KEY `cost_group_approvalI3` (`user_id`)
+) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_user_remark`;
 CREATE TABLE `cost_user_remark` (
@@ -79,8 +79,8 @@ CREATE TABLE `cost_user_remark` (
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`,`source_no`,`target_no`),
-  KEY `source_no` (`source_no`),
-  KEY `target_no` (`target_no`)
+  KEY `cost_user_remarkI1` (`source_no`),
+  KEY `cost_user_remarkI2` (`target_no`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_clean`;
@@ -92,9 +92,9 @@ CREATE TABLE `cost_clean` (
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `user_id` (`group_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+  KEY `cost_cleanI1` (`user_id`),
+  KEY `cost_cleanI2` (`group_id`)
+) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_clean_user`;
 CREATE TABLE `cost_clean_user` (
@@ -102,7 +102,7 @@ CREATE TABLE `cost_clean_user` (
   `clean_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `cleanId` (`clean_id`)
+  KEY `cost_clean_userI1` (`clean_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_category`;
@@ -113,7 +113,7 @@ CREATE TABLE `cost_category` (
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `cost_detail`;
 CREATE TABLE `cost_detail` (
@@ -122,7 +122,7 @@ CREATE TABLE `cost_detail` (
   `cate_id` INT(11) NOT NULL,
   `group_id` INT(11) NOT NULL,
   `cost_money` DECIMAL(10,2) NOT NULL,
-  `cost_date` DATETIME NOT NULL,
+  `cost_date` DATE NOT NULL,
   `cost_desc` VARCHAR(100) DEFAULT NULL,
   `clean_id` INT(11) DEFAULT NULL,
   `entry_id` INT(11) NOT NULL,
@@ -130,11 +130,11 @@ CREATE TABLE `cost_detail` (
   `delete_id` INT(11) DEFAULT NULL,
   `delete_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`,`user_id`),
-  KEY `user_id` (`user_id`),
-  KEY `cate_id` (`cate_id`),
-  KEY `group_id` (`group_id`),
-  KEY `clean_id` (`clean_id`)
-) ENGINE=INNODB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4;
+  KEY `cost_detailI1` (`user_id`),
+  KEY `cost_detailI2` (`cate_id`),
+  KEY `cost_detailI3` (`group_id`),
+  KEY `cost_detailI4` (`clean_id`)
+) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `app_config`;
 CREATE TABLE `app_config` (
@@ -163,7 +163,8 @@ CREATE TABLE `user_action_log` (
   `entry_id` INT(11) NOT NULL,
   `entry_date` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `userId` (`user_id`)
+  KEY `user_action_logI1` (`user_id`),
+  KEY `user_action_logI2` (`entry_date`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS `user_wx_form`;
@@ -177,16 +178,16 @@ CREATE TABLE `user_wx_form` (
   `delete_id` INT(11) DEFAULT NULL,
   `delete_date` DATETIME DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `userId` (`user_id`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+  KEY `user_wx_formI1` (`user_id`)
+) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('1','吃喝','icon-chichihehe:before','-9999','2018-06-22 18:07:29');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('2','娱乐','icon-yule:beforee','-9999','2018-06-22 18:07:47');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('3','家电','icon-jiadian:before','-9999','2018-06-22 18:08:07');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('4','交通','icon-jiaotong:before','-9999','2018-06-22 18:08:23');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('5','日用品','icon-riyongpin:before','-9999','2018-06-22 18:08:39');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('6','旅游','icon-lvhang:before','-9999','2018-06-22 18:09:12');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('7','其他','icon-qita:before','-9999','2018-06-22 18:09:27');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10000','吃喝','icon-chichihehe:before','-9999','2018-06-22 18:07:29');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10001','娱乐','icon-yule:beforee','-9999','2018-06-22 18:07:47');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10002','家电','icon-jiadian:before','-9999','2018-06-22 18:08:07');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10003','交通','icon-jiaotong:before','-9999','2018-06-22 18:08:23');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10004','日用品','icon-riyongpin:before','-9999','2018-06-22 18:08:39');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10005','旅游','icon-lvhang:before','-9999','2018-06-22 18:09:12');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10006','其他','icon-qita:before','-9999','2018-06-22 18:09:27');
 
 
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('1','INVOICE','HOST','http://vop.baidu.com/server_api','-9999','2018-06-26 18:28:13');

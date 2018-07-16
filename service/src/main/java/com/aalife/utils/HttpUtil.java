@@ -53,7 +53,7 @@ public class HttpUtil {
             //发送get请求
             HttpGet request = new HttpGet(url);
             HttpResponse response = client.execute(request);
-            /**读取服务器返回过来的json字符串数据**/
+            // 读取服务器返回过来的json字符串数据
             String body = EntityUtils.toString(response.getEntity());
             logger.info(url+" response:{status:"+response.getStatusLine().getStatusCode()+", body:"+body+"}");
             return body;

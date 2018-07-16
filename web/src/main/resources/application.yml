@@ -14,7 +14,7 @@ threadPool:
   keepAlive: 5
   allowCoreTimeOut: true
   size:
-    max: 10
+    max: 20
     core: 3
     capacity: 200
 
@@ -41,3 +41,19 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: smtp.aliyun.com
+    port: 465
+    username: brotherlu@aliyun.com
+    password: xct19960321@
+    properties:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+          required: true
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    from: brotherlu@aliyun.com<AA Life>

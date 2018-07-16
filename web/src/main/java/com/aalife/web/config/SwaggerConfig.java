@@ -35,6 +35,7 @@ public class SwaggerConfig {
     private String email;
     @Value("${swagger.author.name}")
     private String name;
+
     @Bean
     public Docket createRestApi(){
         return new Docket(DocumentationType.SWAGGER_2)

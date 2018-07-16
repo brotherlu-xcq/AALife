@@ -8,7 +8,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author mosesc
@@ -28,7 +27,8 @@ public class AsyncTaskConfig {
     @Value(value = "${threadPool.size.max}")
     private int maxSize;
     /**
-     * 线程池使用的缓冲队列
+     * 线程池使用的缓冲队列，多余的任务会放在这里，然后由线程池中空闲线程去处理。
+     * 放不下新入的任务时，新建线程加入线程池，并处理请求，如果池子大小撑到了maximumPoolSize就用RejectedExecutionHandler来做拒绝处理.
      */
     @Value(value = "${threadPool.size.capacity}")
     private int capacitySize;
@@ -51,6 +51,7 @@ public class AsyncTaskConfig {
         threadPoolExecutor.setQueueCapacity(capacitySize);
         threadPoolExecutor.setKeepAliveSeconds(keepAlive);
         threadPoolExecutor.setAllowCoreThreadTimeOut(allowCoreTimeOut);
+        // 拒绝策略为：由调用线程处理该任务
         threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         threadPoolExecutor.initialize();
         return threadPoolExecutor;

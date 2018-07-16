@@ -97,4 +97,25 @@ public interface CostDetailRepository extends JpaRepository<CostDetail, Integer>
      */
     @Query(value = "SELECT count(id) FROM cost_detail WHERE group_id = :groupId AND clean_id IS NULL AND delete_id IS NULL", nativeQuery = true)
     int findUnCleanDetailCount(@Param(value = "groupId") Integer groupId);
+
+    /**
+     * 查询每日新建的消费记录总数
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_detail WHERE datediff(entry_date, now()) = 0", nativeQuery = true)
+    Integer findCostDetailNewDailyReport();
+
+    /**
+     * 查询每日新建的消费记录总数
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_detail WHERE datediff(entry_date, now()) = 0 WHERE datediff(now(), delete_date) = 0", nativeQuery = true)
+    Integer findCostDetailDeleteDailyReport();
+
+    /**
+     * 查询每日新建的消费记录总数
+     * @return
+     */
+    @Query(value = "SELECT count(cd.id) FROM cost_detail cd WHERE datediff(cdentry_date, now()) = 0 WHERE ", nativeQuery = true)
+    Integer findCostDetailCleanDailyReport();
 }

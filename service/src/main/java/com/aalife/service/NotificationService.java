@@ -23,4 +23,15 @@ public interface NotificationService {
      * @param tail
      */
     void sendWxNotification(Integer targetUserId, String templateCate, WxNotificationDetailBo content, String tail);
+
+    /**
+     * 发送邮件信息
+     * @param to
+     * @param cc
+     * @param bcc
+     * @param subject
+     * @param mailContent
+     * @param fileToAttach
+     */
+    void sendMailNotification(String to, String cc, String bcc, String subject, String mailContent, String fileToAttach);
 }

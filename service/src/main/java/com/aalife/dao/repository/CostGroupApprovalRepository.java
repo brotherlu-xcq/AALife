@@ -37,6 +37,7 @@ public interface CostGroupApprovalRepository extends JpaRepository<CostGroupAppr
      * 同意通过用户
      * @param groupId
      * @param userId
+     * @param approvalUser
      */
     @Modifying
     @Query("UPDATE CostGroupApproval cga SET cga.status = 1, cga.approvalUser = :approvalUser, cga.approvalDate = now() WHERE cga.costGroup.groupId = :groupId AND cga.user.userId = :userId")
@@ -49,4 +50,18 @@ public interface CostGroupApprovalRepository extends JpaRepository<CostGroupAppr
      */
     @Query(value = "select count(id) from cost_group_approval where group_id = :groupId and status = 0", nativeQuery = true)
     Integer getNotApproveUserCount(@Param(value = "groupId")Integer groupId);
+
+    /**
+     * 查询今天新建的申请总数
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_group_approval WHERE datediff(entry_date, now()) = 0", nativeQuery = true)
+    Integer findCostGroupApproalNewDailyReport();
+
+    /**
+     * 查询今天新建的申请总数
+     * @return
+     */
+    @Query(value = "SELECT count(id) FROM cost_group_approval WHERE datediff(entry_date, now()) = 0 WHERE datediff(approval_date, now()) = 0 ", nativeQuery = true)
+    Integer findCostGroupApprovalPassDailyReport();
 }

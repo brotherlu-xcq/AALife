@@ -1,0 +1,19 @@
+<html>
+<body>
+    <h1>${date}网站统计报表</h1>
+    <table>
+        <thead>
+            <th>业务模块</th>
+            <th>日增量</th>
+        </thead>
+        <tbody>
+            <#list data as item>
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.value}</td>
+                </tr>
+            </#list>
+        </tbody>
+    </table>
+</body>
+</html>

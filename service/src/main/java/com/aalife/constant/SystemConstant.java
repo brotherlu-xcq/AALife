@@ -22,4 +22,13 @@ public class SystemConstant {
     public static final String TEMPLATE_HOST = "TEMPLATE_HOST";
     public static final String SESSION_HOST = "SESSION_HOST";
     public static final String WX_ACCESS_TOKEN = "access_token";
+    
+    public static final String DAILY_BIZ_REPORT_TEMPLATE = "template/biz_daily_report.ft";
+    public static final String MAIL_TO = "MAIL_TO";
+    public static final String DAILY_REPORT = "DAILY_REPORT";
+    public static final String MAIL_CC = "MAIL_CC";
+    public static final String MAIL_SUB = "MAIL_SUB";
+    public static final String MAIL_TEMP = "MAIL_TEMP";
+    public static final String BIZ_DAILY_REPORT = "BIZ_DAILY_REPORT";
+    public static final String UTF8 = "utf-8";
 }
