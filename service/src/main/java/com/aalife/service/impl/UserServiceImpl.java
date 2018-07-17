@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void loginAsUser(String openId) {
-        String env = appConfigRepository.findAppConfigValueByName("AALIFE", "ENV");
+        String env = appConfigRepository.findAppConfigValueByName(SystemConstant.AALIFE, SystemConstant.ENV);
         if (StringUtils.isEmpty(env)){
             throw new BizException("此接口暂时无法访问");
         }

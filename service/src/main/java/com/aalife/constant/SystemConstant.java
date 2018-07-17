@@ -31,4 +31,8 @@ public class SystemConstant {
     public static final String MAIL_TEMP = "MAIL_TEMP";
     public static final String BIZ_DAILY_REPORT = "BIZ_DAILY_REPORT";
     public static final String UTF8 = "utf-8";
+    
+    public static final String AALIFE = "AALIFE";
+    public static final String ENV = "ENV";
+    public static final String DEV = "DEV";
 }
