@@ -1,7 +1,5 @@
 package com.aalife.service;
 
-import com.aalife.dao.entity.UserActionLog;
-
 import java.util.Date;
 
 /**
@@ -9,8 +7,9 @@ import java.util.Date;
  * @date 2018-07-03
  */
 public interface UserActionLogService {
+
     /**
-     *
+     * 保存用户和系统行为Log
      * @param methodName
      * @param requestUrl
      * @param inParams

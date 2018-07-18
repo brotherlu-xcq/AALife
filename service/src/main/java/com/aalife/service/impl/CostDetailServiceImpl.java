@@ -89,7 +89,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         String costDateStr = costDetailBo.getCostDate();
         Date costDate;
         try {
-            costDate = FormatUtil.parseString2Date(costDateStr, SystemConstant.DATEPATTERN);
+            costDate = FormatUtil.parseString2Date(costDateStr, SystemConstant.DATE_PATTERN);
         } catch (ParseException e) {
             throw new BizException("时间格式错误，请参照 yyyy-MM-dd", e);
         }
@@ -214,7 +214,7 @@ public class CostDetailServiceImpl implements CostDetailService {
                 costDetailBo.setUser(userBo);
                 costDetailBo.setCostMoney(costDetail.getCostMoney());
                 costDetailBo.setCostDesc(costDetail.getCostDesc());
-                costDetailBo.setCostDate(FormatUtil.formatDate2String(costDetail.getCostDate(), SystemConstant.DATEPATTERN));
+                costDetailBo.setCostDate(FormatUtil.formatDate2String(costDetail.getCostDate(), SystemConstant.DATE_PATTERN));
                 // 设置分类信息
                 CostCategoryBo costCategoryBo = new CostCategoryBo();
                 CostCategory costCategory = costDetail.getCostCategory();
@@ -235,7 +235,7 @@ public class CostDetailServiceImpl implements CostDetailService {
                 CostClean costClean = costDetail.getCostClean();
                 if (costClean != null){
                     CostCleanBo costCleanBo = new CostCleanBo();
-                    costCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATEPATTERN));
+                    costCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATE_PATTERN));
                     costCleanBo.setComment(costClean.getComment());
                     User cleanUser = costClean.getUser();
                     ExtendUserBo cleanUserBo = new ExtendUserBo();

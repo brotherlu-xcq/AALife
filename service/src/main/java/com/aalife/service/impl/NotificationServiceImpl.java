@@ -38,7 +38,7 @@ import java.util.List;
  * @date 2018-07-13
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = BizException.class)
 public class NotificationServiceImpl implements NotificationService {
     private static Logger logger = Logger.getLogger(NotificationService.class);
     @Autowired

@@ -47,6 +47,7 @@ public class ReporterServiceImpl implements ReporterService {
     private UserLoginRepository userLoginRepository;
 
     /**
+     * 每天23:58分发送一次邮件
      *  *  *  *  *  *  *
      * 秒 分 时 日 月 年
      *  *代表任意时间执行
@@ -55,7 +56,7 @@ public class ReporterServiceImpl implements ReporterService {
      *  ?非明确值
      */
     @Override
-    @Scheduled(cron = "0 45 23 * * *")
+    @Scheduled(cron = "0 58 23 * * *")
     public void sendDailyBizNotification() {
         logger.info("===================== 开始每日报告分析 ===================");
         long startTime = System.currentTimeMillis();
@@ -77,7 +78,7 @@ public class ReporterServiceImpl implements ReporterService {
      */
     private Map<String, Object> initDailyBizData(){
         Map<String,Object> result = new HashMap<>(12);
-        result.put("date", FormatUtil.formatDate2String(new Date(), SystemConstant.DATEPATTERN));
+        result.put("date", FormatUtil.formatDate2String(new Date(), SystemConstant.DATE_PATTERN));
         List<ReporterBo> data = new ArrayList<>();
         // 消费记录统计
         Integer newCostDetailCount = costDetailRepository.findCostDetailNewDailyReport();

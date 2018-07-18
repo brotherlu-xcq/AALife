@@ -18,6 +18,9 @@ threadPool:
     core: 3
     capacity: 200
 
+file:
+  baseDir: E:/
+
 server:
   port: 443
   ssl:

@@ -22,8 +22,8 @@ public class FileApi {
     @Autowired
     private FileService fileService;
 
-    @RequestMapping(value = "/upload/costDetail")
-    public JsonEntity<String> uploadCostDetail(MultipartFile file){
+    @RequestMapping(value = "/upload/picture")
+    public JsonEntity<String> uploadPicture(MultipartFile file){
         return ResponseHelper.createInstance(fileService.uploadFileToServer(file));
     }
 }

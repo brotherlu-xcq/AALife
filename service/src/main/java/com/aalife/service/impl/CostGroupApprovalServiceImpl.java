@@ -93,7 +93,7 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
             Integer groupId = costGroup.getGroupId();
             List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
             costGroupUsers.forEach(costGroupUser1 -> {
-                if (costGroupUser1.getAdmin().equals('Y')){
+                if (costGroupUser1.getAdmin().equals(SystemConstant.Y)){
                     WxNotificationDetailBo data = new WxNotificationDetailBo();
                     Map<String, Object> groupName = new HashMap<>(2);
                     groupName.put("value", costGroup.getGroupName());
@@ -127,7 +127,7 @@ public class CostGroupApprovalServiceImpl implements CostGroupApprovalService {
             ApprovalInfoBo approvalInfoBo = new ApprovalInfoBo();
             approvalInfoBo.setComment(costGroupApproval.getComment());
             approvalInfoBo.setApprovalId(costGroupApproval.getId());
-            approvalInfoBo.setStatus(costGroupApproval.getStatus() == 0 ? ApprovalStatus.PEDDING.getStatusName() : ApprovalStatus.APPROVAL.getStatusName());
+            approvalInfoBo.setStatus(costGroupApproval.getStatus() == 0 ? ApprovalStatus.PENDING.getStatusName() : ApprovalStatus.APPROVAL.getStatusName());
             // 设置分组信息
             if (costGroup == null){
                 costGroup = costGroupApproval.getCostGroup();

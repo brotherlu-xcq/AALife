@@ -5,7 +5,7 @@ package com.aalife.constant;
  * @date 2018-06-06
  */
 public enum ApprovalStatus {
-    PEDDING("未处理"),
+    PENDING("未处理"),
     APPROVAL("已接受");
 
     ApprovalStatus(String statusName){

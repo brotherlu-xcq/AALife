@@ -1,12 +1,13 @@
 package com.aalife.constant;
 
 /**
+ *
  * @auther brother lu
  * @date 2018-06-05
  */
 public class SystemConstant {
     public static final Integer SYSTEM_ID = -9999;
-    public static final String DATEPATTERN = "yyyy-MM-dd";
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
 
     public static final String NOTIFICATION_MSG1 = "formId已经过期";
     public static final String NOTIFICATION_MSG2 = "formId已经使用";
@@ -35,4 +36,5 @@ public class SystemConstant {
     public static final String AALIFE = "AALIFE";
     public static final String ENV = "ENV";
     public static final String DEV = "DEV";
+    public static final Character Y = 'Y';
 }

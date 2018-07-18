@@ -78,7 +78,7 @@ public class CostCleanServiceImpl implements CostCleanService {
             Integer cleanId = costClean.getCleanId();
             ExtendCostCleanBo extendCostCleanBo = new ExtendCostCleanBo();
             extendCostCleanBo.setComment(costClean.getComment());
-            extendCostCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATEPATTERN));
+            extendCostCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATE_PATTERN));
             extendCostCleanBo.setCleanId(cleanId);
             // 设置账单信息
             CostGroup costGroup = costClean.getCostGroup();
@@ -132,7 +132,7 @@ public class CostCleanServiceImpl implements CostCleanService {
             }
             CostCleanBo costCleanBo = new CostCleanBo();
             costCleanBo.setCleanId(costClean.getCleanId());
-            costCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATEPATTERN));
+            costCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATE_PATTERN));
             costCleanBo.setComment(costClean.getComment());
             // 设置结算用户信息
             User cleanUser = costClean.getUser();
