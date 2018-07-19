@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,7 @@ public class FileApi {
     @Autowired
     private FileService fileService;
 
-    @RequestMapping(value = "/upload/picture")
+    @RequestMapping(value = "/upload/picture", method = RequestMethod.POST)
     public JsonEntity<String> uploadPicture(MultipartFile file){
         return ResponseHelper.createInstance(fileService.uploadFileToServer(file));
     }

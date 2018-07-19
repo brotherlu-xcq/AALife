@@ -38,7 +38,7 @@ public class NotificationApi {
         return ResponseHelper.createInstance("success");
     }
 
-    @RequestMapping(value = "/notification/send/dailyReport")
+    @RequestMapping(value = "/notification/send/dailyReport", method = RequestMethod.GET)
     public JsonEntity<String> sendDailyReport(){
         String env = appConfigRepository.findAppConfigValueByName(SystemConstant.AALIFE, SystemConstant.ENV);
         if (!StringUtils.isEmpty(env) && env.equalsIgnoreCase(SystemConstant.DEV)){
