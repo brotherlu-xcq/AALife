@@ -181,13 +181,18 @@ CREATE TABLE `user_wx_form` (
   KEY `user_wx_formI1` (`user_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10000','吃喝','icon-chichihehe:before','-9999','2018-06-22 18:07:29');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10000','吃喝','icon-chihe:before','-9999','2018-06-10 19:18:17');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10001','娱乐','icon-yule:beforee','-9999','2018-06-22 18:07:47');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10002','家电','icon-jiadian:before','-9999','2018-06-22 18:08:07');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10003','交通','icon-jiaotong:before','-9999','2018-06-22 18:08:23');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10004','日用品','icon-riyongpin:before','-9999','2018-06-22 18:08:39');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10005','旅游','icon-lvhang:before','-9999','2018-06-22 18:09:12');
-INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10006','其他','icon-qita:before','-9999','2018-06-22 18:09:27');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10002','缴费','icon-jiaofei:beforee','-9999','2018-06-22 18:07:47');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10003','药物','icon-yaowu:beforee','-9999','2018-06-22 18:07:47');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10004','房租','icon-fangzu:beforee','-9999','2018-06-22 18:07:47');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10005','家电','icon-jiadian:before','-9999','2018-06-22 18:08:07');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10006','交通','icon-jiaotong:before','-9999','2018-06-22 18:08:23');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10007','日用品','icon-riyongpin:before','-9999','2018-06-22 18:08:39');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10008','门票','icon-menpiao:before','-9999','2018-06-22 18:09:12');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10009','购物','icon-gouwu:before','-9999','2018-06-22 18:09:27');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10010','住宿','icon-zhusu:before','-9999','2018-06-22 18:09:27');
+INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10011','其他','icon-money:before','-9999','2018-06-22 18:09:27');
 
 
 INSERT INTO `app_config` (`id`, `app_name`, `config_name`, `config_value`, `entry_id`, `entry_date`) VALUES('1','INVOICE','HOST','http://vop.baidu.com/server_api','-9999','2018-06-26 18:28:13');

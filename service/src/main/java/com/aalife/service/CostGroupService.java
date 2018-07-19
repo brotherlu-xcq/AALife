@@ -94,4 +94,10 @@ public interface CostGroupService {
      * @return
      */
     CostGroupBo findCostGroupById(Integer groupId);
+
+    /**
+     * 根据GroupCode加入账单
+     * @param groupId
+     */
+    void joinCostGroup(Integer groupId);
 }

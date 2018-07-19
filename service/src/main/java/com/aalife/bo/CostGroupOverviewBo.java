@@ -12,10 +12,6 @@ public class CostGroupOverviewBo {
     private List<CostGroupUserBo> costUsers;
     private BigDecimal groupTotalCost;
     /**
-     * 未处理的申请数
-     */
-    private Integer notApproveCount;
-    /**
      * 当前用户的角色，用户展示菜单
      */
     private String myRole;
@@ -50,13 +46,5 @@ public class CostGroupOverviewBo {
 
     public void setGroupTotalCost(BigDecimal groupTotalCost) {
         this.groupTotalCost = groupTotalCost;
-    }
-
-    public Integer getNotApproveCount() {
-        return notApproveCount;
-    }
-
-    public void setNotApproveCount(Integer notApproveCount) {
-        this.notApproveCount = notApproveCount;
     }
 }

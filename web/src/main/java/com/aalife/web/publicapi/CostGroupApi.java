@@ -121,4 +121,10 @@ public class CostGroupApi {
     public JsonEntity<CostGroupUserBo> findGroupUserById(@PathVariable(value = "groupId") Integer groupId, @PathVariable(value = "userId") Integer userId){
         return ResponseHelper.createInstance(costGroupService.findCostGroupUserById(groupId, userId));
     }
+
+    @RequestMapping(value = "/costGroup/joinByCode/{groupId}", method = RequestMethod.GET)
+    public JsonEntity<String> joinCostGroup(@PathVariable(value = "groupId") Integer groupId){
+        costGroupService.joinCostGroup(groupId);
+        return ResponseHelper.createInstance("success");
+    }
 }

@@ -4,6 +4,7 @@ import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
 import com.aalife.bo.CostGroupUserBo;
 import com.aalife.bo.ExtendCostCleanBo;
+import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.*;
 import com.aalife.dao.repository.CostCleanRepository;
 import com.aalife.dao.repository.CostDetailRepository;
@@ -45,8 +46,7 @@ public class CostGroupServiceImpl implements CostGroupService {
     private CostUserRemarkService costUserRemarkService;
     @Autowired
     private CostDetailRepository costDetailRepository;
-    @Autowired
-    private CostGroupApprovalRepository costGroupApprovalRepository;
+
     @Autowired
     private WebContext webContext;
 
@@ -224,8 +224,6 @@ public class CostGroupServiceImpl implements CostGroupService {
         }
         costGroupOverviewBo.setCostUsers(costGroupUserBos);
         // 设置待接受的数量
-        Integer count = costGroupApprovalRepository.getNotApproveUserCount(groupId);
-        costGroupOverviewBo.setNotApproveCount(count == null ? 0 : count);
         return costGroupOverviewBo;
     }
 
@@ -294,5 +292,26 @@ public class CostGroupServiceImpl implements CostGroupService {
         costGroupBo.setGroupCode(costGroup.getGroupCode());
         costGroupBo.setGroupName(costGroup.getGroupName());
         return costGroupBo;
+    }
+
+    @Override
+    public void joinCostGroup(Integer groupId) {
+        CostGroup costGroup = costGroupRepository.findGroupById(groupId);
+        if (costGroup == null){
+            throw new BizException("账单不存在");
+        }
+        User currentUser = webContext.getCurrentUser();
+        Integer currentUserId = currentUser.getUserId();
+        CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(currentUserId, groupId);
+        if (costGroupUser != null){
+            throw new BizException("你已经在该账单中了");
+        }
+        costGroupUser = new CostGroupUser();
+        costGroupUser.setEntryId(SystemConstant.SYSTEM_ID);
+        costGroupUser.setEntryDate(new Date());
+        costGroupUser.setCostGroup(costGroup);
+        costGroupUser.setUser(currentUser);
+        costGroupUser.setAdmin('N');
+        costGroupUserRepository.save(costGroupUser);
     }
 }
