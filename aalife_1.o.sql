@@ -53,23 +53,6 @@ CREATE TABLE `cost_group_user` (
   KEY `cost_group_userI2` (`group_id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS `cost_group_approval`;
-CREATE TABLE `cost_group_approval` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `group_id` INT(11) NOT NULL,
-  `user_id` INT(11) NOT NULL,
-  `comment` VARCHAR(50) NOT NULL,
-  `status` INT(11) NOT NULL DEFAULT '0' COMMENT '0：未处理 1：已接受',
-  `approval_id` INT(11) DEFAULT NULL,
-  `approval_date` DATETIME DEFAULT NULL,
-  `entry_id` INT(11) NOT NULL,
-  `entry_date` DATETIME NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cost_group_approvalI1` (`group_id`),
-  KEY `cost_group_approvalI2` (`approval_id`),
-  KEY `cost_group_approvalI3` (`user_id`)
-) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
-
 DROP TABLE IF EXISTS `cost_user_remark`;
 CREATE TABLE `cost_user_remark` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
