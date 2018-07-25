@@ -1,7 +1,10 @@
 package com.aalife.utils;
 
+import com.aalife.constant.SystemConstant;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -32,5 +35,17 @@ public class FormatUtil {
     public static String formatDate2String(Date date, String pattern){
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         return format.format(date);
+    }
+
+    public static String formatDate2CommonString(Date date, String pattern){
+        int hours = DateUtil.getHoursGap(date, new Date());
+        int dayGap = hours/24;
+        if (dayGap == 0){
+            return SystemConstant.TODAY;
+        } else if (dayGap == 1){
+            return SystemConstant.YESTODAY;
+        } else {
+            return formatDate2String(date, pattern);
+        }
     }
 }

@@ -214,7 +214,7 @@ public class CostDetailServiceImpl implements CostDetailService {
                 costDetailBo.setUser(userBo);
                 costDetailBo.setCostMoney(costDetail.getCostMoney());
                 costDetailBo.setCostDesc(costDetail.getCostDesc());
-                costDetailBo.setCostDate(FormatUtil.formatDate2String(costDetail.getCostDate(), SystemConstant.DATE_PATTERN));
+                costDetailBo.setCostDate(FormatUtil.formatDate2CommonString(costDetail.getCostDate(), SystemConstant.DATE_PATTERN));
                 // 设置分类信息
                 CostCategoryBo costCategoryBo = new CostCategoryBo();
                 CostCategory costCategory = costDetail.getCostCategory();
@@ -235,7 +235,7 @@ public class CostDetailServiceImpl implements CostDetailService {
                 CostClean costClean = costDetail.getCostClean();
                 if (costClean != null){
                     CostCleanBo costCleanBo = new CostCleanBo();
-                    costCleanBo.setCleanDate(FormatUtil.formatDate2String(costClean.getEntryDate(), SystemConstant.DATE_PATTERN));
+                    costCleanBo.setCleanDate(FormatUtil.formatDate2CommonString(costClean.getEntryDate(), SystemConstant.DATE_PATTERN));
                     costCleanBo.setComment(costClean.getComment());
                     User cleanUser = costClean.getUser();
                     ExtendUserBo cleanUserBo = new ExtendUserBo();

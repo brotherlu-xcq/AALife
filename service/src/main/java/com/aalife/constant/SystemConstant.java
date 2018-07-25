@@ -37,4 +37,6 @@ public class SystemConstant {
     public static final String ENV = "ENV";
     public static final String DEV = "DEV";
     public static final Character Y = 'Y';
+    public static final String TODAY = "今天";
+    public static final String YESTODAY = "昨天";
 }
