@@ -13,6 +13,7 @@ import com.aalife.exception.BizException;
 import com.aalife.service.UserService;
 import com.aalife.service.WXService;
 import com.aalife.service.WebContext;
+import com.aalife.utils.StringUtil;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -68,7 +69,7 @@ public class UserServiceImpl implements UserService {
             user.setWxOpenId(wxOpenId);
         }
         user.setAvatarUrl(wxUserInfo.getAvatarUrl());
-        user.setNickName(wxUserInfo.getNickName());
+        user.setNickName(StringUtil.filterEmoji(wxUserInfo.getNickName()));
         userRepository.save(user);
         UsernamePasswordToken token = new UsernamePasswordToken(wxOpenId, (String)null);
         SecurityUtils.getSubject().login(token);
