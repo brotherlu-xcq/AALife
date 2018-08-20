@@ -122,7 +122,7 @@ public class CostGroupApi {
         return ResponseHelper.createInstance(costGroupService.findCostGroupUserById(groupId, userId));
     }
 
-    @RequestMapping(value = "/costGroup/joinCostGroup/{groupId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/costGroup/joinByCode/{groupId}", method = RequestMethod.GET)
     public JsonEntity<String> joinCostGroup(@PathVariable(value = "groupId") Integer groupId){
         costGroupService.joinCostGroup(groupId);
         return ResponseHelper.createInstance("success");
