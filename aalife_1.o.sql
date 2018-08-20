@@ -164,6 +164,39 @@ CREATE TABLE `user_wx_form` (
   KEY `user_wx_formI1` (`user_id`)
 ) ENGINE=INNODB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `article`;
+CREATE TABLE `article` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `group_id` INT(11) DEFAULT NULL,
+  `user_id` INT(11) DEFAULT NULL,
+  `title` VARCHAR(50) NOT NULL,
+  `content` TEXT,
+  `type` INT(11) NOT NULL DEFAULT '10000',
+  `top` CHAR(1) NOT NULL DEFAULT 'N',
+  `view_count` INT(11) NOT NULL DEFAULT '0',
+  `active` CHAR(1) NOT NULL DEFAULT 'Y',
+  `web_url` VARCHAR(500) DEFAULT NULL,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME DEFAULT NULL,
+  `delete_id` INT(11) DEFAULT NULL,
+  `delete_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `article_comment`;
+CREATE TABLE `article_comment` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `article_id` INT(11) NOT NULL,
+  `parent_id` INT(11) DEFAULT NULL,
+  `user_id` INT(11) NOT NULL,
+  `comment` TEXT,
+  `entry_id` INT(11) NOT NULL,
+  `entry_date` DATETIME NOT NULL,
+  `delete_id` INT(11) DEFAULT NULL,
+  `delete_date` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10000','吃喝','icon-chihe:before','-9999','2018-06-10 19:18:17');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10001','娱乐','icon-yule:beforee','-9999','2018-06-22 18:07:47');
 INSERT INTO `cost_category` (`id`, `cate_name`, `cate_icon`, `entry_id`, `entry_date`) VALUES('10002','缴费','icon-jiaofei:beforee','-9999','2018-06-22 18:07:47');
