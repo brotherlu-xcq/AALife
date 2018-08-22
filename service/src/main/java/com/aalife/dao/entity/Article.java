@@ -35,9 +35,9 @@ public class Article {
     @NotNull
     private String title;
 
-    @Column(name = "comment")
+    @Column(name = "content")
     @NotNull
-    private String comment;
+    private String content;
 
     @Column(name = "type_id")
     @NotNull
@@ -104,12 +104,12 @@ public class Article {
         this.title = title;
     }
 
-    public String getComment() {
-        return comment;
+    public String getContent() {
+        return content;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Integer getTypeId() {

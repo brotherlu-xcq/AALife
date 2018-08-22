@@ -8,6 +8,14 @@ public class ArticleTypeBo {
     private Integer typeId;
     private String typeName;
 
+    public ArticleTypeBo() {
+    }
+
+    public ArticleTypeBo(Integer typeId, String typeName) {
+        this.typeId = typeId;
+        this.typeName = typeName;
+    }
+
     public Integer getTypeId() {
         return typeId;
     }

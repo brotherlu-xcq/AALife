@@ -106,11 +106,8 @@ public class CostGroupServiceImpl implements CostGroupService {
     public void deleteCostGroup(Integer groupId) {
         User user = webContext.getCurrentUser();
         Integer userId = user.getUserId();
-        // 检查账单消费记录是否都结算
-        BigDecimal groupTotalCost = costDetailRepository.findTotalCostByGroup(groupId);
-        if (groupTotalCost != null){
-            throw new BizException("删除账单前请先结算所有消费");
-        }
+        // 删除账单内的所有消费记录
+        costDetailRepository.deleteCostDetailByGroup(groupId, userId);
         // 删除账单
         costGroupRepository.deleteCostGroup(groupId, userId);
         // 删除所有的成员
@@ -131,12 +128,12 @@ public class CostGroupServiceImpl implements CostGroupService {
             }
         }
         if (!hasAnotherAdmin){
-            throw new BizException("退出该账单前需指定新的管理员或直接删除该账单");
+            throw new BizException("退出该账单前需指定新的管理员或直接删除该群组");
         }
         // 校验该用户的账单是否已经结算
         BigDecimal groupCost = costDetailRepository.findTotalCostByGroup(groupId);
         if (groupCost != null){
-            throw new BizException("所在账单还未结算，请先结算或联系账单管理员");
+            throw new BizException("该群组还未消费结算，请先结算或联系账单管理员");
         }
         costGroupUserRepository.deleteCostGroupUser(userId, groupId, userId);
     }
@@ -260,7 +257,7 @@ public class CostGroupServiceImpl implements CostGroupService {
         User currentUser = webContext.getCurrentUser();
         CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(userId, groupId);
         if (costGroupUser == null){
-            throw new BizException("用户或账单不存在");
+            throw new BizException("用户或群组不存在");
         }
         User targetUser = costGroupUser.getUser();
         CostGroupUserBo costGroupUserBo = new CostGroupUserBo();
@@ -290,13 +287,13 @@ public class CostGroupServiceImpl implements CostGroupService {
     public void joinCostGroup(Integer groupId) {
         CostGroup costGroup = costGroupRepository.findGroupById(groupId);
         if (costGroup == null){
-            throw new BizException("账单不存在");
+            throw new BizException("群组不存在");
         }
         User currentUser = webContext.getCurrentUser();
         Integer currentUserId = currentUser.getUserId();
         CostGroupUser costGroupUser = costGroupUserRepository.findCostGroupByUserAndGroup(currentUserId, groupId);
         if (costGroupUser != null){
-            throw new BizException("你已经在该账单中了");
+            throw new BizException("你已经在该群组中了");
         }
         costGroupUser = new CostGroupUser();
         costGroupUser.setEntryId(SystemConstant.SYSTEM_ID);

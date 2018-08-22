@@ -48,4 +48,8 @@ public class FormatUtil {
             return formatDate2String(date, pattern);
         }
     }
+
+    public static String formatDate2SpecialString(Date date){
+        return "1小时前";
+    }
 }

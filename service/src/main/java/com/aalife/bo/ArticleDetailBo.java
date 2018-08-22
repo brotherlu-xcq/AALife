@@ -1,5 +1,8 @@
 package com.aalife.bo;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author mosesc
  * @date 2018-08-20
@@ -9,6 +12,7 @@ public class ArticleDetailBo {
     private CostGroupBo costGroup;
     private ExtendUserBo user;
     private String title;
+    private List<Map<String, Object>> content;
     private ArticleTypeBo articleType;
     private Character top;
     private Character active;
@@ -85,5 +89,13 @@ public class ArticleDetailBo {
 
     public void setEntryDate(String entryDate) {
         this.entryDate = entryDate;
+    }
+
+    public List<Map<String, Object>> getContent() {
+        return content;
+    }
+
+    public void setContent(List<Map<String, Object>> content) {
+        this.content = content;
     }
 }

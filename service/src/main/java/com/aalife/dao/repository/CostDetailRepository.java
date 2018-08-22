@@ -118,4 +118,13 @@ public interface CostDetailRepository extends JpaRepository<CostDetail, Integer>
      */
     @Query(value = "SELECT count(cd.id) FROM cost_detail cd INNER JOIN cost_clean cc ON cc.id = cd.clean_id WHERE datediff(cc.entry_date, now()) = 0", nativeQuery = true)
     Integer findCostDetailCleanDailyReport();
+
+    /**
+     * 删除群组中所有消费记录
+     * @param groupId
+     * @param userId
+     */
+    @Modifying
+    @Query(value = "UPDATE CostDetail cd SET cd.deleteId = :userId,cd.deleteDate = now() WHERE cd.costGroup.groupId = :groupId AND cd.deleteId IS NULL")
+    void deleteCostDetailByGroup(@Param(value = "groupId")Integer groupId, @Param(value = "userId")Integer userId);
 }

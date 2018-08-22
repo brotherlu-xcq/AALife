@@ -1,8 +1,12 @@
 package com.aalife.service;
 
+import com.aalife.bo.ArticleBo;
+import com.aalife.bo.ArticleDetailBo;
 import com.aalife.bo.ArticleOverviewBo;
 import com.aalife.bo.BaseQueryResultBo;
 import com.aalife.bo.WxQueryBo;
+
+import java.util.Map;
 
 /**
  * @author mosesc
@@ -15,4 +19,18 @@ public interface ArticleService {
      * @return
      */
     BaseQueryResultBo<ArticleOverviewBo> getArticleOverview(WxQueryBo wxQueryBo);
+
+    /**
+     * 根据Id查询文章
+     * @param articleId
+     * @return
+     */
+    ArticleDetailBo getArticleById(Integer articleId);
+
+    /**
+     * 创建新的文章
+     * @param articleBo
+     * @return
+     */
+    Map<String, Object> createNewArticle(ArticleBo articleBo);
 }

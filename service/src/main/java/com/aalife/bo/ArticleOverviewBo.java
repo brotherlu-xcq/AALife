@@ -1,5 +1,7 @@
 package com.aalife.bo;
 
+import java.util.List;
+
 /**
  * @author mosesc
  * @date 2018-08-20
@@ -14,6 +16,7 @@ public class ArticleOverviewBo {
     private Character active;
     private Integer viewCount;
     private String entryDate;
+    private List<String> images;
 
     public Integer getArticleId() {
         return articleId;
@@ -85,5 +88,13 @@ public class ArticleOverviewBo {
 
     public void setEntryDate(String entryDate) {
         this.entryDate = entryDate;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 }

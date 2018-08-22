@@ -98,7 +98,7 @@ public class CostDetailServiceImpl implements CostDetailService {
         }
         CostGroup costGroup = costGroupRepository.findGroupById(costDetailBo.getGroupId());
         if (costGroup == null){
-            throw new BizException("未查询到账单");
+            throw new BizException("未查询到群组");
         }
         CostDetail costDetail = new CostDetail();
         costDetail.setUser(currentUser);
