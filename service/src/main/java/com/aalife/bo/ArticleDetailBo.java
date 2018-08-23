@@ -12,7 +12,7 @@ public class ArticleDetailBo {
     private CostGroupBo costGroup;
     private ExtendUserBo user;
     private String title;
-    private List<Map<String, Object>> content;
+    private List<ArticleContentBo> content;
     private ArticleTypeBo articleType;
     private Character top;
     private Character active;
@@ -91,11 +91,11 @@ public class ArticleDetailBo {
         this.entryDate = entryDate;
     }
 
-    public List<Map<String, Object>> getContent() {
+    public List<ArticleContentBo> getContent() {
         return content;
     }
 
-    public void setContent(List<Map<String, Object>> content) {
+    public void setContent(List<ArticleContentBo> content) {
         this.content = content;
     }
 }

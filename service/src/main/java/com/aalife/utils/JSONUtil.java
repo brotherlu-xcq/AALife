@@ -25,23 +25,24 @@ public class JSONUtil {
         return JSONObject.toJSONString(object);
     }
 
-    public static List<Map<String, Object>> jsonString2List(String contentStr) {
+    /**
+     * this method can be replaced by JSON.parseArray(String, Class<T>)
+     * @param contentStr
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    @Deprecated
+    public static <T> List<T> jsonString2List(String contentStr, Class<T> clazz) {
         JSONArray array = JSON.parseArray(contentStr);
         if (array == null || array.size() == 0){
             return null;
         }
-        List<Map<String, Object>> result = new ArrayList<>();
-        array.forEach(object ->{
-            JSONObject jsonObject = (JSONObject) object;
-            Set<Map.Entry<String, Object>> entrySet = jsonObject.entrySet();
-            Map<String, Object> data = new HashMap<>(2);
-            entrySet.forEach(entry->{
-                String key = entry.getKey();
-                Object value =entry.getValue();
-                data.put(key, value);
-            });
-            result.add(data);
-        });
+        List<T> result = new ArrayList<>();
+        for (int i=0; i<array.size(); i++){
+            T object = array.getObject(i, clazz);
+            result.add(object);
+        }
         return result;
     }
 }

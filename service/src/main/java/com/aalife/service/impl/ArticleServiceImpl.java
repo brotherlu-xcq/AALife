@@ -1,6 +1,7 @@
 package com.aalife.service.impl;
 
 import com.aalife.bo.ArticleBo;
+import com.aalife.bo.ArticleContentBo;
 import com.aalife.bo.ArticleDetailBo;
 import com.aalife.bo.ArticleOverviewBo;
 import com.aalife.bo.ArticleTypeBo;
@@ -21,6 +22,7 @@ import com.aalife.service.ArticleService;
 import com.aalife.service.WebContext;
 import com.aalife.utils.FormatUtil;
 import com.aalife.utils.JSONUtil;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -75,7 +77,7 @@ public class ArticleServiceImpl implements ArticleService {
         articleDetailBo.setActive(article.getActive());
         articleDetailBo.setTop(article.getTop());
         String contentStr = article.getContent();
-        List<Map<String, Object>> content = JSONUtil.jsonString2List(contentStr);
+        List<ArticleContentBo> content = JSON.parseArray(contentStr, ArticleContentBo.class);
         articleDetailBo.setContent(content);
         articleDetailBo.setViewCount(article.getViewCount());
         articleDetailBo.setEntryDate(FormatUtil.formatDate2SpecialString(article.getEntryDate()));
@@ -97,7 +99,7 @@ public class ArticleServiceImpl implements ArticleService {
         article.setUser(user);
         article.setEntryId(user.getUserId());
         article.setEntryDate(new Date());
-        article.setTypeId(article.getTypeId());
+        article.setTypeId(articleBo.getTypeId());
         article.setContent(JSONUtil.object2JsonString(articleBo.getContent()));
         articleRepository.save(article);
 

@@ -37,7 +37,7 @@ spring:
   datasource:
     driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/life_v2?zeroDateTimeBehavior=convertToNull&verifyServerCertificate=false&useSSL=true&useUnicode=true&characterEncoding=utf-8
-    username: aalife
+    username: root
     password: mysql
   jpa:
     show-sql: true
@@ -45,10 +45,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  mvc:
-    static-path-pattern: /resources/img/**
-  resources:
-    static-locations: classpath:/static/img
+  ##mvc:
+    ##static-path-pattern: /resources/img/**
+  ##resources:
+    ##static-locations: classpath:/static/img
 
 
   mail:
