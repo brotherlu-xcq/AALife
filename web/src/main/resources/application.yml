@@ -45,10 +45,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  ##mvc:
-    ##static-path-pattern: /resources/img/**
-  ##resources:
-    ##static-locations: classpath:/static/img
+  mvc:
+    static-path-pattern: /resources/img/**
+  resources:
+    static-locations: classpath:/static/img
 
 
   mail:
