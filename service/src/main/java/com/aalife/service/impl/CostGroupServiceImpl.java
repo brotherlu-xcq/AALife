@@ -3,6 +3,7 @@ package com.aalife.service.impl;
 import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
 import com.aalife.bo.CostGroupUserBo;
+import com.aalife.bo.ExtendUserBo;
 import com.aalife.constant.SystemConstant;
 import com.aalife.dao.entity.*;
 import com.aalife.dao.repository.CostDetailRepository;
@@ -302,5 +303,24 @@ public class CostGroupServiceImpl implements CostGroupService {
         costGroupUser.setUser(currentUser);
         costGroupUser.setAdmin('N');
         costGroupUserRepository.save(costGroupUser);
+    }
+
+    @Override
+    public List<ExtendUserBo> listCostGroupUsers(Integer groupId) {
+        List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
+        List<ExtendUserBo> users = new ArrayList<>();
+        Integer currentUserId = webContext.getCurrentUser().getUserId();
+        costGroupUsers.forEach(costGroupUser -> {
+            User user = costGroupUser.getUser();
+            ExtendUserBo userBo = new ExtendUserBo();
+            Integer targetUserId = user.getUserId();
+            String nickName = user.getNickName();
+            userBo.setUserId(targetUserId);
+            userBo.setNickName(nickName);
+            userBo.setAvatarUrl(user.getAvatarUrl());
+            userBo.setRemarkName(costUserRemarkService.getRemarkName(currentUserId, targetUserId, nickName));
+            users.add(userBo);
+        });
+        return users;
     }
 }

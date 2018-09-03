@@ -14,6 +14,7 @@ import com.aalife.web.util.ResponseHelper;
 import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -126,5 +127,11 @@ public class CostGroupApi {
     public JsonEntity<String> joinCostGroup(@PathVariable(value = "groupId") Integer groupId){
         costGroupService.joinCostGroup(groupId);
         return ResponseHelper.createInstance("success");
+    }
+
+    @GetMapping(value = "/costGroup/{groupId}/users")
+    @RolePermission(needPermission = PermissionType.USER)
+    public JsonEntity<List<ExtendUserBo>> listCostGroupUsers(@PathVariable(value = "groupId")Integer groupId){
+        return ResponseHelper.createInstance(costGroupService.listCostGroupUsers(groupId));
     }
 }

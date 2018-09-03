@@ -4,6 +4,7 @@ import com.aalife.bo.CostGroupBo;
 import com.aalife.bo.CostGroupOverviewBo;
 import com.aalife.bo.CostGroupUserBo;
 import com.aalife.bo.ExtendCostCleanBo;
+import com.aalife.bo.ExtendUserBo;
 import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.User;
 
@@ -100,4 +101,11 @@ public interface CostGroupService {
      * @param groupId
      */
     void joinCostGroup(Integer groupId);
+
+    /**
+     * 获取某一组的所有用户
+     * @param groupId
+     * @return
+     */
+    List<ExtendUserBo> listCostGroupUsers(Integer groupId);
 }

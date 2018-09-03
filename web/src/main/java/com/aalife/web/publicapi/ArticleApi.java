@@ -1,6 +1,7 @@
 package com.aalife.web.publicapi;
 
 import com.aalife.bo.ArticleBo;
+import com.aalife.bo.ArticleCommentBo;
 import com.aalife.bo.ArticleDetailBo;
 import com.aalife.bo.ArticleOverviewBo;
 import com.aalife.bo.BaseQueryResultBo;
@@ -46,4 +47,6 @@ public class ArticleApi {
     public JsonEntity<Map<String, Object>> createNewArticle(@RequestBody ArticleBo articleBo){
         return ResponseHelper.createInstance(articleService.createNewArticle(articleBo));
     }
+
+    public JsonEntity<ArticleCommentBo> findArticleFirstChildComment(@RequestBody WxQueryBo wxQueryBo){return null;}
 }
