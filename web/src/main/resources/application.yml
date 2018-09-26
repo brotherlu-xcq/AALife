@@ -54,8 +54,8 @@ spring:
   mail:
     host: smtp.aliyun.com
     port: 465
-    username: brotherlu@aliyun.com
-    password: xct19960321@
+    username:
+    password:
     properties:
       smtp:
         auth: true
