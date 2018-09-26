@@ -1,6 +1,7 @@
 package com.aalife.bo;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author brother lu
@@ -16,6 +17,8 @@ public class NewCostDetailBo {
     private String costDate;
 
     private BigDecimal costMoney;
+
+    private List<Integer> users;
 
     public Integer getGroupId() {
         return groupId;
@@ -55,5 +58,13 @@ public class NewCostDetailBo {
 
     public void setCostMoney(BigDecimal costMoney) {
         this.costMoney = costMoney;
+    }
+
+    public List<Integer> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<Integer> users) {
+        this.users = users;
     }
 }

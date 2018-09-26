@@ -7,6 +7,7 @@ import com.aalife.dao.entity.CostCategory;
 import com.aalife.dao.entity.CostClean;
 import com.aalife.dao.entity.CostCleanUser;
 import com.aalife.dao.entity.CostDetail;
+import com.aalife.dao.entity.CostDetailUser;
 import com.aalife.dao.entity.CostGroup;
 import com.aalife.dao.entity.CostGroupUser;
 import com.aalife.dao.entity.CostUserRemark;
@@ -16,9 +17,11 @@ import com.aalife.dao.repository.CostCategoryRepository;
 import com.aalife.dao.repository.CostCleanRepository;
 import com.aalife.dao.repository.CostCleanUserRepository;
 import com.aalife.dao.repository.CostDetailRepository;
+import com.aalife.dao.repository.CostDetailUserRepository;
 import com.aalife.dao.repository.CostGroupRepository;
 import com.aalife.dao.repository.CostGroupUserRepository;
 import com.aalife.dao.repository.CostUserRemarkRepository;
+import com.aalife.dao.repository.UserRepository;
 import com.aalife.exception.BizException;
 import com.aalife.service.*;
 import com.aalife.utils.DateUtil;
@@ -79,14 +82,19 @@ public class CostDetailServiceImpl implements CostDetailService {
     @Autowired
     private CostGroupUserRepository costGroupUserRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private CostDetailUserRepository costDetailUserRepository;
+    @Autowired
     private NotificationService notificationService;
 
     @Override
-    public void createNewCostDetail(NewCostDetailBo costDetailBo) {
+    public void createNewOrUpdateCostDetail(NewCostDetailBo costDetailBo) {
         User currentUser = webContext.getCurrentUser();
         String costDesc = costDetailBo.getCostDesc() == null ? null : costDetailBo.getCostDesc().trim();
         CostCategory costCategory = costCategoryRepository.findOne(costDetailBo.getCateId());
         String costDateStr = costDetailBo.getCostDate();
+        Integer groupId = costDetailBo.getGroupId();
         Date costDate;
         try {
             costDate = FormatUtil.parseString2Date(costDateStr, SystemConstant.DATE_PATTERN);
@@ -96,9 +104,31 @@ public class CostDetailServiceImpl implements CostDetailService {
         if (costCategory == null){
             throw new BizException("未查询到对应得分类");
         }
-        CostGroup costGroup = costGroupRepository.findGroupById(costDetailBo.getGroupId());
+        CostGroup costGroup = costGroupRepository.findGroupById(groupId);
         if (costGroup == null){
             throw new BizException("未查询到群组");
+        }
+        List<Integer> userIds = costDetailBo.getUsers();
+        if (userIds == null || userIds.size() == 0){
+            throw new BizException("请选择消费分摊的用户");
+        }
+        // 设置分摊的用户
+        List<Integer> groupUsers = new ArrayList<>();
+        List<CostGroupUser> costGroupUsers = costGroupUserRepository.findCostGroupByGroup(groupId);
+        costGroupUsers.forEach(costGroupUser -> {
+            groupUsers.add(costGroupUser.getUser().getUserId());
+        });
+        List<User> users = new ArrayList<>();
+        userIds.forEach(userId -> {
+            if (groupUsers.contains(userId)) {
+                User user = userRepository.findOne(userId);
+                users.add(user);
+            } else {
+                logger.warn("用户：" + userId + "不在群组：" + groupId + "中，略过该id");
+            }
+        });
+        if (users.size() == 0){
+            throw new BizException("未查询到分摊用户，或用户不在该群组");
         }
         CostDetail costDetail = new CostDetail();
         costDetail.setUser(currentUser);
@@ -110,6 +140,14 @@ public class CostDetailServiceImpl implements CostDetailService {
         costDetail.setEntryDate(new Date());
         costDetail.setCostGroup(costGroup);
         costDetailRepository.save(costDetail);
+        users.forEach(user -> {
+            CostDetailUser costDetailUser = new CostDetailUser();
+            costDetailUser.setUser(user);
+            costDetailUser.setCostDetail(costDetail);
+            costDetailUser.setEntryId(SystemConstant.SYSTEM_ID);
+            costDetailUser.setEntryDate(new Date());
+            costDetailUserRepository.save(costDetailUser);
+        });
     }
 
     @Override

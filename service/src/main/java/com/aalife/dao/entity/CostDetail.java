@@ -1,16 +1,20 @@
 package com.aalife.dao.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author mosesc
@@ -40,7 +44,7 @@ public class CostDetail {
     private CostCategory costCategory;
 
     @Column(name = "cost_money")
-    @NotNull
+    @NotNull(message = "消费金额不能为空")
     private BigDecimal costMoney;
 
     @Column(name = "cost_desc")
@@ -67,6 +71,10 @@ public class CostDetail {
 
     @Column(name = "delete_date")
     private Date deleteDate;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "cost_id")
+    private List<CostDetailUser> costDetailUsers;
 
     public Integer getCostId() {
         return costId;
@@ -162,5 +170,13 @@ public class CostDetail {
 
     public void setCostDate(Date costDate) {
         this.costDate = costDate;
+    }
+
+    public List<CostDetailUser> getCostDetailUsers() {
+        return costDetailUsers;
+    }
+
+    public void setCostDetailUsers(List<CostDetailUser> costDetailUsers) {
+        this.costDetailUsers = costDetailUsers;
     }
 }
